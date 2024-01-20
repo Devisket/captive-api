@@ -1,0 +1,6 @@
+@Captive.Commands_HostAddress = http://localhost:5015
+
+GET {{Captive.Commands_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
