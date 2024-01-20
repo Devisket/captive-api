@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "Captive.Processing/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Captive.Processing.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Captive.Processing.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Captive.Processing/1.0.0": {
+      "type": "project",
+      "path": "../Captive.Processing/Captive.Processing.csproj",
+      "msbuildProject": "../Captive.Processing/Captive.Processing.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "Captive.Processing >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\ediso\\.nuget\\packages\\": {},
@@ -38,7 +57,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
+              "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
