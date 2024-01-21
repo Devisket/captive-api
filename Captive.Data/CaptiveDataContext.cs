@@ -1,5 +1,6 @@
 ﻿using Captive.Data.ModelBuilders;
 using Microsoft.EntityFrameworkCore;
+
 namespace Captive.Data
 {
     public class CaptiveDataContext:DbContext
