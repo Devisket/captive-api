@@ -5,7 +5,9 @@ namespace Captive.Data
 {
     public class CaptiveDataContext:DbContext
     {
-        public CaptiveDataContext() { }
+        public CaptiveDataContext(DbContextOptions options):base(options) { 
+        
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
