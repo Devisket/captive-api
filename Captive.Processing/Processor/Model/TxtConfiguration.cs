@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Captive.Processing.Processor.Model.Enums
+namespace Captive.Processing.Processor.Model
 {
-    public enum  CheckType
+    public class TxtConfiguration
     {
-        
     }
 }
