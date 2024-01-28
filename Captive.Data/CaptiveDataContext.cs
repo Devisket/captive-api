@@ -18,6 +18,7 @@ namespace Captive.Data
             modelBuilder.BuildOrderFilesModel();
             modelBuilder.BuildCheckAccountsModel();
             modelBuilder.BuildCheckOrdersModel();
+            modelBuilder.BuildFileConfiguration();
 
             base.OnModelCreating(modelBuilder);
         }

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Captive.Processing.Processor
 {
-    public class FileProcessor
+    public class FileProcessor:IFileProcessor
     {
         private readonly IConfiguration _configuration;
 

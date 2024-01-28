@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -18,7 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Captive.Applications\Captive.Applications.csproj" />
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Post-Migration\" />
   </ItemGroup>
 
 </Project>
