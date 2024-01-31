@@ -7,6 +7,7 @@ namespace Captive.Processing.Processor
     public class FileProcessor:IFileProcessor
     {
         private readonly IConfiguration _configuration;
+        private IDictionary<string, Tuple<int, int>> _fileConfiguration;
 
         public FileProcessor(IConfiguration configuration) 
         {
@@ -17,46 +18,126 @@ namespace Captive.Processing.Processor
         {
             IList<OrderFileData> fileDatas = new List<OrderFileData>();
 
-            var configurationData = ExtractConfiguration();
+            _fileConfiguration = ExtractConfiguration();
+            
+            ReadFile(file);
+        }
 
-            if (configurationData == null)
+        public void OnProcessFile(byte[] file, string orderFileConfiguration)
+        {
+
+            if(orderFileConfiguration == null)
             {
-                throw new ArgumentNullException(nameof(configurationData));
+                throw new ArgumentNullException(nameof(orderFileConfiguration));
             }
+
+            _fileConfiguration = ExtractConfiguration(orderFileConfiguration);
+
+            ReadFile(file);
+        }
+
+        /*
+         * TODO:
+         * Create a logic for Concode
+         */
+        private void ReadFile(byte[] file)
+        {
+            IList<OrderFileData> fileDatas = new List<OrderFileData>();
 
             using (StreamReader reader = new StreamReader(new MemoryStream(file)))
             {
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
+                List<string> stringArr = new List<string>();
 
-                    if(String.IsNullOrEmpty(line))
+                while(!reader.EndOfStream)
+                {
+                    var stringVal = reader.ReadLine();
+
+                    if (String.IsNullOrEmpty(stringVal))
+                    {
+                        continue;
+                    }
+                    stringArr.Add(stringVal);
+                }
+
+                for(int i = 0; i < stringArr.Count; i++)
+                {
+                    var accNo = GetSubstringValue(stringArr[i], FileConfigurationConstants.ACCOUNT_NUMBER);
+
+                    var conCodeString = GetSubstringValue(stringArr[i], FileConfigurationConstants.CONCODE);
+                    var conCode = String.IsNullOrWhiteSpace(conCodeString) ? 0 : int.Parse(conCodeString);
+
+                    var deliverTo = _fileConfiguration[FileConfigurationConstants.DELIVER_TO].Item1 >= stringArr[i].Length ? null
+                                                              : GetSubstringValue(stringArr[i], FileConfigurationConstants.DELIVER_TO) ?? null;
+                    
+                    var accountName = GetSubstringValue(stringArr[i], FileConfigurationConstants.ACCOUNT_NAME);
+
+                    var quantity = int.Parse(GetSubstringValue(stringArr[i], FileConfigurationConstants.QUANTITY));
+
+                    //Why it not hitting the same account?
+                    var existingAccount = fileDatas.Where(x => x.AccountNumber == accNo && x.DeliverTo == deliverTo).FirstOrDefault();
+
+                    //Check if there is any existing account number
+                    if (quantity > 0 &&   existingAccount != null)
+                    {
+                        existingAccount.Quantity += quantity;
+                        continue;
+                    }
+
+                    if(quantity == 0)
                     {
                         continue;
                     }
 
-                    var accNo = line.Substring(configurationData[FileConfigurationConstants.ACCOUNT_NAME].Item1, configurationData[FileConfigurationConstants.ACCOUNT_NAME].Item2);
-                    var conCode = line.Substring(configurationData[FileConfigurationConstants.CONCODE].Item1, configurationData[FileConfigurationConstants.CONCODE].Item2);
-
-                    if (!String.IsNullOrEmpty(conCode))
+                    //If Concode exist
+                    if(conCode > 0)
                     {
-                        if(fileDatas.Any(x=>x.AccountNumber == accNo))
-                        {
+                        //Reseting account name
+                        accountName = string.Empty;
+                        var j = i;
+                        var concodeArr = new List<string>();
 
+                        //Initially add the current index
+                        //concodeArr.Add(stringArr[i]);
+
+                        for(;j < stringArr.Count; j++)
+                        {
+                            var succeedingAccNo = GetSubstringValue(stringArr[j], FileConfigurationConstants.ACCOUNT_NUMBER);
+                            var succeedingConcode = String.IsNullOrWhiteSpace(conCodeString) ? 0 : int.Parse(GetSubstringValue(stringArr[j], FileConfigurationConstants.CONCODE));
+
+                            if(succeedingAccNo != accNo || succeedingConcode == 0 ||
+                                (succeedingAccNo == accNo && concodeArr.Any(x => int.Parse(GetSubstringValue(x, FileConfigurationConstants.CONCODE)) == succeedingConcode)))
+                            {
+                                break;
+                            }
+
+                            concodeArr.Add(stringArr[j]);
                         }
+
+                        concodeArr.Sort((string a, string b) =>
+                        {
+                            var valA = int.Parse(GetSubstringValue(a, FileConfigurationConstants.CONCODE));
+                            var valB =    int.Parse(GetSubstringValue(a, FileConfigurationConstants.CONCODE));
+                            
+                            return valA > valB ? 1 : -1;
+                        });
+
+                        concodeArr.ForEach((z) =>
+                        {
+                            accountName = String.Join(" ", accountName, GetSubstringValue(z, FileConfigurationConstants.ACCOUNT_NAME));
+                        });
+
+                        i = (j-1);
                     }
 
                     fileDatas.Add(new OrderFileData
                     {
-                        CheckType = line.Substring(configurationData[FileConfigurationConstants.CHECK_TYPE].Item1, configurationData[FileConfigurationConstants.CHECK_TYPE].Item2),
-                        BRSTN= line.Substring(configurationData[FileConfigurationConstants.BRSTN].Item1, configurationData[FileConfigurationConstants.BRSTN].Item2),
-                        AccountNumber = line.Substring(configurationData[FileConfigurationConstants.ACCOUNT_NUMBER].Item1, configurationData[FileConfigurationConstants.ACCOUNT_NUMBER].Item2),
-                        AccountName = accNo,
-                        ConCode = line.Substring(configurationData[FileConfigurationConstants.CONCODE].Item1, configurationData[FileConfigurationConstants.CONCODE].Item2),
-                        FormType = line.Substring(configurationData[FileConfigurationConstants.FORM_TYPE].Item1, configurationData[FileConfigurationConstants.FORM_TYPE].Item2),
-                        Quantity = line.Substring(configurationData[FileConfigurationConstants.QUANTITY].Item1, configurationData[FileConfigurationConstants.QUANTITY].Item2),
-                        DeliverTo = configurationData[FileConfigurationConstants.DELIVER_TO].Item1 >=  line.Length  ?  null 
-                        : line.Substring(configurationData[FileConfigurationConstants.DELIVER_TO].Item1, configurationData[FileConfigurationConstants.DELIVER_TO].Item2) ?? null,
+                        CheckType = GetSubstringValue(stringArr[i], FileConfigurationConstants.CHECK_TYPE),
+                        BRSTN = GetSubstringValue(stringArr[i], FileConfigurationConstants.BRSTN),
+                        AccountNumber = accNo,
+                        AccountName = accountName,
+                        FormType = GetSubstringValue(stringArr[i], FileConfigurationConstants.FORM_TYPE),
+                        Quantity = quantity,
+                        DeliverTo = deliverTo
                     });
                 }
 
@@ -64,9 +145,9 @@ namespace Captive.Processing.Processor
             }
         }
 
-        public IDictionary<string, Tuple<int,int>>? ExtractConfiguration()
+        public IDictionary<string, Tuple<int,int>> ExtractConfiguration(string? configurationData = null)
         {
-            var jsonString = _configuration["CaptiveConfiguration"];
+            var jsonString = configurationData ??  _configuration["CaptiveConfiguration"];
 
             if(String.IsNullOrEmpty(jsonString))
             {
@@ -94,5 +175,10 @@ namespace Captive.Processing.Processor
             }
             return returnDictionary;
         }
+
+        private string GetSubstringValue(string sourceString, string referenceKey)
+        {
+            return sourceString.Substring(_fileConfiguration[referenceKey].Item1, _fileConfiguration[referenceKey].Item2);
+        }       
     }
 }

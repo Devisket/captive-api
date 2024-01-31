@@ -8,6 +8,9 @@ namespace Captive.Processing.Processor
 {
     public interface IFileProcessor
     {
+
         public void OnProcessFile(byte[] file);
+
+        public void OnProcessFile(byte[] file, string orderFileConfiguration);
     }
 }
