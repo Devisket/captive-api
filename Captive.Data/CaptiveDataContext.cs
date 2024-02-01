@@ -19,9 +19,11 @@ namespace Captive.Data
             modelBuilder.BuildCheckAccountsModel();
             modelBuilder.BuildCheckOrdersModel();
             modelBuilder.BuildFileConfiguration();
+            modelBuilder.BuildFormTypeTable();
+            modelBuilder.BuildCheckTypeTable();
+            modelBuilder.BuildFormChecksTable();
 
             base.OnModelCreating(modelBuilder);
         }
-
     }
 }

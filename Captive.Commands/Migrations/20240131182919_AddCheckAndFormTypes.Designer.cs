@@ -3,6 +3,7 @@ using System;
 using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20240131182919_AddCheckAndFormTypes")]
+    partial class AddCheckAndFormTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,30 +205,6 @@ namespace Captive.Commands.Migrations
                     b.ToTable("check_types", (string)null);
                 });
 
-            modelBuilder.Entity("Captive.Data.Models.FormChecks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("CheckTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("FormTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CheckTypeId");
-
-                    b.HasIndex("FormTypeId");
-
-                    b.ToTable("form_checks", (string)null);
-                });
-
             modelBuilder.Entity("Captive.Data.Models.FormTypes", b =>
                 {
                     b.Property<int>("Id")
@@ -346,25 +325,6 @@ namespace Captive.Commands.Migrations
                     b.Navigation("Bank");
                 });
 
-            modelBuilder.Entity("Captive.Data.Models.FormChecks", b =>
-                {
-                    b.HasOne("Captive.Data.Models.CheckTypes", "CheckType")
-                        .WithMany("FormChecks")
-                        .HasForeignKey("CheckTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Captive.Data.Models.FormTypes", "FormType")
-                        .WithMany("FormChecks")
-                        .HasForeignKey("FormTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CheckType");
-
-                    b.Navigation("FormType");
-                });
-
             modelBuilder.Entity("Captive.Data.Models.FormTypes", b =>
                 {
                     b.HasOne("Captive.Data.Models.BankInfo", "Bank")
@@ -397,16 +357,6 @@ namespace Captive.Commands.Migrations
                         .IsRequired();
 
                     b.Navigation("CheckOrders");
-                });
-
-            modelBuilder.Entity("Captive.Data.Models.CheckTypes", b =>
-                {
-                    b.Navigation("FormChecks");
-                });
-
-            modelBuilder.Entity("Captive.Data.Models.FormTypes", b =>
-                {
-                    b.Navigation("FormChecks");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.OrderFiles", b =>
