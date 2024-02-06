@@ -22,7 +22,7 @@ namespace Captive.Data
             modelBuilder.BuildFormTypeTable();
             modelBuilder.BuildCheckTypeTable();
             modelBuilder.BuildFormChecksTable();
-
+            modelBuilder.OnBuildSeedTable();
             base.OnModelCreating(modelBuilder);
         }
     }

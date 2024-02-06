@@ -12,6 +12,7 @@ namespace Captive.Processing.Processor
         public FileProcessor(IConfiguration configuration) 
         {
             _configuration = configuration;
+            _fileConfiguration = new Dictionary<string, Tuple<int, int>>();
         }
 
         public void OnProcessFile(byte[]file) 
@@ -23,9 +24,8 @@ namespace Captive.Processing.Processor
             ReadFile(file);
         }
 
-        public void OnProcessFile(byte[] file, string orderFileConfiguration)
+        public ICollection<OrderFileData> OnProcessFile(byte[] file, string orderFileConfiguration)
         {
-
             if(orderFileConfiguration == null)
             {
                 throw new ArgumentNullException(nameof(orderFileConfiguration));
@@ -33,14 +33,12 @@ namespace Captive.Processing.Processor
 
             _fileConfiguration = ExtractConfiguration(orderFileConfiguration);
 
-            ReadFile(file);
+            var returnData = ReadFile(file);
+
+            return returnData;
         }
 
-        /*
-         * TODO:
-         * Create a logic for Concode
-         */
-        private void ReadFile(byte[] file)
+        private ICollection<OrderFileData> ReadFile(byte[] file)
         {
             IList<OrderFileData> fileDatas = new List<OrderFileData>();
 
@@ -73,10 +71,8 @@ namespace Captive.Processing.Processor
 
                     var quantity = int.Parse(GetSubstringValue(stringArr[i], FileConfigurationConstants.QUANTITY));
 
-                    //Why it not hitting the same account?
                     var existingAccount = fileDatas.Where(x => x.AccountNumber == accNo && x.DeliverTo == deliverTo).FirstOrDefault();
-
-                    //Check if there is any existing account number
+                                        
                     if (quantity > 0 &&   existingAccount != null)
                     {
                         existingAccount.Quantity += quantity;
@@ -88,16 +84,11 @@ namespace Captive.Processing.Processor
                         continue;
                     }
 
-                    //If Concode exist
                     if(conCode > 0)
                     {
-                        //Reseting account name
                         accountName = string.Empty;
                         var j = i;
                         var concodeArr = new List<string>();
-
-                        //Initially add the current index
-                        //concodeArr.Add(stringArr[i]);
 
                         for(;j < stringArr.Count; j++)
                         {
@@ -140,9 +131,9 @@ namespace Captive.Processing.Processor
                         DeliverTo = deliverTo
                     });
                 }
-
-                Console.WriteLine(fileDatas);
             }
+
+            return fileDatas;
         }
 
         public IDictionary<string, Tuple<int,int>> ExtractConfiguration(string? configurationData = null)

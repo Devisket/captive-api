@@ -1,8 +1,5 @@
 
 using Captive.Commands.Extensions;
-using Captive.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.RunDatabaseMigration();
 
 app.UseHttpsRedirection();
 

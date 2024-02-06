@@ -27,4 +27,10 @@
     <Folder Include="Post-Migration\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Post-Migration\InitData.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

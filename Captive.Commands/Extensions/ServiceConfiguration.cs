@@ -19,7 +19,7 @@ namespace Captive.Commands.Extensions
             services
                  .AddDbContext<CaptiveDataContext>(options =>
                 options.UseMySQL(connString, b => b.MigrationsAssembly("Captive.Commands")));
-
+         
             services.AddScoped<IFileProcessor, FileProcessor>();
 
             var assembly = Assembly.Load("Captive.Applications");
