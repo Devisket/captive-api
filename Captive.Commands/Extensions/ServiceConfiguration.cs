@@ -21,6 +21,7 @@ namespace Captive.Commands.Extensions
                 options.UseMySQL(connString, b => b.MigrationsAssembly("Captive.Commands")));
          
             services.AddScoped<IFileProcessor, FileProcessor>();
+            services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

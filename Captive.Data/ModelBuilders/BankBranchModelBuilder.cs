@@ -12,11 +12,6 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasKey(x=> x.Id);
 
-            //Configuration for one to many relationship for BankInfo table
-            entity.HasOne(x=> x.BankInfo)
-                .WithMany(x => x.BankBranches)
-                .HasForeignKey(x=>x.BankId);
-
             entity.Property(x=> x.BranchName).IsRequired();
             
             entity.Property(x=> x.BranchAddress).IsRequired(false);

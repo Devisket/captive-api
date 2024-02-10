@@ -11,6 +11,18 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasKey(x=> x.Id);
 
+            entity.HasMany(x => x.BankBranches)
+                .WithOne(x => x.BankInfo)
+                .HasForeignKey(x => x.BankId);
+
+            entity.HasMany(x => x.FormTypes) 
+                .WithOne(x => x.Bank)
+                .HasForeignKey(x => x.BankId);
+
+            entity.HasMany(x => x.CheckTypes)
+                .WithOne(x => x.Bank)
+                .HasForeignKey(x => x.BankId);
+
             entity.Property(x=> x.BankName).IsRequired();
 
             entity.Property(x=> x.CreatedDate).IsRequired();

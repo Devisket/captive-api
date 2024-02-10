@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Captive.Commands.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitMigraton : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,6 +62,21 @@ namespace Captive.Commands.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "order_file_configuration",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false),
+                    ConfigurationData = table.Column<string>(type: "longtext", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_order_file_configuration", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "order_files",
                 columns: table => new
                 {
@@ -73,6 +88,21 @@ namespace Captive.Commands.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_order_files", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "seed",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    SeedName = table.Column<string>(type: "longtext", nullable: false),
+                    SeedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_seed", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -92,6 +122,51 @@ namespace Captive.Commands.Migrations
                     table.PrimaryKey("PK_bank_branchs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_bank_branchs_banks_info_BankId",
+                        column: x => x.BankId,
+                        principalTable: "banks_info",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "check_types",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false),
+                    Value = table.Column<string>(type: "longtext", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true),
+                    BankId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_check_types", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_check_types_banks_info_BankId",
+                        column: x => x.BankId,
+                        principalTable: "banks_info",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "form_types",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    FormType = table.Column<string>(type: "longtext", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true),
+                    BankId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_form_types", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_form_types_banks_info_BankId",
                         column: x => x.BankId,
                         principalTable: "banks_info",
                         principalColumn: "Id",
@@ -157,6 +232,34 @@ namespace Captive.Commands.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "form_checks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    FormTypeId = table.Column<int>(type: "int", nullable: false),
+                    CheckTypeId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_form_checks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_form_checks_check_types_CheckTypeId",
+                        column: x => x.CheckTypeId,
+                        principalTable: "check_types",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_form_checks_form_types_FormTypeId",
+                        column: x => x.FormTypeId,
+                        principalTable: "form_types",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_account_info_AccountAddressId",
                 table: "account_info",
@@ -195,6 +298,26 @@ namespace Captive.Commands.Migrations
                 column: "OrderFileId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_check_types_BankId",
+                table: "check_types",
+                column: "BankId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_form_checks_CheckTypeId",
+                table: "form_checks",
+                column: "CheckTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_form_checks_FormTypeId",
+                table: "form_checks",
+                column: "FormTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_form_types_BankId",
+                table: "form_types",
+                column: "BankId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_order_files_BatchName",
                 table: "order_files",
                 column: "BatchName");
@@ -213,16 +336,31 @@ namespace Captive.Commands.Migrations
                 name: "check_orders");
 
             migrationBuilder.DropTable(
-                name: "account_addresses");
+                name: "form_checks");
 
             migrationBuilder.DropTable(
-                name: "banks_info");
+                name: "order_file_configuration");
+
+            migrationBuilder.DropTable(
+                name: "seed");
+
+            migrationBuilder.DropTable(
+                name: "account_addresses");
 
             migrationBuilder.DropTable(
                 name: "check_accounts");
 
             migrationBuilder.DropTable(
                 name: "order_files");
+
+            migrationBuilder.DropTable(
+                name: "check_types");
+
+            migrationBuilder.DropTable(
+                name: "form_types");
+
+            migrationBuilder.DropTable(
+                name: "banks_info");
         }
     }
 }

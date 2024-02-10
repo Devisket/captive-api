@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    [Migration("20240201000605_AddFormCheckTable")]
-    partial class AddFormCheckTable
+    [Migration("20240210051151_InitMigraton")]
+    partial class InitMigraton
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -289,6 +289,24 @@ namespace Captive.Commands.Migrations
                     b.HasIndex("BatchName");
 
                     b.ToTable("order_files", (string)null);
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.Seeds", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SeedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SeedName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("seed", (string)null);
                 });
 
             modelBuilder.Entity("Captive.Data.Models.AccountInfo", b =>

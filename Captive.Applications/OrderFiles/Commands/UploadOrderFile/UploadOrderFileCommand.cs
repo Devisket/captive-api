@@ -9,6 +9,7 @@ namespace Captive.Applications.OrderFiles.Commands.UploadOrderFile
 {
     public class UploadOrderFileCommand:IRequest<Unit>
     {
+        public required string FileName { get; set; }
         public required byte[] OrderFile { get; set; }
     }
 }

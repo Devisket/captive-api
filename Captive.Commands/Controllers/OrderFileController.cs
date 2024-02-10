@@ -15,7 +15,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult>UploadOrderFile([FromForm]IFormFile file) 
+        public async Task<IActionResult>UploadOrderFile([FromForm]IFormFile file, [FromForm]string fileName) 
         {
             if (file.Length < 0)
                 return BadRequest();
@@ -27,7 +27,8 @@ namespace Captive.Commands.Controllers
 
                 await _mediator.Send( new UploadOrderFileCommand() 
                     { 
-                        OrderFile = fileBytes
+                        OrderFile = fileBytes,
+                        FileName = fileName
                     });
 
                 return Ok();

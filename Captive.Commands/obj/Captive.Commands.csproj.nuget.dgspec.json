@@ -32,6 +32,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
+              },
               "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
                 "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
               }
