@@ -16,7 +16,7 @@ namespace Captive.Data.Models
         public DateTime CreatedDate { get; set; }
 
         public ICollection<BankBranches>? BankBranches { get; set; }
-        public ICollection<FormTypes>? FormTypes{ get; set; }
-        public ICollection<CheckTypes>? CheckTypes{ get; set; }
+        public ICollection<FormChecks>? FormChecks { get; set; }
+        public ICollection<OrderFileConfiguration>? OrderFileConfigurations { get; set;}
     }
 }

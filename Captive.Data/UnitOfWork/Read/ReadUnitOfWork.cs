@@ -1,16 +1,17 @@
 ﻿using Captive.Data.Models;
+using Captive.Data.Repository.Read;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Captive.Data
+namespace Captive.Data.UnitOfWork.Read
 {
     public class ReadUnitOfWork : IReadUnitOfWork
     {
         private readonly CaptiveDataContext _dbContext;
-               
+
         public ReadUnitOfWork(CaptiveDataContext dbContext)
         {
             _dbContext = dbContext;
@@ -26,7 +27,8 @@ namespace Captive.Data
 
         IReadRepository<CheckOrders> IReadUnitOfWork.CheckOrders => GetStandardRepository<CheckOrders>();
 
-        IReadRepository<CheckTypes> IReadUnitOfWork.CheckTypes => GetStandardRepository<CheckTypes>();
+        IReadRepository<FormChecks> IReadUnitOfWork.FormChecks => GetStandardRepository<FormChecks>();
+        IReadRepository<CheckInventory> IReadUnitOfWork.CheckInventory=> GetStandardRepository<CheckInventory>();
 
         public IReadRepository<T> GetStandardRepository<T>() where T : class => new ReadRepository<T>(_dbContext);
 

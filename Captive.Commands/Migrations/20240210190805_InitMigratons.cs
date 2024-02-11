@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Captive.Commands.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigraton : Migration
+    public partial class InitMigratons : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -58,21 +58,6 @@ namespace Captive.Commands.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_check_accounts", x => x.Id);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "order_file_configuration",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
-                    ConfigurationData = table.Column<string>(type: "longtext", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_order_file_configuration", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -130,21 +115,22 @@ namespace Captive.Commands.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "check_types",
+                name: "form_checks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
-                    Value = table.Column<string>(type: "longtext", nullable: false),
+                    CheckType = table.Column<string>(type: "varchar(255)", nullable: false),
+                    FormType = table.Column<string>(type: "varchar(255)", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     BankId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_check_types", x => x.Id);
+                    table.PrimaryKey("PK_form_checks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_check_types_banks_info_BankId",
+                        name: "FK_form_checks_banks_info_BankId",
                         column: x => x.BankId,
                         principalTable: "banks_info",
                         principalColumn: "Id",
@@ -153,20 +139,20 @@ namespace Captive.Commands.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "form_types",
+                name: "order_file_configuration",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    FormType = table.Column<string>(type: "longtext", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: true),
+                    Name = table.Column<string>(type: "varchar(255)", nullable: false),
+                    ConfigurationData = table.Column<string>(type: "longtext", nullable: false),
                     BankId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_form_types", x => x.Id);
+                    table.PrimaryKey("PK_order_file_configuration", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_form_types_banks_info_BankId",
+                        name: "FK_order_file_configuration_banks_info_BankId",
                         column: x => x.BankId,
                         principalTable: "banks_info",
                         principalColumn: "Id",
@@ -233,28 +219,24 @@ namespace Captive.Commands.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "form_checks",
+                name: "check_inventory",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    FormTypeId = table.Column<int>(type: "int", nullable: false),
-                    CheckTypeId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
+                    StarSeries = table.Column<string>(type: "longtext", nullable: true),
+                    EndSeries = table.Column<string>(type: "longtext", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    CheckOrderId = table.Column<int>(type: "int", nullable: true),
+                    FormCheckId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_form_checks", x => x.Id);
+                    table.PrimaryKey("PK_check_inventory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_form_checks_check_types_CheckTypeId",
-                        column: x => x.CheckTypeId,
-                        principalTable: "check_types",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_form_checks_form_types_FormTypeId",
-                        column: x => x.FormTypeId,
-                        principalTable: "form_types",
+                        name: "FK_check_inventory_form_checks_FormCheckId",
+                        column: x => x.FormCheckId,
+                        principalTable: "form_checks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -288,6 +270,11 @@ namespace Captive.Commands.Migrations
                 column: "AccountNo");
 
             migrationBuilder.CreateIndex(
+                name: "IX_check_inventory_FormCheckId",
+                table: "check_inventory",
+                column: "FormCheckId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_check_orders_CheckAccountId",
                 table: "check_orders",
                 column: "CheckAccountId");
@@ -298,24 +285,24 @@ namespace Captive.Commands.Migrations
                 column: "OrderFileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_check_types_BankId",
-                table: "check_types",
+                name: "IX_form_checks_BankId",
+                table: "form_checks",
                 column: "BankId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_form_checks_CheckTypeId",
+                name: "IX_form_checks_FormType_CheckType",
                 table: "form_checks",
-                column: "CheckTypeId");
+                columns: new[] { "FormType", "CheckType" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_form_checks_FormTypeId",
-                table: "form_checks",
-                column: "FormTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_form_types_BankId",
-                table: "form_types",
+                name: "IX_order_file_configuration_BankId",
+                table: "order_file_configuration",
                 column: "BankId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_order_file_configuration_Name",
+                table: "order_file_configuration",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_order_files_BatchName",
@@ -333,10 +320,10 @@ namespace Captive.Commands.Migrations
                 name: "bank_branchs");
 
             migrationBuilder.DropTable(
-                name: "check_orders");
+                name: "check_inventory");
 
             migrationBuilder.DropTable(
-                name: "form_checks");
+                name: "check_orders");
 
             migrationBuilder.DropTable(
                 name: "order_file_configuration");
@@ -348,16 +335,13 @@ namespace Captive.Commands.Migrations
                 name: "account_addresses");
 
             migrationBuilder.DropTable(
+                name: "form_checks");
+
+            migrationBuilder.DropTable(
                 name: "check_accounts");
 
             migrationBuilder.DropTable(
                 name: "order_files");
-
-            migrationBuilder.DropTable(
-                name: "check_types");
-
-            migrationBuilder.DropTable(
-                name: "form_types");
 
             migrationBuilder.DropTable(
                 name: "banks_info");

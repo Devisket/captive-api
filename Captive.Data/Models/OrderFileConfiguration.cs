@@ -11,5 +11,7 @@ namespace Captive.Data.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string ConfigurationData { get; set; }
+        public int BankId { get; set; }
+        public BankInfo Bank { get; set; }
     }
 }

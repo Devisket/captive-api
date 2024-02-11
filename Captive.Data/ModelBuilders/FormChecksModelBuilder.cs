@@ -14,21 +14,24 @@ namespace Captive.Data.ModelBuilders
         {
             var entity = modelBuilder.Entity<FormChecks>();
 
-
             entity.HasKey(x => x.Id);
 
-            entity.HasOne(x => x.CheckType)
-                .WithMany(x => x.FormChecks)
-                .HasForeignKey(x => x.CheckTypeId);
+            entity.HasIndex(x => new { x.FormType, x.CheckType });
 
-            entity.HasOne(x => x.FormType)
-                .WithMany(x => x.FormChecks)
-                .HasForeignKey(x => x.FormTypeId);
+            entity.Property(x => x.CheckType).IsRequired();
+
+            entity.Property(x => x.FormType).IsRequired();
+
+            entity.Property(x => x.Quantity).IsRequired();
 
             entity
                 .Property(x => x.Description)
                 .IsRequired(false);
 
+            entity.HasOne(x => x.Bank)
+                .WithMany(x => x.FormChecks)
+                .HasForeignKey(x => x.BankId);
+            
             entity.ToTable("form_checks");
 
         }

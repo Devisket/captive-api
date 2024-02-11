@@ -4,7 +4,9 @@ set FOREIGN_KEY_CHECKS = 0;
 
 	truncate table bank_branchs;
 	truncate table banks_info;
-	truncate table order_file_configuration; 
+	truncate table order_file_configuration;
+	truncate table form_checks;
+	truncate table check_inventory; 
 
 set FOREIGN_KEY_CHECKS = 1;
 
@@ -28,7 +30,21 @@ values
 
 /*ORDER FILE CONFIGURATION*/
 
-insert into 
-	order_file_configuration (Name, ConfigurationData)
+insert into order_file_configuration 
+	(Name, ConfigurationData, BankId)
 values
-	('CPTIVE','{\"checkType\":{\"pos\":1,\"maxChar\":1},\"brstn\":{\"pos\":2,\"maxChar\":9},\"voidChar\":{\"pos\":11,\"maxChar\":1},\"accountNumber\":{\"pos\":12,\"maxChar\":12},\"accountName\":{\"pos\":24,\"maxChar\":56},\"concode\":{\"pos\":80,\"maxChar\":1},\"formType\":{\"pos\":81,\"maxChar\":2},\"quantity\":{\"pos\":83,\"maxChar\":2},\"deliverTo\":{\"pos\":85,\"maxChar\":9}}');
+	('CPTIVE','{\"checkType\":{\"pos\":1,\"maxChar\":1},\"brstn\":{\"pos\":2,\"maxChar\":9},\"voidChar\":{\"pos\":11,\"maxChar\":1},\"accountNumber\":{\"pos\":12,\"maxChar\":12},\"accountName\":{\"pos\":24,\"maxChar\":56},\"concode\":{\"pos\":80,\"maxChar\":1},\"formType\":{\"pos\":81,\"maxChar\":2},\"quantity\":{\"pos\":83,\"maxChar\":2},\"deliverTo\":{\"pos\":85,\"maxChar\":9}}', 1);
+
+
+/*FORM_CHECKS*/
+insert into form_checks
+	(CheckType,FormType,Description,Quantity,BankId)
+values
+	("A","05","REGULAR PERSONAL (50)", 50, 1),
+	("B","16","REGULAR COMMERCIAL (100)", 100, 1),
+	("B","20","MANAGER'S CHECK (MC) (50)", 50, 1),
+	("F","26","COMMERCIAL - CHECKRIGHT WITH VOUCHER (100)", 100, 1),
+	("F","27","COMMERCIAL - CHECKRIGHT WITHOUT VOUCHER (100)", 100, 1);
+	
+	
+	

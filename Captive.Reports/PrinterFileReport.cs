@@ -6,7 +6,12 @@ namespace Captive.Reports
     {
         public void GenerateReport(ICollection<OrderFileData> datas, string savePath)
         {
-            throw new NotImplementedException();
+            using (var writer  = new StringWriter())
+            {
+
+
+            }
+         
         }
     }
 }

@@ -16,8 +16,15 @@ namespace Captive.Data.ModelBuilders
             entity.HasKey(x => x.Id);
 
             entity.Property(x => x.Name).IsRequired();
+
+            entity.HasIndex(x => x.Name);
+
             entity.Property(x => x.ConfigurationData).IsRequired();
 
+            entity.HasOne(x => x.Bank)
+                .WithMany(x => x.OrderFileConfigurations)
+                .HasForeignKey(x => x.BankId);
+            
             entity.ToTable("order_file_configuration");
         }
     }

@@ -1,4 +1,6 @@
 ﻿using Captive.Data;
+using Captive.Data.UnitOfWork.Read;
+using Captive.Data.UnitOfWork.Write;
 using Captive.Processing.Processor;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -22,6 +24,7 @@ namespace Captive.Commands.Extensions
          
             services.AddScoped<IFileProcessor, FileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
+            services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

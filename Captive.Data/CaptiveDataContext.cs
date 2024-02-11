@@ -19,10 +19,10 @@ namespace Captive.Data
             modelBuilder.BuildCheckAccountsModel();
             modelBuilder.BuildCheckOrdersModel();
             modelBuilder.BuildFileConfiguration();
-            modelBuilder.BuildFormTypeTable();
-            modelBuilder.BuildCheckTypeTable();
             modelBuilder.BuildFormChecksTable();
             modelBuilder.OnBuildSeedTable();
+            modelBuilder.BuildCheckInventoryTable();
+
             base.OnModelCreating(modelBuilder);
         }
     }
