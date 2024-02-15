@@ -20,8 +20,7 @@ namespace Captive.Data.Models
 
         public string? DeliverTo { get; set; }
 
-        [Required]
-        public int CheckAccountId { get; set; }
+        public int? CheckAccountId { get; set; }
         public CheckAccounts CheckAccount { get; set; }
     }
 }

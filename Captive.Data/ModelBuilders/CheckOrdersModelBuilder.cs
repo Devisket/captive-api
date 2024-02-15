@@ -15,8 +15,6 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x=> x.BRSTN).IsRequired();
 
-            entity.Property(x=> x.CheckAccountId).IsRequired();
-
             entity.Property(x=> x.DeliverTo).IsRequired(false);
 
             //Configuration for one to many relationship for OrderFiles table
