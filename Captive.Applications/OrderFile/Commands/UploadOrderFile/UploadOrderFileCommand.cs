@@ -5,6 +5,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 {
     public class UploadOrderFileCommand:IRequest<Unit>
     {
+        public required int BankId { get; set; }
         public required IEnumerable<IFormFile> Files { get; set; }
     }
 }

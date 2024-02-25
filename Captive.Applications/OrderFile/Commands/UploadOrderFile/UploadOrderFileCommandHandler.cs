@@ -27,21 +27,33 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             _printerFileReport = printerFileReport;
         }
 
+        private async Task ApplyCheckInventory(CheckOrders checkOrder, CancellationToken cancellationToken)
+        {
+           for(int i = 0; i < checkOrder.OrderQuanity; i++)
+            {
+                var checkInventory = await _readUow.CheckInventory.GetAll()
+                .Where(x => x.FormCheckId == checkOrder.FormCheckId)
+                .FirstAsync(x => !x.CheckOrderId.HasValue, cancellationToken);
+
+                checkInventory.CheckOrderId = checkOrder.Id;
+
+                _writeUow.CheckInventory.Update(checkInventory);
+
+                await _writeUow.Complete();
+
+            }
+        }
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
         {
-            /*
-             * TODO ON THIS FUNCTION:
-             * --[] FILE PROCESSING
-             * |_ [] - Support excel file interpretation
-             * --[X] APPLY CHECK ORDERS INTO CHECK INVENTORY
-             * --[] GENERATE REPORTS
-             * |_ [X] CREATE CONFIGURATION FOR FILE PATHING
-             * |_ [X] CREATE PRINTER FILE
-             * |- [] CREATE SUMMARY REPORT FILE
-             */
 
+            var bankInfo = await GetBankInfo(request.BankId);
 
-            var orders = await CreateOrderFileAsync(request.Files, cancellationToken);
+            if (bankInfo == null)
+                throw new Exception($"Bank Id {request.BankId} doesn't exist");
+
+            var batchFile = await CreateBatchFile(bankInfo, cancellationToken);
+
+            var orders = await CreateOrderFileAsync(request.Files, batchFile, cancellationToken);
 
             foreach(var order in orders) 
             {
@@ -50,7 +62,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
                 //Get configuration
                 var configuration = await GetOrderFileConfigurationAsync(orderFile, cancellationToken);
-
+                
                 if(configuration == null)
                 {
                     await WriteOrderFileLog(orderFile, $"Order file {orderFile.FileName} configuration doesn't exist", LogType.Error, cancellationToken);
@@ -60,25 +72,21 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                     continue;
                 }
 
-                /*
-                 * TODO ON THIS LINE:
-                 * [] - Support excel file interpretation
-                 */
+                var formChecks = await GetFormCheck(configuration, cancellationToken);
+
                 //Process file
                 var orderFileDatas = _fileProcessor.OnProcessFile(file, configuration.ConfigurationData);
 
-                if (!await ValidateOrderFileData(orderFile, orderFileDatas, configuration.Bank, configuration, cancellationToken))
+                if (!await ValidateOrderFileData(orderFile, orderFileDatas, configuration.Bank, configuration,formChecks, cancellationToken))
                 {
                     await SetOrderFileStatus(orderFile, OrderFilesStatus.Error, cancellationToken);
 
                     continue;
                 }
 
-                var formChecks = _readUow.FormChecks.GetAll().AsNoTracking().Where(x => x.Bank == configuration.Bank);
-
                 foreach (OrderFileData orderFileData in orderFileDatas)
                 {
-                    var formCheck = GetFormCheck(orderFileData, configuration, cancellationToken);
+                    var formCheck = formChecks.First(x => x.FormType == orderFileData.FormType && x.CheckType == orderFileData.CheckType);
 
                     var checkOrder = new CheckOrders
                     {
@@ -95,12 +103,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
                     await ApplyCheckInventory(checkOrder, cancellationToken);
                 }
-                /*
-                 * TODO ON THIS LINE: 
-                 * [X] - Apply check orders into check inventory
-                 * [] - Create printer file report
-                 * [] - Create a summary file report
-                 */
+
                 await _printerFileReport.GenerateReport(orderFile, configuration.Bank, cancellationToken);
 
                 await SetOrderFileStatus(orderFile, OrderFilesStatus.Completed, cancellationToken);
@@ -108,7 +111,25 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             return Unit.Value;
         }
-        private async Task<IEnumerable<Tuple<Data.Models.OrderFile, byte[]>>> CreateOrderFileAsync(IEnumerable<IFormFile> rawFiles, CancellationToken cancellationToken)
+        private async Task<BankInfo?>GetBankInfo(int bankId)
+        {
+            return await _readUow.Banks.GetAll()
+                .Include(x => x.BankBranches)
+                .AsNoTracking().FirstOrDefaultAsync(x => x.Id == bankId);
+        }
+        private async Task<ICollection<FormChecks>> GetFormCheck(OrderFileConfiguration orderFileConfiguration, CancellationToken cancellationToken)
+        {
+            var productConfigurations = _readUow.ProductConfigurations.GetAll().Where(x => x.OrderFileConfigurationId == orderFileConfiguration.Id);
+
+            var productTypes = _readUow.ProductTypes.GetAll().Where(x => x.BankInfoId == orderFileConfiguration.BankId && productConfigurations.Any(z => z.ProductTypeId == x.Id));
+
+            var formChecks = await _readUow.FormChecks.GetAll()
+                .Include(x => x.ProductType)
+                .Where(x => productTypes.Any(z => z.Id == x.ProductTypeId)).ToListAsync();
+
+            return formChecks;
+        }
+        private async Task<IEnumerable<Tuple<Data.Models.OrderFile, byte[]>>> CreateOrderFileAsync(IEnumerable<IFormFile> rawFiles, BatchFile batchFile, CancellationToken cancellationToken)
         {
             var orderFiles = new List<Tuple<Data.Models.OrderFile, byte[]>>();
 
@@ -116,6 +137,8 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             {
                 var newOrderFile = new Data.Models.OrderFile
                 {
+                    BatchFile = batchFile,
+                    BatchFileId = batchFile.Id,
                     FileName = file.FileName,
                     ProcessDate = DateTime.UtcNow,
                     Status = OrderFilesStatus.Pending
@@ -170,7 +193,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             await _writeUow.Complete(cancellationToken);
         }
-        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, OrderFileConfiguration configuration, CancellationToken cancellationToken)
+        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, OrderFileConfiguration configuration, ICollection<FormChecks> formChecks, CancellationToken cancellationToken)
         {
             if(orderFileDatas == null || !orderFileDatas.Any()) 
             {
@@ -186,7 +209,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             for(int i =0; i< summaryFormCheck.Count(); i++)
             {
-                var formCheck = await GetFormCheck(summaryFormCheck[i].Key.FormType, summaryFormCheck[i].Key.CheckType, configuration, cancellationToken);
+                var formCheck = formChecks.FirstOrDefault(x=> x.FormType == summaryFormCheck[i].Key.FormType && x.CheckType == summaryFormCheck[i].Key.CheckType);
 
                 if (formCheck == null)
                 {
@@ -259,7 +282,6 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             await _writeUow.Complete();
         }  
-        
         private async Task<CheckOrders> InsertCheckOrder(CheckOrders checkOrder, CancellationToken cancellationToken) { 
         
             await _writeUow.CheckOrders.AddAsync(checkOrder,cancellationToken);
@@ -267,63 +289,20 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             return checkOrder;
         }
-        private async Task ApplyCheckInventory(CheckOrders checkOrder, CancellationToken cancellationToken)
+        private async Task<BatchFile> CreateBatchFile(BankInfo bankInfo, CancellationToken cancellationToken)
         {
-           for(int i = 0; i < checkOrder.OrderQuanity; i++)
+            var batchFile = new BatchFile
             {
-                var checkInventory = await _readUow.CheckInventory.GetAll()
-                .Where(x => x.FormCheckId == checkOrder.FormCheckId)
-                .FirstAsync(x => !x.CheckOrderId.HasValue, cancellationToken);
+                BankInfoId = bankInfo.Id,
+                BatchFileStatus = BatchFileStatus.Pending,
+                UploadDate = DateTime.UtcNow
+            };
 
-                checkInventory.CheckOrderId = checkOrder.Id;
+            await _writeUow.BatchFiles.AddAsync(batchFile,cancellationToken);
 
-                _writeUow.CheckInventory.Update(checkInventory);
+            await _writeUow.Complete(cancellationToken);
 
-                await _writeUow.Complete();
-
-            }
-        }
-
-        private async Task<FormChecks?>GetFormCheck(OrderFileData orderFileData, OrderFileConfiguration orderFileConfiguration, CancellationToken cancellationToken)
-        {
-            var productConfiguration = await _readUow.ProductConfigurations
-                .GetAll()
-                .Where(x => x.OrderFileConfigurationId == orderFileConfiguration.Id)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (productConfiguration == null)
-                return null;
-
-
-            if(productConfiguration.ProductType.FormChecks == null || !productConfiguration.ProductType.FormChecks.Any())
-                return null;
-
-            var formCheck = productConfiguration.ProductType.FormChecks
-                .Where(x=>x.FormType == orderFileData.FormType && x.CheckType == orderFileData.CheckType)
-                .FirstOrDefault();
-
-            return formCheck;
-        }
-
-        private async Task<FormChecks?> GetFormCheck(string FormType, string CheckType, OrderFileConfiguration orderFileConfiguration, CancellationToken cancellationToken)
-        {
-            var productConfiguration = await _readUow.ProductConfigurations
-                .GetAll()
-                .Where(x => x.OrderFileConfigurationId == orderFileConfiguration.Id)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (productConfiguration == null)
-                return null;
-
-
-            if (productConfiguration.ProductType.FormChecks == null || !productConfiguration.ProductType.FormChecks.Any())
-                return null;
-
-            var formCheck = productConfiguration.ProductType.FormChecks
-                .Where(x => x.FormType == FormType && x.CheckType == CheckType)
-                .FirstOrDefault();
-
-            return formCheck;
+            return batchFile;
         }
     }
 }

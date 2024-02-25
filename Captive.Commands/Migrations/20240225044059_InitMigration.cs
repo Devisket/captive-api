@@ -173,8 +173,7 @@ namespace Captive.Commands.Migrations
                     Description = table.Column<string>(type: "longtext", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     BankId = table.Column<int>(type: "int", nullable: false),
-                    ProductTypeId = table.Column<int>(type: "int", nullable: false),
-                    OrderFileConfigurationId = table.Column<int>(type: "int", nullable: true)
+                    ProductTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,11 +184,6 @@ namespace Captive.Commands.Migrations
                         principalTable: "banks_info",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_form_checks_order_file_configuration_OrderFileConfigurationId",
-                        column: x => x.OrderFileConfigurationId,
-                        principalTable: "order_file_configuration",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_form_checks_product_type_ProductTypeId",
                         column: x => x.ProductTypeId,
@@ -343,11 +337,6 @@ namespace Captive.Commands.Migrations
                 name: "IX_form_checks_FormType_CheckType",
                 table: "form_checks",
                 columns: new[] { "FormType", "CheckType" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_form_checks_OrderFileConfigurationId",
-                table: "form_checks",
-                column: "OrderFileConfigurationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_form_checks_ProductTypeId",

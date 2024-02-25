@@ -15,12 +15,13 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult>UploadOrderFile([FromForm]IEnumerable<IFormFile> files) 
+        public async Task<IActionResult>UploadOrderFile( [FromForm]int bankId, [FromForm]IEnumerable<IFormFile> files) 
         {
             if (files.Any())
             {
                 await _mediator.Send(new UploadOrderFileCommand()
                 {
+                    BankId = bankId,
                     Files = files
                 }).ConfigureAwait(false);
             }

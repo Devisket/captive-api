@@ -10,8 +10,6 @@ namespace Captive.Data.Models
         public required ConfigurationType ConfigurationType { get; set; }
         public int BankId { get; set; }
         public BankInfo Bank { get; set; }
-
-        public ICollection<FormChecks>? FormChecks { get; set; }
         public ICollection<ProductConfiguration>? ProductConfigurations { get; set; } 
     }
 }

@@ -190,9 +190,6 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int?>("OrderFileConfigurationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductTypeId")
                         .HasColumnType("int");
 
@@ -202,8 +199,6 @@ namespace Captive.Commands.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BankId");
-
-                    b.HasIndex("OrderFileConfigurationId");
 
                     b.HasIndex("ProductTypeId");
 
@@ -417,10 +412,6 @@ namespace Captive.Commands.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Captive.Data.Models.OrderFileConfiguration", null)
-                        .WithMany("FormChecks")
-                        .HasForeignKey("OrderFileConfigurationId");
-
                     b.HasOne("Captive.Data.Models.ProductType", "ProductType")
                         .WithMany("FormChecks")
                         .HasForeignKey("ProductTypeId")
@@ -529,8 +520,6 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.OrderFileConfiguration", b =>
                 {
-                    b.Navigation("FormChecks");
-
                     b.Navigation("ProductConfigurations");
                 });
 

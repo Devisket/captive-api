@@ -9,7 +9,7 @@ namespace Captive.Data.Models
 {
     public  class BatchFile
     {
-        public required int Id { get; set; } 
+        public int Id { get; set; } 
         public DateTime UploadDate { get; set; }   
 
         public BatchFileStatus BatchFileStatus { get; set; }
