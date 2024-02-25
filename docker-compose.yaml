@@ -14,8 +14,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  captive_api:
-    image: captive/api
+  captive_api_command:
+    image: captive/api_command
     restart: always
     environment:
       ConnectionStrings__DefaultConnection: "Server=captive_db;Database=captive_db;Uid=root;Pwd=Password1;"
@@ -26,6 +26,22 @@ services:
       dockerfile: ./Captive.Commands/Dockerfile
     ports:
       - '8080:8080'
+    depends_on:
+      captive_db:
+        condition: service_completed_successfully
+
+  captive_api_query:
+    image: captive/api_query
+    restart: always
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=captive_db;Database=captive_db;Uid=root;Pwd=Password1;"
+    networks:
+      - captive_network
+    build:
+      context: .
+      dockerfile: ./Captive.Query/Dockerfile
+    ports:
+      - '8081:8081'
     depends_on:
       captive_db:
         condition: service_completed_successfully
