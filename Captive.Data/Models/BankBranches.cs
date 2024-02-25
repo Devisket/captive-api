@@ -8,13 +8,18 @@ namespace Captive.Data.Models
         public int Id { get; set; }
 
         public int BankId { get; set; }
-        public BankInfo BankInfo { get; set; }
+        public required BankInfo BankInfo { get; set; }
 
         [Required]
-        public string BranchName {  get; set; }
-        public string? BranchAddress { get; set; }
+        public required string BranchName {  get; set; }
+
+        public string? BranchAddress1 { get; set; }
+        public string? BranchAddress2 { get; set; }
+        public string? BranchAddress3 { get; set; }
+        public string? BranchAddress4 { get; set; }
+        public string? BranchAddress5 { get; set; }
 
         [Required]
-        public string BRSTNCode {  get; set; }
+        public required string BRSTNCode {  get; set; }
     }
 }

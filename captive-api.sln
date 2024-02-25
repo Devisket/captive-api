@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Captive.Applications", "Cap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Captive.Reports", "Captive.Reports\Captive.Reports.csproj", "{9984AD80-F371-4BFE-843F-3903866CB775}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Captive.Queries", "Captive.Query\Captive.Queries.csproj", "{C28794FF-4F37-4D78-BD36-B714A2B34182}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{9984AD80-F371-4BFE-843F-3903866CB775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9984AD80-F371-4BFE-843F-3903866CB775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9984AD80-F371-4BFE-843F-3903866CB775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C28794FF-4F37-4D78-BD36-B714A2B34182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C28794FF-4F37-4D78-BD36-B714A2B34182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C28794FF-4F37-4D78-BD36-B714A2B34182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C28794FF-4F37-4D78-BD36-B714A2B34182}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{04EE9B22-28D4-44BE-B471-64890C3907E6} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 		{36B9C965-C010-40D1-8920-8F350F61D0C2} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 		{693190CC-A40B-45C8-8354-D806D11E8D50} = {181839A3-D01B-456F-8BCD-B0E4ED1A4EEA}
+		{C28794FF-4F37-4D78-BD36-B714A2B34182} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A874DCB-688E-4709-8411-D9750ED55900}

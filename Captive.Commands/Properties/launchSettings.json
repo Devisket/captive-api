@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "https": {
+    "Captive.Commands": {
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {

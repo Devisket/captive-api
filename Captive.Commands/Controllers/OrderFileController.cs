@@ -1,4 +1,4 @@
-﻿using Captive.Applications.OrderFiles.Commands.UploadOrderFile;
+﻿using Captive.Applications.OrderFile.Commands.UploadOrderFile;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,26 +15,21 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult>UploadOrderFile([FromForm]IFormFile file, [FromForm]string fileName) 
+        public async Task<IActionResult>UploadOrderFile([FromForm]IEnumerable<IFormFile> files) 
         {
-            if (file.Length < 0)
-                return BadRequest();
-
-            using(var fileStream = file.OpenReadStream())
+            if (files.Any())
             {
-                byte[] fileBytes = new byte[file.Length];
-                fileStream.Read(fileBytes, 0, fileBytes.Length);
-
-                await _mediator.Send( new UploadOrderFileCommand() 
-                    { 
-                        OrderFile = fileBytes,
-                        FileName = fileName
-                    });
-
-                return Ok();
+                await _mediator.Send(new UploadOrderFileCommand()
+                {
+                    Files = files
+                }).ConfigureAwait(false);
             }
-        }
+            else
+            {
+                return BadRequest("Files is empty");
+            }
 
-        
+            return Ok();
+        }
     }
 }

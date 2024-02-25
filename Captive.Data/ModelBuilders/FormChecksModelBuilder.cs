@@ -1,10 +1,5 @@
 ﻿using Captive.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Captive.Data.ModelBuilders
 {
@@ -31,6 +26,10 @@ namespace Captive.Data.ModelBuilders
             entity.HasOne(x => x.Bank)
                 .WithMany(x => x.FormChecks)
                 .HasForeignKey(x => x.BankId);
+
+            entity.HasOne(x => x.ProductType) 
+                .WithMany(x => x.FormChecks) 
+                .HasForeignKey(x => x.ProductTypeId);
             
             entity.ToTable("form_checks");
 

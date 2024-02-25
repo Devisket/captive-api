@@ -37,6 +37,9 @@
               },
               "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
                 "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
+              },
+              "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj"
               }
             }
           }
@@ -59,6 +62,10 @@
             "MediatR": {
               "target": "Package",
               "version": "[12.2.0, )"
+            },
+            "Microsoft.AspNetCore.Http.Features": {
+              "target": "Package",
+              "version": "[5.0.17, )"
             }
           },
           "imports": [
@@ -114,6 +121,9 @@
               },
               "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
                 "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
+              },
+              "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj"
               }
             }
           }
@@ -139,13 +149,13 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
@@ -230,13 +240,13 @@
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "MySql.EntityFrameworkCore": {
               "target": "Package",
@@ -310,7 +320,7 @@
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
@@ -325,6 +335,77 @@
               "version": "[13.0.3, )"
             }
           },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj",
+        "projectName": "Captive.Reports",
+        "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj",
+        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Reports\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
+              },
+              "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repository\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
           "imports": [
             "net461",
             "net462",

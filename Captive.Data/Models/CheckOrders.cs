@@ -12,15 +12,20 @@ namespace Captive.Data.Models
 
         [Required]
         public int OrderFileId { get; set; }
-        public OrderFiles OrderFile { get; set; }
+        public OrderFile OrderFile { get; set; }
+
 
         [Required]
-        public string BRSTN { get; set; }
+        public int FormCheckId { get; set; }
+        public FormChecks FormChecks { get; set; }
 
+        [Required]
+        public required string BRSTN { get; set; }
 
+        [Required]
+        public required string AccountName { get; set; }
+
+        public required int OrderQuanity { get; set; }
         public string? DeliverTo { get; set; }
-
-        public int? CheckAccountId { get; set; }
-        public CheckAccounts CheckAccount { get; set; }
     }
 }

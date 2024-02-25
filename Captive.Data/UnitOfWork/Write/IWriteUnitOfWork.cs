@@ -5,12 +5,18 @@ namespace Captive.Data.UnitOfWork.Write
 {
     public interface IWriteUnitOfWork:IDisposable
     {
-        public IWriteRepository<OrderFileConfiguration> OrderFileConfiguration { get; }
-        public IWriteRepository<OrderFiles> OrderFiles { get; }
+        public IWriteRepository<BankInfo> BankInfo { get; }
+        public IWriteRepository<CheckInventory> CheckInventory { get; }
         public IWriteRepository<CheckOrders> CheckOrders { get; }
         public IWriteRepository<FormChecks> FormChecks { get; }
-        public IWriteRepository<CheckInventory> CheckInventory{ get; }
+        public IWriteRepository<OrderFileConfiguration> OrderFileConfiguration { get; }
+        public IWriteRepository<OrderFileLog> OrderFileLogs { get; }
+        public IWriteRepository<OrderFile> OrderFiles { get; }
 
-        Task Complete();
+        public IWriteRepository<BatchFile> BatchFiles { get; }
+        public IWriteRepository<ProductType> ProductTypes { get; }
+        public IWriteRepository<ProductConfiguration> ProductConfigurations { get; }
+
+        Task Complete(CancellationToken cancellationToken = default);
     }
 }

@@ -10,9 +10,9 @@ namespace Captive.Data.Repository.Write
             _context = context;
         }
 
-        public async Task Add(T entity)
+        public async Task AddAsync(T entity, CancellationToken cancellationToken)
         {
-            await _context.Set<T>().AddAsync(entity);
+            await _context.Set<T>().AddAsync(entity, cancellationToken);
         }
 
         public void Delete(T entity)

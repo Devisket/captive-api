@@ -7,14 +7,18 @@ namespace Captive.Data.ModelBuilders
     {
         public static void BuildOrderFilesModel(this ModelBuilder modelBuilder)
         {
-            var entity = modelBuilder.Entity<OrderFiles>();
+            var entity = modelBuilder.Entity<OrderFile>();
             
-            entity.Property(x=> x.BatchName)
+            entity.Property(x=> x.FileName)
                 .IsRequired();
 
-            entity.HasIndex(x=> x.BatchName);
+            entity.HasIndex(x=> x.FileName);
 
-            entity.Property(x => x.ProcessDate) .IsRequired();
+            entity.Property(x => x.Status)
+                .HasConversion<string>(); 
+
+            entity.Property(x => x.ProcessDate)
+                .IsRequired();
 
             entity.ToTable("order_files");
         }

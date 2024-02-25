@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,9 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.Development.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="12.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -24,21 +28,18 @@
   <ItemGroup>
     <ProjectReference Include="..\Captive.Applications\Captive.Applications.csproj" />
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
+    <ProjectReference Include="..\Captive.Reports\Captive.Reports.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Post-Migration\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Post-Migration\InitData.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
   
   <ItemGroup>
+    <None Include="appsettings.Development.json">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
     <None Include="appsettings.json" CopyToPublishDirectory="Always" />
-    <None Include="Post-Migration\InitData.sql" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
 </Project>

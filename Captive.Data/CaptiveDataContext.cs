@@ -11,17 +11,18 @@ namespace Captive.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.BuildAccountAddressModel();
-            modelBuilder.BuildAccountInfoModel();
             modelBuilder.BuildBankBranchModel();
             modelBuilder.BuildBankInfoModel();
             modelBuilder.BuildOrderFilesModel();
-            modelBuilder.BuildCheckAccountsModel();
             modelBuilder.BuildCheckOrdersModel();
             modelBuilder.BuildFileConfiguration();
             modelBuilder.BuildFormChecksTable();
             modelBuilder.OnBuildSeedTable();
             modelBuilder.BuildCheckInventoryTable();
+            modelBuilder.BuildOrderFileLogModel();
+            modelBuilder.BuildBatchFileModel();
+            modelBuilder.BuildProductConfigurationModel();
+            modelBuilder.BuildProductTypeModel();
 
             base.OnModelCreating(modelBuilder);
         }

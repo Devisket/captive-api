@@ -1,4 +1,4 @@
-FROM mysql
+FROM mysql:latest
 WORKDIR /usr/src/app
 
 COPY ./scripts/database /docker-entrypoint-initdb.d

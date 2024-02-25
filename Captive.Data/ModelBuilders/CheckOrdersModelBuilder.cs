@@ -17,17 +17,18 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x=> x.DeliverTo).IsRequired(false);
 
-            //Configuration for one to many relationship for OrderFiles table
+            entity.Property(x => x.AccountName).IsRequired();
+                        
             entity.HasOne(x => x.OrderFile)
                 .WithMany(x => x.CheckOrders)
                 .HasForeignKey(x => x.OrderFileId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //Configuration for one to one relationship for CheckAccounts table
-            entity.HasOne(x => x.CheckAccount)
+            entity.HasOne(x => x.FormChecks)
                 .WithMany(x => x.CheckOrders)
-                .HasForeignKey(x => x.CheckAccountId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(x => x.FormCheckId);
+
+            entity.Property(x => x.OrderQuanity).IsRequired();
 
             entity.ToTable("check_orders");
         }

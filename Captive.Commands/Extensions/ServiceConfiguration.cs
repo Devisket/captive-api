@@ -2,6 +2,7 @@
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Processing.Processor;
+using Captive.Reports;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -11,11 +12,11 @@ namespace Captive.Commands.Extensions
     {
         public static void ConfigureExtensionServices(this IServiceCollection services, IConfiguration config)
         {
-            var connString = config.GetConnectionString("TestConfiguration");
+            var connString = config.GetConnectionString("DefaultConnection");
 
             if (connString == null)
             {
-                throw new ArgumentNullException("Connection string");
+                throw new ArgumentNullException("DefaultConnection");
             }
 
             services
@@ -25,6 +26,7 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IFileProcessor, FileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
             services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
+            services.AddScoped<IPrinterFileReport, PrinterFileReport>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

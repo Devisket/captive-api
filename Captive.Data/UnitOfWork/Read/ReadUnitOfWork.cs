@@ -1,10 +1,6 @@
 ﻿using Captive.Data.Models;
 using Captive.Data.Repository.Read;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Captive.Data.UnitOfWork.Read
 {
@@ -17,18 +13,17 @@ namespace Captive.Data.UnitOfWork.Read
             _dbContext = dbContext;
         }
 
-        IReadRepository<OrderFileConfiguration> IReadUnitOfWork.OrderFileConfigurations => GetStandardRepository<OrderFileConfiguration>();
-
-        IReadRepository<OrderFiles> IReadUnitOfWork.OrderFiles => GetStandardRepository<OrderFiles>();
-
         IReadRepository<BankInfo> IReadUnitOfWork.Banks => GetStandardRepository<BankInfo>();
-
         IReadRepository<BankBranches> IReadUnitOfWork.BankBranches => GetStandardRepository<BankBranches>();
-
         IReadRepository<CheckOrders> IReadUnitOfWork.CheckOrders => GetStandardRepository<CheckOrders>();
-
-        IReadRepository<FormChecks> IReadUnitOfWork.FormChecks => GetStandardRepository<FormChecks>();
         IReadRepository<CheckInventory> IReadUnitOfWork.CheckInventory=> GetStandardRepository<CheckInventory>();
+        IReadRepository<FormChecks> IReadUnitOfWork.FormChecks => GetStandardRepository<FormChecks>();
+        IReadRepository<OrderFileConfiguration> IReadUnitOfWork.OrderFileConfigurations => GetStandardRepository<OrderFileConfiguration>();
+        IReadRepository<OrderFile> IReadUnitOfWork.OrderFiles => GetStandardRepository<OrderFile>();
+        IReadRepository<OrderFileLog> IReadUnitOfWork.OrderFileLogs => GetStandardRepository<OrderFileLog>();
+        IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();
+        IReadRepository<ProductType> IReadUnitOfWork.ProductTypes => GetStandardRepository<ProductType>();
+        IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
 
         public IReadRepository<T> GetStandardRepository<T>() where T : class => new ReadRepository<T>(_dbContext);
 

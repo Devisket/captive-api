@@ -33,3 +33,8 @@ app.MapControllers();
 app.UseCors(x=> x.AllowAnyOrigin());
 
 app.Run();
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    
+});

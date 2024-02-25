@@ -1,0 +1,6 @@
+@Captive.Query_HostAddress = http://localhost:5117
+
+GET {{Captive.Query_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

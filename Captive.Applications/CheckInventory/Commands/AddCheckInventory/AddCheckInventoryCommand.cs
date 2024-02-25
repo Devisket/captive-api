@@ -6,5 +6,6 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
     {
         public int FormCheckId { get; set; }
         public int Quantity { get; set; }
+        public bool WithSeries { get; set; } = true;
     }
 }

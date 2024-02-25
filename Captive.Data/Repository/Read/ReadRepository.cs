@@ -17,6 +17,6 @@ namespace Captive.Data.Repository.Read
 
         public IQueryable<T> GetAll() => _dbContext.Set<T>().AsNoTracking();
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbContext.Set<T>().AsNoTracking().ToListAsync();
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default) => await _dbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
     }
 }
