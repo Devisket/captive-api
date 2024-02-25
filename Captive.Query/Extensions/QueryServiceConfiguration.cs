@@ -2,6 +2,7 @@
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Processing.Processor;
+using Captive.Reports;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -25,6 +26,7 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IFileProcessor, FileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
             services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
+            services.AddScoped<IPrinterFileReport, PrinterFileReport>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

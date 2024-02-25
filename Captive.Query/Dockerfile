@@ -3,8 +3,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
-EXPOSE 8081
-EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Development
@@ -13,6 +11,7 @@ COPY ["Captive.Query/Captive.Queries.csproj", "Captive.Query/"]
 COPY ["Captive.Applications/Captive.Applications.csproj", "Captive.Applications/"]
 COPY ["Captive.Data/Captive.Data.csproj", "Captive.Data/"]
 COPY ["Captive.Processing/Captive.Processing.csproj", "Captive.Processing/"]
+COPY ["Captive.Reports/Captive.Reports.csproj", "Captive.Reports/"]
 RUN dotnet restore "./Captive.Query/Captive.Queries.csproj"
 COPY . .
 WORKDIR "/src/Captive.Query"
