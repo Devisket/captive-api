@@ -253,11 +253,18 @@ namespace Captive.Commands.Migrations
                     EndSeries = table.Column<string>(type: "longtext", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     CheckOrderId = table.Column<int>(type: "int", nullable: true),
-                    FormCheckId = table.Column<int>(type: "int", nullable: false)
+                    FormCheckId = table.Column<int>(type: "int", nullable: false),
+                    BranchId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_check_inventory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_check_inventory_bank_branchs_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "bank_branchs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_check_inventory_form_checks_FormCheckId",
                         column: x => x.FormCheckId,
@@ -312,6 +319,11 @@ namespace Captive.Commands.Migrations
                 name: "IX_batch_files_BankInfoId",
                 table: "batch_files",
                 column: "BankInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_check_inventory_BranchId",
+                table: "check_inventory",
+                column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_check_inventory_FormCheckId",
@@ -388,9 +400,6 @@ namespace Captive.Commands.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "bank_branchs");
-
-            migrationBuilder.DropTable(
                 name: "check_inventory");
 
             migrationBuilder.DropTable(
@@ -404,6 +413,9 @@ namespace Captive.Commands.Migrations
 
             migrationBuilder.DropTable(
                 name: "seed");
+
+            migrationBuilder.DropTable(
+                name: "bank_branchs");
 
             migrationBuilder.DropTable(
                 name: "form_checks");

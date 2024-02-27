@@ -21,35 +21,39 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
         public async Task<Unit> Handle(AddCheckInventoryCommand request, CancellationToken cancellationToken)
         {
 
-            var formCheck = _readUow.FormChecks.GetAll().Where(x => x.Id == request.FormCheckId).FirstOrDefault();
+            var formCheck = _readUow.FormChecks.GetAll().AsNoTracking().Where(x => x.Id == request.FormCheckId).FirstOrDefault();
 
             if (formCheck == null)
             {
                 throw new Exception("Form check doesn't exist");
             }
 
+            var branch = _readUow.BankBranches.GetAll().AsNoTracking().FirstOrDefault(x => x.Id == request.BranchId);
+
+            if (branch == null)
+            {
+                throw new Exception("Branch doesn't exist");
+            }
+
             if (request.WithSeries)
-                await AddCheckInventoryWithSeries(formCheck, request.Quantity, cancellationToken);
+                await AddCheckInventoryWithSeries(formCheck, request.Quantity, branch, cancellationToken);
             else
-                await AddNoCheckInventoryWithNoSeries(formCheck, request.Quantity, cancellationToken);
+                await AddNoCheckInventoryWithNoSeries(formCheck, request.Quantity, branch, cancellationToken);
 
             return Unit.Value;
         }
 
-        private async Task AddCheckInventoryWithSeries(FormChecks formCheck, int checkQuantity, CancellationToken cancellationToken)
+        private async Task AddCheckInventoryWithSeries(FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
         {
             var nextSeries = 0;
 
             var existingCheckInventory = _readUow.CheckInventory.GetAll()
                 .AsNoTracking()
-                .Any(x => x.FormChecks == formCheck);
+                .Where(x => x.FormChecks == formCheck && x.BankBranch == branch);
 
-            if (existingCheckInventory)
+            if (existingCheckInventory.Any())
             {
-                var endingCheck = _readUow.CheckInventory.GetAll()
-                    .AsNoTracking()
-                    .Where(x => x.FormChecks == formCheck)
-                    .OrderBy(x => x.Id).LastOrDefault();
+                var endingCheck = existingCheckInventory.OrderBy(x => x.Id).LastOrDefault();
 
                 if (endingCheck != null)
                 {
@@ -73,7 +77,8 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
                     StarSeries = String.Format("{0:D8}", nextSeries),
                     EndSeries = String.Format("{0:D8}", endingSeries),
                     FormCheckId = formCheck.Id,
-                    Quantity = formCheck.Quantity
+                    Quantity = formCheck.Quantity,
+                    BranchId = branch.Id,
                 };
 
                 await InsertCheckInventory(checkInventory, cancellationToken);
@@ -83,12 +88,13 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
             await _writeUow.Complete();
         }
 
-        private async Task AddNoCheckInventoryWithNoSeries(FormChecks formCheck, int checkQuantity, CancellationToken cancellationToken)
+        private async Task AddNoCheckInventoryWithNoSeries(FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
         {
             for (var i = 0; i < checkQuantity; i++)
             {
                 var checkInventory = new Data.Models.CheckInventory
                 {
+                    BranchId = branch.Id,
                     FormCheckId = formCheck.Id,
                     Quantity = formCheck.Quantity
                 };

@@ -19,8 +19,11 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.Quantity).IsRequired();
 
-            entity.ToTable("check_inventory");
+            entity.HasOne(x => x.BankBranch)
+                .WithMany(x => x.CheckInventory)
+                .HasForeignKey(x => x.BranchId);
 
+            entity.ToTable("check_inventory");
         }
     }
 }

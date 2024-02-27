@@ -21,5 +21,7 @@ namespace Captive.Data.Models
 
         [Required]
         public required string BRSTNCode {  get; set; }
+
+        public ICollection<CheckInventory>? CheckInventory { get; set; }
     }
 }

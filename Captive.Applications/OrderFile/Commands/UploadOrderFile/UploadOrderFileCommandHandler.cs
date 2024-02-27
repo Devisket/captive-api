@@ -77,7 +77,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                 //Process file
                 var orderFileDatas = _fileProcessor.OnProcessFile(file, configuration.ConfigurationData);
 
-                if (!await ValidateOrderFileData(orderFile, orderFileDatas, configuration.Bank, configuration,formChecks, cancellationToken))
+                if (!await ValidateOrderFileData(orderFile, orderFileDatas, configuration.Bank,formChecks, cancellationToken))
                 {
                     await SetOrderFileStatus(orderFile, OrderFilesStatus.Error, cancellationToken);
 
@@ -193,53 +193,10 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             await _writeUow.Complete(cancellationToken);
         }
-        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, OrderFileConfiguration configuration, ICollection<FormChecks> formChecks, CancellationToken cancellationToken)
+        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, ICollection<FormChecks> formChecks, CancellationToken cancellationToken)
         {
-            if(orderFileDatas == null || !orderFileDatas.Any()) 
-            {
-                return false;
-            }
-
-            var summaryFormCheck = orderFileDatas.GroupBy(x => new { x.FormType, x.CheckType })
-                .Select(z => new
-                {
-                    z.Key,
-                    count = z.Sum(c=> c.Quantity)
-                }).ToList() ;
-
-            for(int i =0; i< summaryFormCheck.Count(); i++)
-            {
-                var formCheck = formChecks.FirstOrDefault(x=> x.FormType == summaryFormCheck[i].Key.FormType && x.CheckType == summaryFormCheck[i].Key.CheckType);
-
-                if (formCheck == null)
-                {
-                    await WriteOrderFileLog(
-                        orderFile, 
-                        $"Missing mapping for check-type:{summaryFormCheck[i].Key.CheckType}, form-type:{summaryFormCheck[i].Key.FormType} for file {orderFile.FileName}", 
-                        LogType.Error, 
-                        cancellationToken);
-
-                    return false;
-                }
-
-                var checkInventoryCount = await _readUow.CheckInventory.GetAll()
-                    .AsNoTracking()
-                    .Where(x=> x.FormCheckId == formCheck.Id)
-                    .CountAsync();
-
-                if (summaryFormCheck[i].count > checkInventoryCount)
-                {
-                    await WriteOrderFileLog(
-                        orderFile,
-                        $"Check inventory quantity is not enough for  {formCheck.ProductType.ProductName} - {formCheck.Description}",
-                        LogType.Error,
-                        cancellationToken);
-
-                    return false;
-                }
-            }
-
             var bankBranches = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankId == bankInfo.Id).ToListAsync(cancellationToken);
+
             var fileBRSTNs = orderFileDatas.Select(x => x.BRSTN).Distinct().ToList();
 
             if (!bankBranches.Any())
@@ -253,13 +210,75 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                 return false;
             }
 
-            foreach ( var brstn in fileBRSTNs)
+            foreach (var brstn in fileBRSTNs)
             {
-                if(!bankBranches.Any(x => x.BRSTNCode == brstn))
+                if (!bankBranches.Any(x => x.BRSTNCode == brstn))
                 {
                     await WriteOrderFileLog(
                         orderFile,
                         $"There is no BRSNT: {brstn} for bank: {bankInfo.BankName}",
+                        LogType.Error,
+                        cancellationToken);
+
+                    return false;
+                }
+            }
+
+            if (orderFileDatas == null || !orderFileDatas.Any()) 
+            {
+                return false;
+            }
+
+            var orderFileGroups = orderFileDatas.GroupBy(x => new { x.FormType, x.CheckType })
+                .Select(z => new
+                {
+                    z.Key,
+                    count = z.Sum(c=> c.Quantity)
+                }).ToList() ;
+
+            for(int i =0; i< orderFileGroups.Count(); i++)
+            {
+                var formCheck = formChecks
+                    .FirstOrDefault(x=> x.FormType == orderFileGroups[i].Key.FormType 
+                    && x.CheckType == orderFileGroups[i].Key.CheckType);
+
+                if (formCheck == null)
+                {
+                    await WriteOrderFileLog(
+                        orderFile, 
+                        $"Missing mapping for check-type:{orderFileGroups[i].Key.CheckType}, form-type:{orderFileGroups[i].Key.FormType} for file {orderFile.FileName}", 
+                        LogType.Error, 
+                        cancellationToken);
+
+                    return false;
+                }
+            }
+
+            var orderFileInvGroup = orderFileDatas.GroupBy(x => new { x.FormType, x.CheckType, x.BRSTN })
+                .Select(z => new
+                {
+                    z.Key,
+                    count = z.Sum(c => c.Quantity)
+                }).ToList();
+
+            foreach (var invGroup in orderFileInvGroup)
+            {
+                var formCheck = formChecks
+                    .FirstOrDefault(x => x.FormType == invGroup.Key.FormType
+                    && x.CheckType == invGroup.Key.CheckType);
+
+                var branch = bankBranches.FirstOrDefault(x => x.BRSTNCode == invGroup.Key.BRSTN);
+
+                var checkInventoryCount = await _readUow.CheckInventory.GetAll()
+                    .AsNoTracking()
+                    .Where(x => x.FormChecks == formCheck && x.BankBranch == branch)
+                    .CountAsync();
+
+                if (invGroup.count > checkInventoryCount)
+                {
+                    await WriteOrderFileLog(
+                        orderFile,
+                        $"Check inventory quantity is not enough for  {formCheck?.ProductType.ProductName} - {formCheck?.Description} for BRSTN: {invGroup.Key.BRSTN}",
                         LogType.Error,
                         cancellationToken);
 
