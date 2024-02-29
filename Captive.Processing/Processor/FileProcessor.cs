@@ -68,6 +68,7 @@ namespace Captive.Processing.Processor
                                                               : GetSubstringValue(stringArr[i], FileConfigurationConstants.DELIVER_TO) ?? null;
                     
                     var accountName = GetSubstringValue(stringArr[i], FileConfigurationConstants.ACCOUNT_NAME);
+                    var concode = string.Empty;
 
                     var quantity = int.Parse(GetSubstringValue(stringArr[i], FileConfigurationConstants.QUANTITY));
 
@@ -95,8 +96,10 @@ namespace Captive.Processing.Processor
                             var succeedingAccNo = GetSubstringValue(stringArr[j], FileConfigurationConstants.ACCOUNT_NUMBER);
                             var succeedingConcode = String.IsNullOrWhiteSpace(conCodeString) ? 0 : int.Parse(GetSubstringValue(stringArr[j], FileConfigurationConstants.CONCODE));
 
-                            if(succeedingAccNo != accNo || succeedingConcode == 0 ||
-                                (succeedingAccNo == accNo && concodeArr.Any(x => int.Parse(GetSubstringValue(x, FileConfigurationConstants.CONCODE)) == succeedingConcode)))
+                            if(succeedingAccNo != accNo || 
+                                succeedingConcode == 0 ||
+                                (succeedingAccNo == accNo && 
+                                concodeArr.Any(x => int.Parse(GetSubstringValue(x, FileConfigurationConstants.CONCODE)) == succeedingConcode)))
                             {
                                 break;
                             }
@@ -114,7 +117,10 @@ namespace Captive.Processing.Processor
 
                         concodeArr.ForEach((z) =>
                         {
-                            accountName = String.Join(" ", accountName, GetSubstringValue(z, FileConfigurationConstants.ACCOUNT_NAME));
+                            var concodeValue = GetSubstringValue(z, FileConfigurationConstants.ACCOUNT_NAME);
+
+                            concode = String.IsNullOrEmpty(concode) ? concodeValue : string.Join(";", concode, concodeValue);
+                            accountName = String.Join(" ", accountName, concodeValue);
                         });
 
                         i = (j-1);
@@ -125,6 +131,7 @@ namespace Captive.Processing.Processor
                         CheckType = GetSubstringValue(stringArr[i], FileConfigurationConstants.CHECK_TYPE),
                         BRSTN = GetSubstringValue(stringArr[i], FileConfigurationConstants.BRSTN),
                         AccountNumber = accNo,
+                        Concode = concode,
                         AccountName = accountName,
                         FormType = GetSubstringValue(stringArr[i], FileConfigurationConstants.FORM_TYPE),
                         Quantity = quantity,

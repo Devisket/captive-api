@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    [Migration("20240227164530_InitMigration")]
+    [Migration("20240228095054_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />
@@ -155,6 +155,9 @@ namespace Captive.Commands.Migrations
 
                     b.Property<string>("BRSTN")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Concode")
                         .HasColumnType("longtext");
 
                     b.Property<string>("DeliverTo")

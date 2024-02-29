@@ -18,6 +18,9 @@ namespace Captive.Data.ModelBuilders
                 .WithMany(x => x.BatchFiles)
                 .HasForeignKey(x => x.BankInfoId);
 
+            entity.Property(x => x.BatchName)
+                .IsRequired();
+
             entity.ToTable("batch_files");
         }
     }

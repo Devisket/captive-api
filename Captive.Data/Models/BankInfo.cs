@@ -15,6 +15,8 @@ namespace Captive.Data.Models
         [Required]
         public required DateTime CreatedDate { get; set; }
 
+        public required string ShortName { get; set; }
+
         public ICollection<BankBranches>? BankBranches { get; set; }
         public ICollection<FormChecks>? FormChecks { get; set; }
         public ICollection<OrderFileConfiguration>? OrderFileConfigurations { get; set;}

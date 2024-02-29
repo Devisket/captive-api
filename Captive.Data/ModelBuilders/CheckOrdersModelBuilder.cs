@@ -28,6 +28,9 @@ namespace Captive.Data.ModelBuilders
                 .WithMany(x => x.CheckOrders)
                 .HasForeignKey(x => x.FormCheckId);
 
+            entity.Property(x => x.Concode)
+                .IsRequired(false);
+
             entity.Property(x => x.OrderQuanity).IsRequired();
 
             entity.ToTable("check_orders");

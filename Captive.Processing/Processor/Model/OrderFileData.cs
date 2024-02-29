@@ -7,6 +7,7 @@ namespace Captive.Processing.Processor.Model
         public required string BRSTN { get; set; }
         public required string AccountNumber { get; set; }
         public required string AccountName { get; set; }
+        public string? Concode { get; set; }
         public required string FormType { get; set; }
         public required int Quantity { get; set; }
         public string? DeliverTo { get; set; }

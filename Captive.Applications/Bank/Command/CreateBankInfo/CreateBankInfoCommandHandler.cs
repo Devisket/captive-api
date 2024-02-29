@@ -36,6 +36,7 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
                 var bankInfo = new BankInfo()
                 {
                     BankName = request.BankName,
+                    ShortName = request.ShortName,
                     BankDescription = request.Description,
                     CreatedDate = DateTime.UtcNow
                 };

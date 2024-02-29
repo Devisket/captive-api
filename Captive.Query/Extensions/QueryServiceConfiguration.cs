@@ -2,7 +2,7 @@
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Processing.Processor;
-using Captive.Reports;
+using Captive.Reports.PrinterFileReport;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

@@ -1,9 +1,4 @@
 ﻿using Captive.Data.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Captive.Data.Models
 {
@@ -18,7 +13,9 @@ namespace Captive.Data.Models
 
         public int BankInfoId { get; set; }
         public BankInfo? BankInfo{ get; set; }
-        
 
+        public required string BatchName { get; set; }
+
+        public int OrderNumber { get; set; }
     }
 }

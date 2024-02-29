@@ -285,6 +285,7 @@ namespace Captive.Commands.Migrations
                     FormCheckId = table.Column<int>(type: "int", nullable: false),
                     BRSTN = table.Column<string>(type: "longtext", nullable: false),
                     AccountName = table.Column<string>(type: "longtext", nullable: false),
+                    Concode = table.Column<string>(type: "longtext", nullable: true),
                     OrderQuanity = table.Column<int>(type: "int", nullable: false),
                     DeliverTo = table.Column<string>(type: "longtext", nullable: true)
                 },

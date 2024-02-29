@@ -19,6 +19,8 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x=> x.CreatedDate).IsRequired();
 
+            entity.Property(x => x.ShortName).IsRequired();
+
             entity.Property(x => x.BankDescription).IsRequired(false);
 
             entity.ToTable("banks_info");

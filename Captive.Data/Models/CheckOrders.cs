@@ -25,6 +25,8 @@ namespace Captive.Data.Models
         [Required]
         public required string AccountName { get; set; }
 
+        public string? Concode { get; set; }
+
         public required int OrderQuanity { get; set; }
         public string? DeliverTo { get; set; }
     }

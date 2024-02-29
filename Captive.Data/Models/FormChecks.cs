@@ -18,6 +18,8 @@
         public int ProductTypeId { get; set; }
         public required ProductType ProductType { get; set; }
 
+        public required string FileInitial { get; set; }
+
         public ICollection<CheckInventory>? CheckInventory{ get; set; }
         public ICollection<CheckOrders>? CheckOrders { get; set; }
     }

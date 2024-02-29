@@ -19,6 +19,8 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.Quantity).IsRequired();
 
+            entity.Property(x => x.FileInitial).IsRequired();
+
             entity
                 .Property(x => x.Description)
                 .IsRequired(false);
