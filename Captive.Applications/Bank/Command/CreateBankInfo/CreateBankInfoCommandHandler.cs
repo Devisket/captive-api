@@ -30,6 +30,8 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
 
                 bankInfo.BankName = request.BankName;
                 bankInfo.BankDescription = request.Description;
+
+                _writeUow.BankInfo.Update(bankInfo);
             }
             else
             {
