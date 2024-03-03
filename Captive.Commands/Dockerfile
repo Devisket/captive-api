@@ -22,6 +22,12 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Captive.Commands.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+USER root
+RUN useradd -ms /bin/bash admin
 WORKDIR /app
+RUN chown -R admin:admin /app
+RUN chmod -R 777 /app
+RUN mkdir reports
+
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Captive.Commands.dll"]

@@ -24,15 +24,15 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
       ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
-      OutputDirectory: /app/Reports/Bank/Date,
-      ArchiveDirectory: /app/Reports/Archive
+      OutputDirectory: /app/reports/Bank/Date,
+      ArchiveDirectory: /app/reports/Archive
 
     networks:
       - captive_network
     volumes:
       - ~/https:/https
-      - C:/Captive/Reports/Bank/Date:/app/Reports/Bank/Date
-      - C:/Captive/Reports/Archive:/app/Reports/Archive
+      - C:/Captive/Reports/Bank/Date:/app/reports/Bank/Date
+      - C:/Captive/Reports/Archive:/app/reports/Archive
     build:
       context: .
       dockerfile: ./Captive.Commands/Dockerfile
