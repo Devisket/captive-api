@@ -22,6 +22,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<ProductConfiguration> ProductConfigurations => GetStandardRepository<ProductConfiguration>();
         public IWriteRepository<ProductType> ProductTypes => GetStandardRepository<ProductType>();
 
+        public IWriteRepository<BankBranches> BankBranches => GetStandardRepository<BankBranches>();
         public IWriteRepository<T> GetStandardRepository<T>() where T : class => new WriteRepository<T>(_dbContext);
 
         public async Task Complete(CancellationToken cancellationToken = default)

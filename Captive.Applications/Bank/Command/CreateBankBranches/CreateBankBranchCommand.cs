@@ -1,17 +1,19 @@
-﻿using Captive.Data.Models;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Captive.Applications.Bank.Query.GetBankBranches.Model
+namespace Captive.Applications.Bank.Command.CreateBankBranches
 {
-    public  class BankBranchDto
+    public class CreateBankBranchCommand:IRequest<Unit>
     {
-        public required int Id { get; set; }
-        public required string BRSTN { get; set; }
+        public int BankId { get; set; }
+        public int BranchId { get; set; }
         public required string BranchName { get; set; }
+        public required string BrstnCode { get; set; }
+
         public string? BranchAddress1 { get; set; }
         public string? BranchAddress2 { get; set; }
         public string? BranchAddress3 { get; set; }

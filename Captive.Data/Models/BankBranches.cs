@@ -8,7 +8,7 @@ namespace Captive.Data.Models
         public int Id { get; set; }
 
         public int BankId { get; set; }
-        public required BankInfo BankInfo { get; set; }
+        public BankInfo BankInfo { get; set; }
 
         [Required]
         public required string BranchName {  get; set; }

@@ -20,7 +20,6 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
 
         public async Task<Unit> Handle(CreateBankInfoCommand request, CancellationToken cancellationToken)
         {
-
             if (request.Id.HasValue)
             {
                 var bankInfo = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
@@ -30,6 +29,7 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
 
                 bankInfo.BankName = request.BankName;
                 bankInfo.BankDescription = request.Description;
+                bankInfo.ShortName = request.ShortName;
 
                 _writeUow.BankInfo.Update(bankInfo);
             }

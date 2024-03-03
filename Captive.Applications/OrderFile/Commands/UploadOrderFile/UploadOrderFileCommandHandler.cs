@@ -121,7 +121,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                 .FirstOrDefaultAsync(x => x.Id == bankId);
         }
 
-        private async Task<ICollection<FormChecks>> GetFormCheck(OrderFileConfiguration orderFileConfiguration, CancellationToken cancellationToken)
+        private async Task<ICollection<Captive.Data.Models.FormChecks>> GetFormCheck(OrderFileConfiguration orderFileConfiguration, CancellationToken cancellationToken)
         {
             var productConfigurations = _readUow.ProductConfigurations.GetAll()
                 .AsNoTracking()
@@ -207,7 +207,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             await _writeUow.Complete(cancellationToken);
         }
 
-        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, ICollection<FormChecks> formChecks, CancellationToken cancellationToken)
+        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, ICollection<Captive.Data.Models.FormChecks> formChecks, CancellationToken cancellationToken)
         {
             var validationStatus = true;
             var bankBranches = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankId == bankInfo.Id).ToListAsync(cancellationToken);

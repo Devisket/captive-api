@@ -16,42 +16,60 @@ namespace Captive.Applications.OrderFile.Queries.GetAllOrderFiles
 
         public async Task<GetAllOrderFilesQueryResponse> Handle(GetAllOrderFilesQuery request, CancellationToken cancellationToken)
         {
-            var batchFiles = await _readUow.BatchFiles.GetAll().Where(x => x.BankInfoId == request.BankId)
-                .Select(x => new BatchFileDtoResponse { 
-                Id = x.Id,
-                UploadDate = x.UploadDate,
-                }).ToListAsync(cancellationToken);
+            var batchFiles = _readUow.BatchFiles.GetAll().Where(x => x.BankInfoId == request.BankId);
 
-            if(batchFiles != null && batchFiles.Any() )
+            if (batchFiles != null && batchFiles.Any())
             {
                 var orderFiles = await _readUow.OrderFiles.GetAll()
-                    .Include(x => x.CheckOrders)
+                    .Include(x => x.BatchFile)
                     .Where(x => batchFiles.Any(z => z.Id == x.BatchFileId))
                     .Select(x => new OrderFileDtoResponse
                     {
                         Id = x.Id,
                         BatchFileId = x.BatchFileId,
-                        FileName = x.FileName,
-                        FileStatus = x.Status,
-                        CheckOrders = x.CheckOrders.Select(z => new CheckOrderDtoResponse
-                        {
-                            Id = z.Id,
-                            AccountName = z.AccountName,
-                            BRSTN = z.BRSTN,
-                            DeliveringBRSTN = z.DeliverTo,
-                            Quantity = z.OrderQuanity
-                        }).ToList()
+                        FileName = x.FileName.Trim(),
+                        FileStatus = x.Status.ToString()
                     }).ToListAsync();
 
-                batchFiles = batchFiles.Select(x => new BatchFileDtoResponse
+
+                foreach (var orderFile in orderFiles)
                 {
-                    Id = x.Id,
-                    UploadDate = x.UploadDate,
-                    OrderFiles = orderFiles.Where(z => z.BatchFileId == x.Id).ToList()
-                }).ToList();
+                   var checkOrders = await _readUow.CheckOrders.GetAll().AsNoTracking().Where(x => x.OrderFileId == orderFile.Id).ToListAsync(cancellationToken);
+
+                    if (checkOrders.Any())
+                    {
+                        orderFile.CheckOrders = checkOrders.Select(x => new CheckOrderDtoResponse
+                        {
+                            AccountName = x.AccountName.Trim(),
+                            BRSTN = x.BRSTN,
+                            DeliveringBRSTN = x.DeliverTo,
+                            Id = x.Id,
+                            Quantity = x.OrderQuanity
+                        }).ToList();
+                    }
+                }
+
+
+                var returnObj = new GetAllOrderFilesQueryResponse
+                {
+                    BankId = request.BankId,
+                    Batches = await batchFiles.Select(x =>
+                    new BatchFileDtoResponse
+                    {
+                        Id = x.Id,
+                        UploadDate = x.UploadDate,
+                    }).ToListAsync()
+                };
+
+                foreach(var batchFile in returnObj.Batches)
+                {
+                    batchFile.OrderFiles = orderFiles.Where(x => x.BatchFileId == batchFile.Id).ToList();
+                }
+
+                return returnObj;
             }
 
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
             return Unit.Value;
         }
 
-        private async Task AddCheckInventoryWithSeries(FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
+        private async Task AddCheckInventoryWithSeries(Captive.Data.Models.FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
         {
             var nextSeries = 0;
 
@@ -88,7 +88,7 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
             await _writeUow.Complete();
         }
 
-        private async Task AddNoCheckInventoryWithNoSeries(FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
+        private async Task AddNoCheckInventoryWithNoSeries(Captive.Data.Models.FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
         {
             for (var i = 0; i < checkQuantity; i++)
             {

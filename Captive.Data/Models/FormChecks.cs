@@ -13,10 +13,10 @@
         public required int Quantity { get; set; }
 
         public int BankId { get; set; }
-        public required BankInfo Bank { get; set; }
+        public BankInfo Bank { get; set; }
 
         public int ProductTypeId { get; set; }
-        public required ProductType ProductType { get; set; }
+        public ProductType ProductType { get; set; }
 
         public required string FileInitial { get; set; }
 

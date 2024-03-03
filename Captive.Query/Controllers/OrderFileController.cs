@@ -1,6 +1,5 @@
 ﻿using Captive.Applications.OrderFile.Queries.GetAllOrderFiles;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Queries.Controllers
@@ -20,7 +19,13 @@ namespace Captive.Queries.Controllers
         public async Task<IActionResult> GetAllOrderFiles([FromRoute] int bankId) 
         {
             var response = await _mediator.Send(new GetAllOrderFilesQuery() { BankId = bankId });
-            return Ok();
+
+            if(response == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(response);
         }
     }
 }

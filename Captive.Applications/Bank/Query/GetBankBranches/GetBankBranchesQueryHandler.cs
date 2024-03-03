@@ -33,8 +33,10 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
                     BranchName = x.BranchName,
                     BRSTN = x.BRSTNCode,
                     BranchAddress1 = x.BranchAddress1,
-                    BranchAddress2 = string.Empty,
-                    BranchAddress3 = string.Empty,
+                    BranchAddress2 = x.BranchAddress2,
+                    BranchAddress3 = x.BranchAddress3,
+                    BranchAddress4 = x.BranchAddress4,
+                    BranchAddress5 = x.BranchAddress5    
                 }).ToList()
             };
         }

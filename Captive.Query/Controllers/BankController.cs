@@ -1,7 +1,6 @@
 ﻿using Captive.Applications.Bank.Query.GetAllBankInfos;
 using Captive.Applications.Bank.Query.GetBankBranches;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Queries.Controllers
@@ -10,7 +9,6 @@ namespace Captive.Queries.Controllers
     [ApiController]
     public class BankController : ControllerBase
     {
-
         private readonly IMediator _mediator;
 
         public BankController(IMediator mediator)

@@ -6,6 +6,7 @@ namespace Captive.Data.UnitOfWork.Write
     public interface IWriteUnitOfWork:IDisposable
     {
         public IWriteRepository<BankInfo> BankInfo { get; }
+        public IWriteRepository<BankBranches> BankBranches{ get; }
         public IWriteRepository<CheckInventory> CheckInventory { get; }
         public IWriteRepository<CheckOrders> CheckOrders { get; }
         public IWriteRepository<FormChecks> FormChecks { get; }
