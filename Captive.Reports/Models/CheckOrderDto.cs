@@ -11,6 +11,8 @@ namespace Captive.Reports.Models
         public int CheckInventoryId { get; set; }
         public string StartSeries { get; set; }
         public string EndSeries { get; set; }
+
+        public required string FileInitial { get; set; }
         public required BankBranches BankBranch { get; set; }
     }
 }

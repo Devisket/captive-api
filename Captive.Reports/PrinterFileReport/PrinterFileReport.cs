@@ -110,6 +110,7 @@ namespace Captive.Reports.PrinterFileReport
                     {
                         ProductTypeName = checkOrder.FormChecks.ProductType.ProductName,
                         FormCheckName = checkOrder.FormChecks.Description,
+                        FileInitial = checkOrder.FormChecks.FileInitial,
                         CheckOrder = checkOrder,
                         BankBranch = branch,
                         CheckInventoryId = check.Id,
