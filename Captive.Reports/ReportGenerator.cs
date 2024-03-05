@@ -5,27 +5,31 @@ using Microsoft.Extensions.Configuration;
 using Captive.Reports.PrinterFileReport;
 using System.IO.Compression;
 using Captive.Reports.BlockReport;
+using Captive.Reports.PackingReport;
 
 namespace Captive.Reports
 {
     public class ReportGenerator : IReportGenerator
     {
-        public IReadUnitOfWork _readUow { get; set; }
-        public IConfiguration _configuration { get; set; }
-        public IBlockReport _blockReport { get; set; }
-        public IPrinterFileReport _exportPrinterFile { get; set; }
+        private readonly IReadUnitOfWork _readUow;
+        private readonly IConfiguration _configuration;
+        private readonly IBlockReport _blockReport;
+        private readonly IPrinterFileReport _exportPrinterFile;
+        private readonly IPackingReport _packingReport;
 
         public ReportGenerator(
             IReadUnitOfWork readUow,
             IConfiguration configuration,
             IPrinterFileReport exportPrinterFile,
-            IBlockReport blockReport
+            IBlockReport blockReport,
+            IPackingReport packingReport
             )
         {
             _readUow = readUow;
             _configuration = configuration;
             _exportPrinterFile = exportPrinterFile;
             _blockReport = blockReport;
+            _packingReport = packingReport;
         }
 
         public async Task OnGenerateReport(int batchFileId, CancellationToken cancellationToken)
@@ -53,6 +57,7 @@ namespace Captive.Reports
 
             await _exportPrinterFile.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
             await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
 
             CreateZipFile(batchFile, filePath, archiveDir);
         }
@@ -102,6 +107,7 @@ namespace Captive.Reports
         private async Task<ICollection<CheckOrders>>GetCheckOrders(OrderFile orderFile, CancellationToken cancellationToken)
         {
             var checkOrders = await _readUow.CheckOrders.GetAll()
+                .Include(x => x.OrderFile)
                 .Include(x => x.FormChecks)
                 .ThenInclude(x => x.ProductType)
                 .Where(x => x.OrderFileId == orderFile.Id)

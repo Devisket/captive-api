@@ -50,10 +50,9 @@ namespace Captive.Reports.BlockReport
                         {
                             pageNo++;
                             RenderHeader(writer, bankShortName, productName, formCheckName, pageNo);
-                            
                         }
                             
-                        if((runningNo  % 4) == 0 || (blockNo % 8) == 0)
+                        if((runningNo  % 4) == 0 || blockNo == 0)
                         {
                             blockNo++;
                             writer.WriteLine($" ** BLOCK{blockNo}");
@@ -61,10 +60,10 @@ namespace Captive.Reports.BlockReport
 
                         RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries,blockNo);
 
-                        if ((blockNo % 8) == 0 && (runningNo % 4) == 0 &&  pageNo == 1)
-                            RenderFooter(writer, formcheckList);
-                                                
                         runningNo++;
+
+                        if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1)
+                            RenderFooter(writer, formcheckList);
                     }
 
                     if(blockNo <= 4)

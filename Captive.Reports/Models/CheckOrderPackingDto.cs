@@ -3,7 +3,7 @@ using Captive.Data.Models;
 
 namespace Captive.Reports.Models
 {
-    public class CheckOrderDTO
+    public class CheckOrderPackingDto
     {
         public required string ProductTypeName { get; set; }
         public string? FormCheckName { get; set; }
@@ -12,12 +12,7 @@ namespace Captive.Reports.Models
         public string StartSeries { get; set; }
         public string EndSeries { get; set; }
 
-        public int? OrderFileId { get; set; }
-        public string? OrderFileName { get; set; }
-
         public required string FileInitial { get; set; }
         public required BankBranches BankBranch { get; set; }
-
-        public BankBranches? DeliverTo { get; set; }
-    }  
+    }
 }
