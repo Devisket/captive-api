@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    [Migration("20240228095054_InitMigration")]
-    partial class InitMigration
+    [Migration("20240307152704_OverallInitMigration")]
+    partial class OverallInitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,10 @@ namespace Captive.Commands.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.ToTable("banks_info", (string)null);
@@ -94,6 +98,13 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("BatchFileStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BatchName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UploadDate")
@@ -197,6 +208,10 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("FileInitial")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("FormType")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
@@ -267,6 +282,9 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("OtherFileName")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

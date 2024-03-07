@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace Captive.Commands.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class OverallInitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,7 +23,8 @@ namespace Captive.Commands.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     BankName = table.Column<string>(type: "longtext", nullable: false),
                     BankDescription = table.Column<string>(type: "longtext", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ShortName = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,7 +82,9 @@ namespace Captive.Commands.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     UploadDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     BatchFileStatus = table.Column<int>(type: "int", nullable: false),
-                    BankInfoId = table.Column<int>(type: "int", nullable: false)
+                    BankInfoId = table.Column<int>(type: "int", nullable: false),
+                    BatchName = table.Column<string>(type: "longtext", nullable: false),
+                    OrderNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,6 +106,7 @@ namespace Captive.Commands.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(255)", nullable: false),
                     ConfigurationData = table.Column<string>(type: "longtext", nullable: false),
+                    OtherFileName = table.Column<string>(type: "longtext", nullable: true),
                     ConfigurationType = table.Column<string>(type: "longtext", nullable: false),
                     BankId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -173,7 +177,8 @@ namespace Captive.Commands.Migrations
                     Description = table.Column<string>(type: "longtext", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     BankId = table.Column<int>(type: "int", nullable: false),
-                    ProductTypeId = table.Column<int>(type: "int", nullable: false)
+                    ProductTypeId = table.Column<int>(type: "int", nullable: false),
+                    FileInitial = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
                 {

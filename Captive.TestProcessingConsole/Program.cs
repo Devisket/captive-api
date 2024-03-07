@@ -1,4 +1,4 @@
-﻿using Captive.Processing.Processor;
+﻿using Captive.Processing.Processor.TextFileProcessor;
 using Microsoft.Extensions.Configuration;
 
 namespace Captive.TestProcessingConsole

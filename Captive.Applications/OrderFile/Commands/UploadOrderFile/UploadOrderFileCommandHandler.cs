@@ -108,7 +108,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             return Unit.Value;
         }
-        private async Task ApplyCheckInventory(CheckOrders checkOrder, BankBranches branch, string startSeries = "", CancellationToken cancellationToken)
+        private async Task ApplyCheckInventory(CheckOrders checkOrder, BankBranches branch, CancellationToken cancellationToken)
         {
             for (int i = 0; i < checkOrder.OrderQuanity; i++)
             {
