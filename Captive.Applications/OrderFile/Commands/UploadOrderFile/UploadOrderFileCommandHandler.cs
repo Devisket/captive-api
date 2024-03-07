@@ -2,8 +2,9 @@
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
-using Captive.Processing.Processor;
+using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.Model;
+using Captive.Processing.Processor.TextFileProcessor;
 using Captive.Reports;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -14,17 +15,24 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 {
     public class UploadOrderFileCommandHandler : IRequestHandler<UploadOrderFileCommand,Unit>
     {
-        private readonly IFileProcessor _fileProcessor;
+        private readonly ITextFileProcessor _textFileProcessor;
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IReportGenerator _reportGenerator;
+        private readonly IExcelFileProcessor _excelFileProcessor;
 
-        public UploadOrderFileCommandHandler(IFileProcessor fileProcessor, IReadUnitOfWork readUow, IWriteUnitOfWork writeUow, IReportGenerator reportGenerator)
+        public UploadOrderFileCommandHandler(
+            ITextFileProcessor fileProcessor,
+            IExcelFileProcessor excelFileProcessor,
+            IReadUnitOfWork readUow, 
+            IWriteUnitOfWork writeUow, 
+            IReportGenerator reportGenerator)
         {
-            _fileProcessor = fileProcessor;
+            _textFileProcessor = fileProcessor;
             _readUow = readUow;
             _writeUow = writeUow;
             _reportGenerator = reportGenerator;
+            _excelFileProcessor = excelFileProcessor;
         }
         
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
@@ -44,7 +52,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                 var file = order.Item2;
 
                 //Get configuration
-                var configuration = await GetOrderFileConfigurationAsync(orderFile, cancellationToken);
+                var configuration = await GetOrderFileConfigurationAsync(orderFile,bankInfo.ShortName, cancellationToken);
                 
                 if(configuration == null)
                 {
@@ -58,15 +66,17 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                 var formChecks = await GetFormCheck(configuration, cancellationToken);
 
                 //Process file
-                var orderFileDatas = _fileProcessor.OnProcessFile(file, configuration.ConfigurationData);
+                var orderFileDatas =  configuration.ConfigurationType == ConfigurationType.Text ? _textFileProcessor.OnProcessFile(file, configuration.ConfigurationData) : 
+                    _excelFileProcessor.OnProcessFile(file,configuration.ConfigurationData);
 
-                if (!await ValidateOrderFileData(orderFile, orderFileDatas, configuration.Bank,formChecks, cancellationToken))
+                if (!await ValidateOrderFileData(orderFile, orderFileDatas, configuration.Bank,formChecks, configuration.ConfigurationType, cancellationToken))
                 {
                     await SetOrderFileStatus(orderFile, OrderFilesStatus.Error, cancellationToken);
 
                     continue;
                 }
-
+                //TODO
+                //Create a check inventory for those file data that has starting series
                 foreach (OrderFileData orderFileData in orderFileDatas)
                 {
                     var formCheck = formChecks.First(x => x.FormType == orderFileData.FormType && x.CheckType == orderFileData.CheckType);
@@ -98,7 +108,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             return Unit.Value;
         }
-        private async Task ApplyCheckInventory(CheckOrders checkOrder, BankBranches branch, CancellationToken cancellationToken)
+        private async Task ApplyCheckInventory(CheckOrders checkOrder, BankBranches branch, string startSeries = "", CancellationToken cancellationToken)
         {
             for (int i = 0; i < checkOrder.OrderQuanity; i++)
             {
@@ -178,16 +188,20 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             }
         }
 
-        private async Task<OrderFileConfiguration?>GetOrderFileConfigurationAsync(Data.Models.OrderFile orderFile, CancellationToken cancellationToken)
-        {
-            var absoluteName = Regex.Replace(orderFile.FileName, @"[\d-]", String.Empty);
-            
-            absoluteName = Path.GetFileNameWithoutExtension(absoluteName);
+        private async Task<OrderFileConfiguration?>GetOrderFileConfigurationAsync(Data.Models.OrderFile orderFile, string bankShortName, CancellationToken cancellationToken)
+        { 
+            var absoluteName = Path.GetFileNameWithoutExtension(orderFile.FileName);
+
+            absoluteName = Regex.Replace(absoluteName, @"[\d-_.]", String.Empty);
+
+            absoluteName = absoluteName.Replace(bankShortName, string.Empty);
+
+            absoluteName = absoluteName.Replace("Order", string.Empty);
 
             var config = await _readUow.OrderFileConfigurations.GetAll()
                 .Include(x => x.Bank)
                 .AsNoTracking()
-                .Where(x => x.Name == absoluteName)
+                .Where(x => x.Name == absoluteName || (x.OtherFileName != null && EF.Functions.Like(x.OtherFileName, $"%{absoluteName}")))
                 .FirstOrDefaultAsync(cancellationToken);
 
             return config;
@@ -207,7 +221,8 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             await _writeUow.Complete(cancellationToken);
         }
 
-        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, ICollection<Captive.Data.Models.FormChecks> formChecks, CancellationToken cancellationToken)
+        private async Task<bool> ValidateOrderFileData(Data.Models.OrderFile orderFile, ICollection<OrderFileData> orderFileDatas, BankInfo bankInfo, ICollection<Captive.Data.Models.FormChecks> formChecks, 
+            ConfigurationType configurationType, CancellationToken cancellationToken)
         {
             var validationStatus = true;
             var bankBranches = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankId == bankInfo.Id).ToListAsync(cancellationToken);
@@ -278,6 +293,13 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                     z.Key,
                     count = z.Sum(c => c.Quantity)
                 }).ToList();
+
+
+
+            if(configurationType == ConfigurationType.Excel)
+            {
+                return validationStatus;
+            }
 
             //Check inventory availability
             foreach (var invGroup in orderFileInvGroup)

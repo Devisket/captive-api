@@ -12,5 +12,6 @@ namespace Captive.Processing.Processor.Model
         public static readonly string FORM_TYPE = "formType";
         public static readonly string QUANTITY = "quantity";
         public static readonly string DELIVER_TO = "deliverTo";
+        public static readonly string STARTING_SERIAL_NO = "startingSerialNo";
     }
 }

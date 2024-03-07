@@ -9,7 +9,7 @@ namespace Captive.TestProcessingConsole
         {
             var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
                        
-            var fileProcessor = new FileProcessor(builder.Build());
+            var fileProcessor = new TextFileProcessor(builder.Build());
 
             fileProcessor.OnProcessFile(File.ReadAllBytes("C:\\Users\\ediso\\repository\\personal\\SBTC\\Upload files\\CPTIVE0112.txt"));
         }

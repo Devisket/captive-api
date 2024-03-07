@@ -7,6 +7,7 @@ namespace Captive.Data.Models
         public int Id { get; set; }
         public required string Name { get; set; }
         public required string ConfigurationData { get; set; }
+        public string? OtherFileName { get; set; }
         public required ConfigurationType ConfigurationType { get; set; }
         public int BankId { get; set; }
         public BankInfo Bank { get; set; }

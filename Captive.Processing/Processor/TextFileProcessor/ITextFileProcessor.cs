@@ -1,8 +1,8 @@
 ﻿using Captive.Processing.Processor.Model;
 
-namespace Captive.Processing.Processor
+namespace Captive.Processing.Processor.TextFileProcessor
 {
-    public interface IFileProcessor
+    public interface ITextFileProcessor
     {
         public void OnProcessFile(byte[] file);
 

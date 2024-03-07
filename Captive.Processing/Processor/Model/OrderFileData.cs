@@ -11,5 +11,7 @@ namespace Captive.Processing.Processor.Model
         public required string FormType { get; set; }
         public required int Quantity { get; set; }
         public string? DeliverTo { get; set; }
+
+        public string? StartingSeries { get; set; }
     }
 }

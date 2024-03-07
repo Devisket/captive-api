@@ -1,7 +1,8 @@
 ﻿using Captive.Data;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
-using Captive.Processing.Processor;
+using Captive.Processing.Processor.ExcelFileProcessor;
+using Captive.Processing.Processor.TextFileProcessor;
 using Captive.Reports;
 using Captive.Reports.BlockReport;
 using Captive.Reports.PackingReport;
@@ -26,13 +27,15 @@ namespace Captive.Commands.Extensions
                  .AddDbContext<CaptiveDataContext>(options =>
                 options.UseMySQL(connString, b => b.MigrationsAssembly("Captive.Commands")));
          
-            services.AddScoped<IFileProcessor, FileProcessor>();
+            services.AddScoped<ITextFileProcessor, TextFileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
             services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
             services.AddScoped<IPrinterFileReport, PrinterFileReport>();
             services.AddScoped<IReportGenerator, ReportGenerator>();
             services.AddScoped<IBlockReport, BlockReport>();
             services.AddScoped<IPackingReport, PackingReport>();
+            services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();
+
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
