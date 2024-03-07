@@ -374,7 +374,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             var prevBatch = await _readUow.BatchFiles
                 .GetAll()
-                .Where(x => x.UploadDate == DateTime.UtcNow)
+                .Where(x => x.UploadDate.Date == DateTime.UtcNow.Date)
                 .OrderBy(x => x.OrderNumber)
                 .LastOrDefaultAsync();
 

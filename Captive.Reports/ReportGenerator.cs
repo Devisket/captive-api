@@ -35,6 +35,12 @@ namespace Captive.Reports
         public async Task OnGenerateReport(int batchFileId, CancellationToken cancellationToken)
         {
             var batchFile = await GetBatchFile( batchFileId, cancellationToken);
+
+            if(!batchFile.OrderFiles.Any(x => x.Status  == Data.Enums.OrderFilesStatus.Completed))
+            {
+                return;
+            }
+
             var outputDir = _configuration["OutputDirectory"];
             var archiveDir = _configuration["ArchiveDirectory"];
 
