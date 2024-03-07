@@ -33,10 +33,13 @@ values
 ('Branch-Malolos','#42 Daan Malolos','','','300140013',1),
 ('Branch-Laguna','#2 Sta Rosa Laguna','','','060140052',1),
 ('Branch-Davao','Unit 21 Bldg.' ,'#2 Sta. Ignacio', 'Davao City', '010140109',1),
-('Branch-Zambales','Unit 155 Bldg.' ,'#2 Sta. Ignacio', 'Davao City', '010140167',1),
-('Branch-Cagayan','Unit 155 Bldg.' ,'#254 Sta. Cruz', 'Cagayan City', '100140001',1),
+('Branch-Zambales','Unit 25 Bldg.' ,'#2 Sta. Ignacio', 'Davao City', '010140167',1),
+('Branch-Cagayan','Unit 456 Bldg.' ,'#254 Sta. Cruz', 'Cagayan City', '100140001',1),
 ('Branch-Davao Magsaysay','Unit 155 Bldg.' ,'#24 Sta. Felipe', 'Magsaysay City', '030140002',1),
-('Branch-Cebu-IT','Unit 155 Bldg.' ,'#1 Sta. Agustin', 'Cebu City', '020140003',1)
+('Branch-Cebu-IT','Unit 155 Bldg.' ,'#1 Sta. Agustin', 'Cebu City', '020140003',1),
+('Branch-Delivery-1','Unit 46 Bldg.' ,'#1 Sta. Agustin', 'sdfgdsfg City', '010140011',1),
+('Branch-Delivery-2','Unit 355 Bldg.' ,'#1 Sta. Agustin', 'sadf City', '020140012',1),
+('Branch-Delivery-3','Unit 16 Bldg.' ,'#1 Sta. Agustin', 'dsfgdfg City', '030140013',1);
 
 /*ORDER FILE CONFIGURATION*/
 
