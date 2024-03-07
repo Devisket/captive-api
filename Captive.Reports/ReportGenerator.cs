@@ -121,7 +121,7 @@ namespace Captive.Reports
             if (!Directory.Exists(archiveDir))
                 Directory.CreateDirectory(archiveDir);
 
-            var fileName = Path.Combine(archiveDir, file.BatchName + ".zip");
+            var fileName = Path.Combine(archiveDir, String.Format("{0}_{1}",file.BatchName,file.OrderNumber.ToString()) + ".zip");
 
             if (File.Exists(fileName))
                 File.Delete(fileName);

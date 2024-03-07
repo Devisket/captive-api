@@ -31,7 +31,7 @@ services:
       - captive_network
     volumes:
       - ~/https:/https
-      - ~/Captive/Reports/Bank/Date:/app/reports/Bank/Date
+      - ~/Captive/Reports/:/app/reports
       - ~/Captive/Reports/Archive:/app/reports/Archive
     build:
       context: .
