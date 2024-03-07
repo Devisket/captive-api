@@ -31,8 +31,8 @@ services:
       - captive_network
     volumes:
       - ~/https:/https
-      - C:/Captive/Reports/Bank/Date:/app/reports/Bank/Date
-      - C:/Captive/Reports/Archive:/app/reports/Archive
+      - ~/Captive/Reports/Bank/Date:/app/reports/Bank/Date
+      - ~/Captive/Reports/Archive:/app/reports/Archive
     build:
       context: .
       dockerfile: ./Captive.Commands/Dockerfile
