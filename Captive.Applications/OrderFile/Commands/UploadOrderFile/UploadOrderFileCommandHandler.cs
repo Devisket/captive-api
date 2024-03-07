@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 {
@@ -41,6 +42,8 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             if (bankInfo == null)
                 throw new Exception($"Bank Id {request.BankId} doesn't exist");
+
+            var bankBranches = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankId == bankInfo.Id).ToListAsync(cancellationToken);
 
             var batchFile = await CreateBatchFile(bankInfo, cancellationToken);
 
@@ -96,7 +99,15 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
                     };
 
                     await InsertCheckOrder(checkOrder, cancellationToken);
-                    await ApplyCheckInventory(checkOrder, bankBranch, cancellationToken);
+                    if (!String.IsNullOrEmpty(orderFileData.StartingSeries))
+                    {
+                        await InsertSeriesCheck(formCheck, bankBranch, checkOrder, orderFileData.StartingSeries, cancellationToken);
+                    }
+                    else
+                    {
+                        await ApplyCheckInventory(checkOrder, bankBranch, cancellationToken);
+                    }
+                    
                 }
                 
                 await SetOrderFileStatus(orderFile, OrderFilesStatus.Completed, cancellationToken);
@@ -108,8 +119,13 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             return Unit.Value;
         }
-        private async Task ApplyCheckInventory(CheckOrders checkOrder, BankBranches branch, CancellationToken cancellationToken)
+        private async Task ApplyCheckInventory(CheckOrders checkOrder, BankBranches branch, CancellationToken cancellationToken, string startingSeries = "")
         {
+            if(!String.IsNullOrEmpty(startingSeries))
+            {
+               
+            }
+
             for (int i = 0; i < checkOrder.OrderQuanity; i++)
             {
                 var checkInventory = await _readUow.CheckInventory.GetAll()
@@ -397,6 +413,29 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             await _writeUow.Complete();
         }
 
+        private async Task InsertSeriesCheck(Captive.Data.Models.FormChecks formCheck, BankBranches bankBranch, CheckOrders checkOrder, string startingSeries, CancellationToken cancellationToken)
+        {
 
+            var nextSeries = int.Parse(startingSeries);
+
+            for(var i = 0; i < checkOrder.OrderQuanity; i++)
+            {
+                var endingSeries = nextSeries + formCheck.Quantity;
+                endingSeries -= 1;
+
+                var checkInventory = new Data.Models.CheckInventory
+                {
+                    StarSeries = String.Format("{0:D8}", nextSeries),
+                    EndSeries = String.Format("{0:D8}", endingSeries),
+                    FormCheckId = formCheck.Id,
+                    Quantity = formCheck.Quantity,
+                    CheckOrderId = checkOrder.Id,
+                    BranchId = bankBranch.Id,
+                };
+
+                await _writeUow.CheckInventory.AddAsync(checkInventory, cancellationToken);
+                nextSeries = endingSeries + 1;
+            }
+        }
     }
 }

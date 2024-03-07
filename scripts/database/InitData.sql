@@ -33,7 +33,10 @@ values
 ('Branch-Malolos','#42 Daan Malolos','','','300140013',1),
 ('Branch-Laguna','#2 Sta Rosa Laguna','','','060140052',1),
 ('Branch-Davao','Unit 21 Bldg.' ,'#2 Sta. Ignacio', 'Davao City', '010140109',1),
-('Branch-Zambales','Unit 155 Bldg.' ,'#2 Sta. Ignacio', 'Davao City', '010140167',1);
+('Branch-Zambales','Unit 155 Bldg.' ,'#2 Sta. Ignacio', 'Davao City', '010140167',1),
+('Branch-Cagayan','Unit 155 Bldg.' ,'#254 Sta. Cruz', 'Cagayan City', '100140001',1),
+('Branch-Davao Magsaysay','Unit 155 Bldg.' ,'#24 Sta. Felipe', 'Magsaysay City', '030140002',1),
+('Branch-Cebu-IT','Unit 155 Bldg.' ,'#1 Sta. Agustin', 'Cebu City', '020140003',1)
 
 /*ORDER FILE CONFIGURATION*/
 
