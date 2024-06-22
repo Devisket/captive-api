@@ -3,7 +3,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
 {
     public class CreateUpdateFormCheckCommandRequest
     {
-        public int ProductTypeId { get; set; }
+        public Guid ProductTypeId { get; set; }
 
         public required string CheckType { get; set; }
         public required string FormType { get; set; }

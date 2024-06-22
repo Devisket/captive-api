@@ -30,7 +30,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                 throw new Exception($"ProductTypeId{request.Detail.ProductTypeId} doesn't exist");
 
 
-            if(request.FormCheckId > 0)
+            if(request.FormCheckId != Guid.Empty)
             {
                 var formCheck = await _readUow.FormChecks.GetAll().FirstOrDefaultAsync(x => x.Id == request.FormCheckId && x.BankId == request.BankId,  cancellationToken);
 

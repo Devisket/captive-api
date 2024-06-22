@@ -25,7 +25,7 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet("{bankId}/branches")]
-        public async Task<IActionResult> GetAllBankBranches(int bankId)
+        public async Task<IActionResult> GetAllBankBranches(Guid bankId)
         {
             var response = await _mediator.Send(new GetBankBranchesQuery { BankId = bankId });
 

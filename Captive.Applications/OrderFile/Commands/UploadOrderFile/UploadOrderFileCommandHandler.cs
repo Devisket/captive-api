@@ -140,7 +140,7 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 
             }
         }
-        private async Task<BankInfo?>GetBankInfo(int bankId)
+        private async Task<BankInfo?>GetBankInfo(Guid bankId)
         {
             return await _readUow.Banks.GetAll()
                 .Include(x => x.BankBranches)

@@ -10,11 +10,11 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
 {
     public class GetBankBranchesQuery:IRequest<GetBankBranchesQueryResponse>
     {
-        public required int BankId { get; set; }
+        public required Guid BankId { get; set; }
     }
     public class GetBankBranchesQueryResponse
     {
-        public required int BankId { get; set; }
+        public required Guid BankId { get; set; }
         public ICollection<BankBranchDto>? Branches { get; set; }
     }
 }

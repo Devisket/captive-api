@@ -32,9 +32,9 @@ namespace Captive.Reports
             _packingReport = packingReport;
         }
 
-        public async Task OnGenerateReport(int batchFileId, CancellationToken cancellationToken)
+        public async Task OnGenerateReport(Guid batchFileId, CancellationToken cancellationToken)
         {
-            var batchFile = await GetBatchFile( batchFileId, cancellationToken);
+            var batchFile = await GetBatchFile(batchFileId, cancellationToken);
 
             if(!batchFile.OrderFiles.Any(x => x.Status  == Data.Enums.OrderFilesStatus.Completed))
             {
@@ -96,7 +96,7 @@ namespace Captive.Reports
             return filePath;
         }
 
-        private async Task<BatchFile> GetBatchFile(int batchFileId, CancellationToken cancellationToken)
+        private async Task<BatchFile> GetBatchFile(Guid batchFileId, CancellationToken cancellationToken)
         {
             var batchFile = await _readUow.BatchFiles
                 .GetAll()

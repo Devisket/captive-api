@@ -17,7 +17,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewProductType([FromRoute] int bankId, [FromBody] CreateProductTypeCommandRequest request)
+        public async Task<IActionResult> AddNewProductType([FromRoute] Guid bankId, [FromBody] CreateProductTypeCommandRequest request)
         {
             await _mediator.Send(new CreateProductTypeCommand
             {
@@ -29,7 +29,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPut("{productTypeId}")]
-        public async Task<IActionResult> UpdateProductType([FromRoute] int bankId, [FromRoute] int productTypeId,[FromBody] CreateProductTypeCommandRequest request)
+        public async Task<IActionResult> UpdateProductType([FromRoute] Guid bankId, [FromRoute] Guid productTypeId,[FromBody] CreateProductTypeCommandRequest request)
         {
             await _mediator.Send(new CreateProductTypeCommand
             {
@@ -42,7 +42,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpDelete("{productTypeId}")]
-        public async Task<IActionResult> DeleteProductType([FromRoute] int bankId, [FromRoute] int productTypeId)
+        public async Task<IActionResult> DeleteProductType([FromRoute] Guid bankId, [FromRoute] Guid productTypeId)
         {
             await _mediator.Send(new DeleteProductTypeCommand
             {

@@ -9,7 +9,7 @@ namespace Captive.Applications.FormsChecks.Command.DeleteFormCheck
 {
     public class DeleteFormCheckCommand : IRequest<Unit>
     {
-        public int BankId{ get; set; }
-        public int FormCheckId { get; set; }
+        public Guid BankId { get; set; }
+        public Guid FormCheckId { get; set; }
     }
 }

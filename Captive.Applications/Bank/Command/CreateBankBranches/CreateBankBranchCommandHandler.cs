@@ -28,7 +28,7 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
                 throw new Exception($"Bank Id: {request.BankId} doesn't exist.");
             }
 
-            if(request.BranchId > 0)
+            if(request.BranchId != Guid.Empty)
             {
                 var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId, cancellationToken);
 

@@ -11,7 +11,7 @@ namespace Captive.Data.Models
 
         public DateTime LogDate { get; set; }
 
-        public int OrderFileId { get; set; }
+        public Guid OrderFileId { get; set; }
         public OrderFile? OrderFile { get; set; }
     }
 }

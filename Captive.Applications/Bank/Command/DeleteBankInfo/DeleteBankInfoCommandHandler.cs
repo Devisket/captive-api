@@ -20,7 +20,7 @@ namespace Captive.Applications.Bank.Command.DeleteBankInfo
         }
         public async Task<Unit> Handle(DeleteBankInfoCommand request, CancellationToken cancellationToken)
         {
-            var bankInfo = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.id, cancellationToken);
+            var bankInfo = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             if(bankInfo == null) 
             {

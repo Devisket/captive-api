@@ -60,7 +60,7 @@ namespace Captive.Reports.PackingReport
             }
         }
 
-        public async Task<ICollection<BankBranches>> GetAlLBranches(int bankId, CancellationToken cancellationToken)
+        public async Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId, CancellationToken cancellationToken)
         {
             var bankBranches = await _readUow.BankBranches.GetAll()
                 .Include(x => x.BankInfo)
@@ -71,7 +71,7 @@ namespace Captive.Reports.PackingReport
             return bankBranches;
         }
 
-        public async Task<ICollection<CheckInventory>> GetCheckInventory(int checkOrderId, CancellationToken cancellationToken)
+        public async Task<ICollection<CheckInventory>> GetCheckInventory(Guid checkOrderId, CancellationToken cancellationToken)
         {
             var checkInventory = await _readUow.CheckInventory.GetAll()
                .AsNoTracking()
@@ -81,7 +81,7 @@ namespace Captive.Reports.PackingReport
             return checkInventory;
         }
 
-        private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, int bankId, CancellationToken cancellationToken)
+        private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankId, CancellationToken cancellationToken)
         {
             var branches = await GetAlLBranches(bankId, cancellationToken);
 

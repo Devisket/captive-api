@@ -6,7 +6,7 @@ namespace Captive.Data.Models
     public class BankInfo
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public required string BankName { get; set; }
 

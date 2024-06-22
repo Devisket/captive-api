@@ -25,7 +25,7 @@ namespace Captive.Commands.Extensions
 
             services
                  .AddDbContext<CaptiveDataContext>(options =>
-                options.UseMySQL(connString, b => b.MigrationsAssembly("Captive.Commands")));
+                options.UseSqlServer(connString, b => b.MigrationsAssembly("Captive.Commands")));
          
             services.AddScoped<ITextFileProcessor, TextFileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();

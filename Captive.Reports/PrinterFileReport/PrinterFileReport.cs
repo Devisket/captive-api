@@ -71,7 +71,7 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(endingSeries);
         }
 
-        private async Task<ICollection<CheckInventory>> GetCheckInventory(int checkOrderId)
+        private async Task<ICollection<CheckInventory>> GetCheckInventory(Guid checkOrderId)
         {
             var checkInventory = await _readUow.CheckInventory.GetAll()
                 .AsNoTracking()
@@ -81,7 +81,7 @@ namespace Captive.Reports.PrinterFileReport
             return checkInventory;
         }
 
-        private async Task<ICollection<BankBranches>> GetAlLBranches(int bankId)
+        private async Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId)
         {
             var bankBranches = await _readUow.BankBranches.GetAll()
                 .Include(x => x.BankInfo)
@@ -92,9 +92,9 @@ namespace Captive.Reports.PrinterFileReport
             return bankBranches;
         }
 
-        private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, int bankId)
+        private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankID)
         {
-            var branches = await GetAlLBranches(bankId);
+            var branches = await GetAlLBranches(bankID);
 
             var returnDatas = new List<CheckOrderDTO>();
 

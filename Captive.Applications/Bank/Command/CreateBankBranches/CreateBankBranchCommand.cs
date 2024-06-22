@@ -9,8 +9,8 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
 {
     public class CreateBankBranchCommand:IRequest<Unit>
     {
-        public int BankId { get; set; }
-        public int BranchId { get; set; }
+        public Guid BankId { get; set; }
+        public Guid BranchId { get; set; }
         public required string BranchName { get; set; }
         public required string BrstnCode { get; set; }
 

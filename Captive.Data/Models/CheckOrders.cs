@@ -5,18 +5,18 @@ namespace Captive.Data.Models
     public class CheckOrders
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string AccountNo { get; set; }
 
         [Required]
-        public int OrderFileId { get; set; }
+        public Guid OrderFileId { get; set; }
         public OrderFile OrderFile { get; set; }
 
 
         [Required]
-        public int FormCheckId { get; set; }
+        public Guid FormCheckId { get; set; }
         public FormChecks FormChecks { get; set; }
 
         [Required]
@@ -29,5 +29,7 @@ namespace Captive.Data.Models
 
         public required int OrderQuanity { get; set; }
         public string? DeliverTo { get; set; }
+        public bool InputEnable { get;set; }
+        public string ErrorMessage { get; set; }
     }
 }

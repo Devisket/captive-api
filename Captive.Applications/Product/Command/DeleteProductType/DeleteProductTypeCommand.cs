@@ -4,8 +4,8 @@ namespace Captive.Applications.Product.Command.DeleteProductType
 {
     public class DeleteProductTypeCommand : IRequest<Unit> { 
     
-        public int BankId { get; set; }
+        public Guid BankId { get; set; }
 
-        public int ProductTypeId { get; set; }
+        public Guid ProductTypeId { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFormCheck([FromRoute]int bankId,  [FromBody] CreateUpdateFormCheckCommandRequest request)
+        public async Task<IActionResult> CreateFormCheck([FromRoute] Guid bankId,  [FromBody] CreateUpdateFormCheckCommandRequest request)
         {
             await _mediator.Send(new CreateUpdateFormCheckCommand
             {
@@ -29,7 +29,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPut("{formCheckId}")]
-        public async Task<IActionResult> UpdateFormCheck([FromRoute] int bankId,[FromRoute] int formCheckId, [FromBody] CreateUpdateFormCheckCommandRequest request)
+        public async Task<IActionResult> UpdateFormCheck([FromRoute] Guid bankId,[FromRoute] Guid formCheckId, [FromBody] CreateUpdateFormCheckCommandRequest request)
         {
             await _mediator.Send(new CreateUpdateFormCheckCommand
             {
@@ -42,7 +42,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpDelete("{formCheckId}")]
-        public async Task<IActionResult> Delete([FromRoute] int bankId, [FromRoute] int formCheckId)
+        public async Task<IActionResult> Delete([FromRoute] Guid bankId, [FromRoute] Guid formCheckId)
         {
             await _mediator.Send(new DeleteFormCheckCommand
             {

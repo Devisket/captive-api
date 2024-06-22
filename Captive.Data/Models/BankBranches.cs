@@ -5,9 +5,9 @@ namespace Captive.Data.Models
     public class BankBranches
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        public int BankId { get; set; }
+        public Guid BankId { get; set; }
         public BankInfo BankInfo { get; set; }
 
         [Required]

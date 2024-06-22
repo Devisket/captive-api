@@ -3,7 +3,7 @@ namespace Captive.Applications.OrderFile.Queries.GetAllOrderFiles.Model
 {
     public class CheckOrderDtoResponse
     {
-        public int Id {  get; set; }
+        public Guid Id {  get; set; }
         public string? AccountName { get; set; } 
         public required string BRSTN { get; set; }   
         public string? DeliveringBRSTN { get; set; }       

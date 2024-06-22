@@ -9,7 +9,7 @@ namespace Captive.Applications.Bank.Query.GetBankBranches.Model
 {
     public  class BankBranchDto
     {
-        public required int Id { get; set; }
+        public required Guid Id { get; set; }
         public required string BRSTN { get; set; }
         public required string BranchName { get; set; }
         public string? BranchAddress1 { get; set; }

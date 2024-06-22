@@ -16,7 +16,7 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrderFiles([FromRoute] int bankId) 
+        public async Task<IActionResult> GetAllOrderFiles([FromRoute] Guid bankId) 
         {
             var response = await _mediator.Send(new GetAllOrderFilesQuery() { BankId = bankId });
 

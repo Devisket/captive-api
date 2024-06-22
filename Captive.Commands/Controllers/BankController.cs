@@ -29,7 +29,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPut("id/{id}")]
-        public async Task<IActionResult> OnUpdate([FromBody] CreateBankInfoCommand request, [FromRoute] int? id)
+        public async Task<IActionResult> OnUpdate([FromBody] CreateBankInfoCommand request, [FromRoute] Guid? id)
         {
             request.Id = id ?? null;
 
@@ -39,14 +39,14 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpDelete("id/{id}")]
-        public async Task<IActionResult> OnDelete([FromRoute]int id)
+        public async Task<IActionResult> OnDelete([FromRoute] Guid id)
         {
             await _mediator.Send(new DeleteBankInfoCommand(id));
             return NoContent();
         }
 
         [HttpPost("{id}/branch")]
-        public async Task<IActionResult> CreateBranch([FromBody] CreateBankBranchCommand request, [FromRoute] int id)
+        public async Task<IActionResult> CreateBranch([FromBody] CreateBankBranchCommand request, [FromRoute] Guid id)
         {
             request.BankId = id;
 
@@ -55,7 +55,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPut("{bankId}/branch/{branchId}")]
-        public async Task<IActionResult> UpdateBranch([FromBody] CreateBankBranchCommand request, [FromRoute] int bankId, [FromRoute] int branchId)
+        public async Task<IActionResult> UpdateBranch([FromBody] CreateBankBranchCommand request, [FromRoute] Guid bankId, [FromRoute] Guid branchId)
         {
             request.BankId = bankId;
             request.BranchId = branchId;
@@ -65,7 +65,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpDelete("{bankId}/branch/{branchId}")]
-        public async Task<IActionResult> DeleteBranch([FromRoute] int bankId, [FromRoute] int branchId)
+        public async Task<IActionResult> DeleteBranch([FromRoute] Guid bankId, [FromRoute] Guid branchId)
         {
             await _mediator.Send(new DeleteBankBranchCommand
             {

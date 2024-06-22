@@ -8,11 +8,11 @@ namespace Captive.Reports.Models
         public required string ProductTypeName { get; set; }
         public string? FormCheckName { get; set; }
         public required CheckOrders CheckOrder { get; set; }
-        public int CheckInventoryId { get; set; }
+        public Guid CheckInventoryId { get; set; }
         public string StartSeries { get; set; }
         public string EndSeries { get; set; }
 
-        public int? OrderFileId { get; set; }
+        public Guid? OrderFileId { get; set; }
         public string? OrderFileName { get; set; }
 
         public required string FileInitial { get; set; }

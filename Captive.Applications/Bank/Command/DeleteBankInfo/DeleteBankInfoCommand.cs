@@ -4,11 +4,11 @@ namespace Captive.Applications.Bank.Command.DeleteBankInfo
 {
     public class DeleteBankInfoCommand:IRequest<Unit>
     {
-        public DeleteBankInfoCommand (int id)
+        public DeleteBankInfoCommand (Guid Id)
         {
-            this.id = id;
+            this.Id = Id;
         }
 
-        public int id { get; set; }
+        public Guid Id { get; set; }
     }
 }

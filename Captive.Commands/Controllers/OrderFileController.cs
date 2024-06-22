@@ -15,7 +15,7 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult>UploadOrderFile( [FromForm]int bankId, [FromForm]IEnumerable<IFormFile> files) 
+        public async Task<IActionResult>UploadOrderFile( [FromForm] Guid bankId, [FromForm]IEnumerable<IFormFile> files) 
         {
             if (files.Any())
             {

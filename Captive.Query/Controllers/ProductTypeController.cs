@@ -17,7 +17,7 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProductType([FromRoute] int bankId)
+        public async Task<IActionResult> GetAllProductType([FromRoute] Guid bankId)
         {
             var response = await _mediator.Send(new GetAllProductTypeQuery { BankId = bankId });
 
@@ -25,7 +25,7 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet("configuration")]
-        public async Task<IActionResult> GetAllProductConfiguration([FromRoute] int bankId)
+        public async Task<IActionResult> GetAllProductConfiguration([FromRoute] Guid bankId)
         {
             var response = await _mediator.Send(new GetAllProductConfigurationQuery() { BankId = bankId });
 
