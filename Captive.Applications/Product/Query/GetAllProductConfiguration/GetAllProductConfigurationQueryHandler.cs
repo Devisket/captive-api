@@ -23,17 +23,15 @@ namespace Captive.Applications.Product.Query.GetAllProductConfiguration
             var productConfigurations = _readUow.ProductConfigurations
                 .GetAll()
                 .Include(x => x.ProductType)
-                .Include(x => x.OrderFileConfiguration)
                 .AsNoTracking()
-                .Where(x => x.OrderFileConfiguration.BankId == request.BankId);
+                .Where(x => x.BankId == request.BankId);
 
             var productConfigDtos = await productConfigurations.Select(x => new ProductConfigurationResponse
             {
                 Id = x.Id,
-                ConfigurationId = x.OrderFileConfigurationId,
-                ConfigurationName = x.OrderFileConfiguration.Name,
                 ProductTypeId = x.ProductType.Id,
-                ProductTypeName= x.ProductType.ProductName
+                ProductTypeName= x.ProductType.ProductName,
+                ConfigurationData = x.ConfigurationData,
             }).ToListAsync(cancellationToken);
 
             if (productConfigDtos != null && productConfigDtos.Any())

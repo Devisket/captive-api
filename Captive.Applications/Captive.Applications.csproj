@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Captive.Reports\Captive.Reports.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Batch\" />
+  </ItemGroup>
+
 </Project>

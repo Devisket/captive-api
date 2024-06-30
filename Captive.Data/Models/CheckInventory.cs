@@ -17,7 +17,8 @@ namespace Captive.Data.Models
 
         public Guid BranchId { get; set; }
         public  BankBranches BankBranch;
-
-        public string Tag { get; set; }
+       
+        public Guid? TagId { get; set; }
+        public Tag? Tag;
     }
 }

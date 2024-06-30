@@ -7,8 +7,6 @@ namespace Captive.Applications.Product.Query.GetAllProductConfiguration.Model
 
         public Guid ProductTypeId { get; set; }
         public required string ProductTypeName { get; set; }
-
-        public Guid ConfigurationId { get; set; }
-        public required string ConfigurationName { get; set; }
+        public required string ConfigurationData { get; set; }
     }
 }

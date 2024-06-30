@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
@@ -63,7 +64,9 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
                     BranchAddress4 = request.BranchAddress4,
                     BranchAddress5 = request.BranchAddress5,
                     BRSTNCode = request.BrstnCode,
-                    BranchName = request.BranchName
+                    BranchName = request.BranchName,
+                    BranchStatus = BranchStatus.Active,
+
                 },cancellationToken);
             }
 

@@ -3,8 +3,9 @@ namespace Captive.Data.Enums
 {
     public enum OrderFilesStatus
     {
-        Pending,
+        
         Processing,
+        Pending,
         Error,
         Completed
     }

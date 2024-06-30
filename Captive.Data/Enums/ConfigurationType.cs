@@ -2,7 +2,13 @@
 {
     public enum ConfigurationType
     {
-        Text,
-        Excel
+        TextConfiguration,
+        ExcelConfiguration,
+        MsAccessConfiguration,
+        DbfConfiguration,
+        OrderDataConfiguration,
+        HashTotalConfiguration,
+        PrinterFileConfiguration,
+        PackingConfiguration        
     }
 }

@@ -15,7 +15,6 @@ namespace Captive.Data.Models
         public BankInfo? BankInfo{ get; set; }
 
         public required string BatchName { get; set; }
-
         public int OrderNumber { get; set; }
     }
 }

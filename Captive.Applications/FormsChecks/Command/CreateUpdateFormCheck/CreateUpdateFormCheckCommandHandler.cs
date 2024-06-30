@@ -54,7 +54,6 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                     ProductTypeId = request.Detail.ProductTypeId,
                     CheckType = request.Detail.CheckType,
                     FormType = request.Detail.FormType,
-                    BankId = request.BankId,
                     Description = request.Detail.Description,
                     FileInitial = request.Detail.FileInitial,
                     Quantity = request.Detail.Quantity
