@@ -1,9 +1,5 @@
-﻿
-
-using Captive.Applications.Product.Query.GetAllProductConfiguration.Model;
-using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Data.UnitOfWork.Read;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.Product.Query.GetAllProductConfiguration
 {
