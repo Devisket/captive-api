@@ -18,16 +18,7 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x=> x.DeliverTo).IsRequired(false);
 
             entity.Property(x => x.AccountName).IsRequired();
-                        
-            entity.HasOne(x => x.OrderFile)
-                .WithMany(x => x.CheckOrders)
-                .HasForeignKey(x => x.OrderFileId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            entity.HasOne(x => x.FormChecks)
-                .WithMany(x => x.CheckOrders)
-                .HasForeignKey(x => x.FormCheckId);
-
+                 
             entity.Property(x => x.Concode)
                 .IsRequired(false);
 

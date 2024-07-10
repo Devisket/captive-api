@@ -18,16 +18,16 @@ namespace Captive.Applications.Bank.Command.DeleteBankBranch
 
         public async Task<Unit> Handle(DeleteBankBranchCommand request, CancellationToken cancellationToken)
         {
-            var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId && x.BankId == request.BankId);
+            //var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId && x.BankId == request.BankId);
 
-            if(branch == null)
-            {
-                throw new Exception($"BankId: {request.BankId} with BranchId:{request.BranchId} doesn't exist");
-            }
+            //if(branch == null)
+            //{
+            //    throw new Exception($"BankId: {request.BankId} with BranchId:{request.BranchId} doesn't exist");
+            //}
 
-            _writeUow.BankBranches.Delete(branch);
+            //_writeUow.BankBranches.Delete(branch);
 
-            await _writeUow.Complete();
+            //await _writeUow.Complete();
 
             return Unit.Value;
         }

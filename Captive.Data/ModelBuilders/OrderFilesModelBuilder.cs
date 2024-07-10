@@ -20,6 +20,14 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.ProcessDate)
                 .IsRequired();
 
+            entity.HasMany(x => x.CheckOrders)
+                .WithOne(x => x.OrderFile)
+                .HasForeignKey(x => x.OrderFileId);
+
+            entity.HasMany(x => x.OrderFileLogs)
+                .WithOne(x => x.OrderFile)
+                .HasForeignKey(x => x.OrderFileId);
+
             entity.ToTable("order_files");
         }
     }

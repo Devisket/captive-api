@@ -20,7 +20,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<OrderFile> OrderFiles => GetStandardRepository<OrderFile>();
         public IWriteRepository<OrderFileLog> OrderFileLogs => GetStandardRepository<OrderFileLog>();
         public IWriteRepository<ProductConfiguration> ProductConfigurations => GetStandardRepository<ProductConfiguration>();
-        public IWriteRepository<ProductType> ProductTypes => GetStandardRepository<ProductType>();
+        public IWriteRepository<Product> ProductTypes => GetStandardRepository<Product>();
 
         public IWriteRepository<BankBranches> BankBranches => GetStandardRepository<BankBranches>();
         public IWriteRepository<T> GetStandardRepository<T>() where T : class => new WriteRepository<T>(_dbContext);

@@ -11,7 +11,7 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasKey(x => x.Id);
 
-            entity.HasIndex(x => new { x.FormType, x.CheckType, x.BankId });
+            entity.HasIndex(x => new { x.FormType, x.CheckType,});
 
             entity.Property(x => x.CheckType).IsRequired();
 
@@ -25,12 +25,10 @@ namespace Captive.Data.ModelBuilders
                 .Property(x => x.Description)
                 .IsRequired(false);
 
-            entity.Property(x => x.BankId).IsRequired();
-
-            entity.HasOne(x => x.ProductType) 
-                .WithMany(x => x.FormChecks) 
-                .HasForeignKey(x => x.ProductTypeId);
-            
+            entity.HasMany(x => x.CheckOrders)
+                .WithOne(x => x.FormChecks)
+                .HasForeignKey(x => x.FormCheckId);
+                        
             entity.ToTable("form_checks");
 
         }

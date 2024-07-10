@@ -11,9 +11,7 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasKey(x => x.Id);
 
-            entity.HasOne(x => x.ProductType)
-                .WithMany(x => x.ProductConfiguration)
-                .HasForeignKey(x => x.ProductTypeId);
+            entity.Property(x => x.ConfigurationData).IsRequired(true);
 
             entity.ToTable("product_configuration");
         }

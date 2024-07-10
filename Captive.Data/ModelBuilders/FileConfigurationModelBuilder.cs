@@ -23,10 +23,6 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.ConfigurationType).IsRequired().HasConversion<string>();
 
-            entity.HasOne(x => x.Bank)
-                .WithMany(x => x.OrderFileConfigurations)
-                .HasForeignKey(x => x.BankId);
-            
             entity.ToTable("order_file_configuration");
         }
     }

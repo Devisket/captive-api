@@ -48,7 +48,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
             }
             else
             {
-                await _writeUow.ProductTypes.AddAsync(new Data.Models.ProductType
+                await _writeUow.ProductTypes.AddAsync(new Data.Models.Product
                 {
                     BankInfoId = request.BankId,
                     ProductName = request.ProductName

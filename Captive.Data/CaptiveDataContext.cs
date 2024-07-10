@@ -22,7 +22,8 @@ namespace Captive.Data
             modelBuilder.BuildOrderFileLogModel();
             modelBuilder.BuildBatchFileModel();
             modelBuilder.BuildProductConfigurationModel();
-            modelBuilder.BuildProductTypeModel();
+            modelBuilder.BuildProductModel();
+            modelBuilder.BuildTagModel();
 
             base.OnModelCreating(modelBuilder);
         }

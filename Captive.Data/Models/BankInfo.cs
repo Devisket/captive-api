@@ -8,8 +8,8 @@
         public string? BankDescription { get; set;}
         public required DateTime CreatedDate { get; set; }
         public ICollection<BankBranches>? BankBranches { get; set; }
-        public ICollection<OrderFileConfiguration>? OrderFileConfigurations { get; set;}
         public ICollection<BatchFile>? BatchFiles { get;set; }
-        public ICollection<ProductType>? ProductTypes { get; set; }
+        public ICollection<Product>? Products { get; set; }
+        public ICollection<Tag> Tags { get; set; }
     }
 }

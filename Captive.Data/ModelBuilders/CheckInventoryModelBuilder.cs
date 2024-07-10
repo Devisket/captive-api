@@ -11,17 +11,9 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasKey(x => x.Id);
 
-            entity.Property(x => x.CheckOrderId).IsRequired(false);
-
-            entity.HasOne(x=> x.FormChecks)
-                .WithMany(x => x.CheckInventory)
-                .HasForeignKey(x => x.FormCheckId);
-
-            entity.Property(x => x.Quantity).IsRequired();
-
-            entity.HasOne(x => x.BankBranch)
-                .WithMany(x => x.CheckInventory)
-                .HasForeignKey(x => x.BranchId);
+            entity.HasMany(x => x.CheckInventoryDetails)
+                .WithOne(x => x.CheckInventory)
+                .HasForeignKey(x => x.CheckInventoryId);
 
             entity.ToTable("check_inventory");
         }

@@ -4,6 +4,6 @@ namespace Captive.Reports.PrinterFileReport
 {
     public interface IPrinterFileReport
     {
-        Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken);
+        //Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken);
     }
 }

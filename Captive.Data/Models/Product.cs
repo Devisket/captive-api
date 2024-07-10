@@ -1,7 +1,7 @@
 ﻿
 namespace Captive.Data.Models
 {
-    public  class ProductType
+    public class Product
     {
         public Guid Id { get; set; }
         public required string ProductName { get; set; }

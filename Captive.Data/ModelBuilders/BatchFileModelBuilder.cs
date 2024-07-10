@@ -14,12 +14,12 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.BatchFileStatus).IsRequired();
 
-            entity.HasOne(x => x.BankInfo)
-                .WithMany(x => x.BatchFiles)
-                .HasForeignKey(x => x.BankInfoId);
-
             entity.Property(x => x.BatchName)
                 .IsRequired();
+
+            entity.HasMany(x => x.OrderFiles)
+                .WithOne(x => x.BatchFile)
+                .HasForeignKey(x => x.BatchFileId);
 
             entity.ToTable("batch_files");
         }

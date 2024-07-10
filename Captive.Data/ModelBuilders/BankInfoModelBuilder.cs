@@ -13,7 +13,19 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasMany(x => x.BankBranches)
                 .WithOne(x => x.BankInfo)
-                .HasForeignKey(x => x.BankId);
+                .HasForeignKey(x => x.BankInfoId);
+
+            entity.HasMany(x => x.BatchFiles)
+                .WithOne(x => x.BankInfo)
+                .HasForeignKey(x => x.BankInfoId);
+
+            entity.HasMany(x => x.Products)
+                .WithOne(x => x.BankInfo)
+                .HasForeignKey(x => x.BankInfoId);
+
+            entity.HasMany(x => x.Tags)
+                .WithOne(x => x.BankInfo)
+                .HasForeignKey(x => x.BankInfoId);
 
             entity.Property(x=> x.BankName).IsRequired();
 

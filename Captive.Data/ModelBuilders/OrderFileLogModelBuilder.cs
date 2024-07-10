@@ -18,10 +18,6 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.LogMessage).IsRequired();
 
-            entity.HasOne(x => x.OrderFile)
-                .WithMany(x => x.OrderFileLogs)
-                .HasForeignKey(x => x.OrderFileId);
-
             entity.ToTable("order_file_logs");
         }
 

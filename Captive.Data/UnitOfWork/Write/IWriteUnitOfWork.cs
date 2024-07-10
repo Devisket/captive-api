@@ -15,7 +15,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<OrderFile> OrderFiles { get; }
 
         public IWriteRepository<BatchFile> BatchFiles { get; }
-        public IWriteRepository<ProductType> ProductTypes { get; }
+        public IWriteRepository<Product> ProductTypes { get; }
         public IWriteRepository<ProductConfiguration> ProductConfigurations { get; }
 
         Task Complete(CancellationToken cancellationToken = default);

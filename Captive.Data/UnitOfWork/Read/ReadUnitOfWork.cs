@@ -22,7 +22,7 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<OrderFile> IReadUnitOfWork.OrderFiles => GetStandardRepository<OrderFile>();
         IReadRepository<OrderFileLog> IReadUnitOfWork.OrderFileLogs => GetStandardRepository<OrderFileLog>();
         IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();
-        IReadRepository<ProductType> IReadUnitOfWork.ProductTypes => GetStandardRepository<ProductType>();
+        IReadRepository<Product> IReadUnitOfWork.ProductTypes => GetStandardRepository<Product>();
         IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
 
         public IReadRepository<T> GetStandardRepository<T>() where T : class => new ReadRepository<T>(_dbContext);
