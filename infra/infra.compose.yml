@@ -1,0 +1,38 @@
+services:
+
+  captive-db:
+    image: mcr.microsoft.com/mssql/server
+    user: "root"
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_SA_PASSWORD: Password1
+      ACCEPT_EULA: Y
+      MSSQL_TCP_PORT: 1433
+      MSSQL_PID: Developer
+    volumes:
+      - "~/captive-db/data:/var/opt/mssql/data"
+      - "~/captive-db/log:/var/opt/mssql/log"
+      - "~/captive-db/secrets:/var/opt/mssql/secrets"
+
+    networks:
+      - infra_network
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: Password1
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/docker-conf/rabbitmq/log/:/var/log/rabbitmq/
+    networks:
+      - infra_network
+networks:
+  infra_network:
+    driver: bridge
+  
+
+

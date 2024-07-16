@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.TestProcessingConsole\\Captive.TestProcessingConsole.csproj": {}
+    "/home/edisket/repo/personal-project/captive-api/Captive.TestProcessingConsole/Captive.TestProcessingConsole.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
+    "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
+        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj",
         "projectName": "Captive.Processing",
-        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
-        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.Processing\\obj\\",
+        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj",
+        "packagesPath": "/home/edisket/.nuget/packages/",
+        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/edisket/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -91,41 +84,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.TestProcessingConsole\\Captive.TestProcessingConsole.csproj": {
+    "/home/edisket/repo/personal-project/captive-api/Captive.TestProcessingConsole/Captive.TestProcessingConsole.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.TestProcessingConsole\\Captive.TestProcessingConsole.csproj",
+        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.TestProcessingConsole/Captive.TestProcessingConsole.csproj",
         "projectName": "Captive.TestProcessingConsole",
-        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.TestProcessingConsole\\Captive.TestProcessingConsole.csproj",
-        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.TestProcessingConsole\\obj\\",
+        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.TestProcessingConsole/Captive.TestProcessingConsole.csproj",
+        "packagesPath": "/home/edisket/.nuget/packages/",
+        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.TestProcessingConsole/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/edisket/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
-                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
+              "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj": {
+                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj"
               }
             }
           }
@@ -174,7 +160,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

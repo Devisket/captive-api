@@ -11,8 +11,6 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x=> x.AccountNo).IsRequired();
 
-            entity.Property(x=> x.OrderFileId).IsRequired();
-
             entity.Property(x=> x.BRSTN).IsRequired();
 
             entity.Property(x=> x.DeliverTo).IsRequired(false);
@@ -24,6 +22,9 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.OrderQuanity).IsRequired();
 
+            entity.HasOne(x => x.CheckInventoryDetail)
+              .WithOne(x => x.CheckOrder);
+              
             entity.ToTable("check_orders");
         }
     }

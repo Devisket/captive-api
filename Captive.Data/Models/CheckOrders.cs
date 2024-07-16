@@ -6,10 +6,7 @@ namespace Captive.Data.Models
     {
         public Guid Id { get; set; }
         public string AccountNo { get; set; }
-        public Guid OrderFileId { get; set; }
-        public OrderFile OrderFile { get; set; }
-        public Guid FormCheckId { get; set; }
-        public FormChecks FormChecks { get; set; }
+
         public required string BRSTN { get; set; }
         public required string AccountName { get; set; }
         public string? Concode { get; set; }
@@ -17,5 +14,14 @@ namespace Captive.Data.Models
         public string? DeliverTo { get; set; }
         public bool InputEnable { get;set; }
         public string ErrorMessage { get; set; }
+       
+        public Guid OrderFileId { get; set; }
+        public OrderFile OrderFile { get; set; }
+       
+        public Guid FormCheckId { get; set; }
+        public FormChecks FormChecks { get; set; }
+
+        public CheckInventoryDetail CheckInventoryDetail { get; set; } 
+
     }
 }

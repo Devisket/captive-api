@@ -24,7 +24,7 @@ namespace Captive.Data
             modelBuilder.BuildProductConfigurationModel();
             modelBuilder.BuildProductModel();
             modelBuilder.BuildTagModel();
-
+            modelBuilder.BuildCheckInventoryDetailModel();
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -3,19 +3,18 @@ using Captive.Applications.Bank.Command.CreateBankInfo;
 using Captive.Applications.Bank.Command.DeleteBankBranch;
 using Captive.Applications.Bank.Command.DeleteBankInfo;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Commands.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BankController : ControllerBase
+    public class BankInfoController : ControllerBase
     {
 
         private readonly IMediator _mediator;
 
-        public BankController(IMediator mediator)
+        public BankInfoController(IMediator mediator)
         {
             _mediator = mediator;
         }

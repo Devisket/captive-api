@@ -29,6 +29,7 @@ namespace Captive.Data.ModelBuilders
                 .WithOne(x => x.Tag)
                 .HasForeignKey(x => x.TagId);
 
+            entity.ToTable("tag");
         }
     }
 }
