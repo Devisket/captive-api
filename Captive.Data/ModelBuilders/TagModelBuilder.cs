@@ -29,7 +29,22 @@ namespace Captive.Data.ModelBuilders
                 .WithOne(x => x.Tag)
                 .HasForeignKey(x => x.TagId);
 
+            entity.HasMany(x => x.TagMappings)
+                .WithOne(x => x.Tag)
+                .HasForeignKey(x => x.TagId);
+
             entity.ToTable("tag");
         }
+
+        public static void BuildTagMappingModel(this ModelBuilder modelBuilder)
+        {
+            var entity = modelBuilder.Entity<TagMapping>();
+
+            entity.HasKey(x => x.Id);
+
+            entity.ToTable("tag_mapping");
+        }
     }
+
+    
 }

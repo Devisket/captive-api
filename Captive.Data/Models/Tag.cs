@@ -13,5 +13,6 @@ namespace Captive.Data.Models
         public ICollection<Product> Products { get; set; }
         public ICollection<FormChecks> FormChecks { get; set; }
         public ICollection<BankBranches> BankBranches { get; set; }
+        public ICollection<TagMapping> TagMappings { get; set; }
     }
 }

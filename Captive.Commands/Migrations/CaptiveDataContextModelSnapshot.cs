@@ -135,7 +135,7 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TagId")
+                    b.Property<Guid>("TagId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -471,6 +471,28 @@ namespace Captive.Commands.Migrations
                     b.ToTable("tag", (string)null);
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.TagMapping", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProducTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("tag_mapping", (string)null);
+                });
+
             modelBuilder.Entity("Captive.Data.Models.BankBranches", b =>
                 {
                     b.HasOne("Captive.Data.Models.BankInfo", "BankInfo")
@@ -503,7 +525,9 @@ namespace Captive.Commands.Migrations
                 {
                     b.HasOne("Captive.Data.Models.Tag", "Tag")
                         .WithMany("CheckInventory")
-                        .HasForeignKey("TagId");
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Tag");
                 });
@@ -637,6 +661,17 @@ namespace Captive.Commands.Migrations
                     b.Navigation("BankInfo");
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.TagMapping", b =>
+                {
+                    b.HasOne("Captive.Data.Models.Tag", "Tag")
+                        .WithMany("TagMappings")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("Captive.Data.Models.BankInfo", b =>
                 {
                     b.Navigation("BankBranches");
@@ -697,6 +732,8 @@ namespace Captive.Commands.Migrations
                     b.Navigation("FormChecks");
 
                     b.Navigation("Products");
+
+                    b.Navigation("TagMappings");
                 });
 #pragma warning restore 612, 618
         }

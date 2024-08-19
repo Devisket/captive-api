@@ -21,10 +21,10 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<OrderFileLog> OrderFileLogs => GetStandardRepository<OrderFileLog>();
         public IWriteRepository<ProductConfiguration> ProductConfigurations => GetStandardRepository<ProductConfiguration>();
         public IWriteRepository<Product> ProductTypes => GetStandardRepository<Product>();
-
         public IWriteRepository<BankBranches> BankBranches => GetStandardRepository<BankBranches>();
+        public IWriteRepository<Tag> Tags => GetStandardRepository<Tag>();
+        public IWriteRepository<TagMapping> TagMappings => GetStandardRepository<TagMapping>();
         public IWriteRepository<T> GetStandardRepository<T>() where T : class => new WriteRepository<T>(_dbContext);
-
         public async Task Complete(CancellationToken cancellationToken = default)
         {
             await _dbContext.SaveChangesAsync(cancellationToken);

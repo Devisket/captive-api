@@ -23,8 +23,10 @@ namespace Captive.Data
             modelBuilder.BuildBatchFileModel();
             modelBuilder.BuildProductConfigurationModel();
             modelBuilder.BuildProductModel();
-            modelBuilder.BuildTagModel();
             modelBuilder.BuildCheckInventoryDetailModel();
+            modelBuilder.BuildTagModel();
+            modelBuilder.BuildTagMappingModel();    
+            
             base.OnModelCreating(modelBuilder);
         }
     }

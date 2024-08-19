@@ -34,7 +34,20 @@ namespace Captive.Queries.Controllers
                 return NoContent();
             }
 
-            return Ok( response);
+            return Ok(response);
+        }
+
+        [HttpGet("{bankId}/branches/{branchId}")]
+        public async Task<IActionResult> GetSpecificBranch([FromRoute] Guid bankId, [FromRoute] Guid branchId)
+        {
+            var response = await _mediator.Send(new GetBankBranchesQuery { BankId = bankId, BranchId = branchId });
+
+            if (response.Branches == null || !response.Branches.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(response);
         }
     }
 }

@@ -1,39 +1,46 @@
 {
   "format": 1,
   "restore": {
-    "/home/edisket/repo/personal-project/captive-api/Captive.Commands/Captive.Commands.csproj": {}
+    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Commands\\Captive.Commands.csproj": {}
   },
   "projects": {
-    "/home/edisket/repo/personal-project/captive-api/Captive.Applications/Captive.Applications.csproj": {
+    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Applications\\Captive.Applications.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.Applications/Captive.Applications.csproj",
+        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Applications\\Captive.Applications.csproj",
         "projectName": "Captive.Applications",
-        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Applications/Captive.Applications.csproj",
-        "packagesPath": "/home/edisket/.nuget/packages/",
-        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.Applications/obj/",
+        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Applications\\Captive.Applications.csproj",
+        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Applications\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/edisket/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
               },
-              "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
               },
-              "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj"
               }
             }
           }
@@ -78,40 +85,47 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/edisket/repo/personal-project/captive-api/Captive.Commands/Captive.Commands.csproj": {
+    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Commands\\Captive.Commands.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.Commands/Captive.Commands.csproj",
+        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Commands\\Captive.Commands.csproj",
         "projectName": "Captive.Commands",
-        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Commands/Captive.Commands.csproj",
-        "packagesPath": "/home/edisket/.nuget/packages/",
-        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.Commands/obj/",
+        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Commands\\Captive.Commands.csproj",
+        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Commands\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/edisket/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/edisket/repo/personal-project/captive-api/Captive.Applications/Captive.Applications.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Applications/Captive.Applications.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Applications\\Captive.Applications.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Applications\\Captive.Applications.csproj"
               },
-              "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
               },
-              "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj"
               }
             }
           }
@@ -181,26 +195,33 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj": {
+    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj",
+        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj",
         "projectName": "Captive.Data",
-        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj",
-        "packagesPath": "/home/edisket/.nuget/packages/",
-        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.Data/obj/",
+        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj",
+        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/edisket/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -259,26 +280,33 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj": {
+    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj",
+        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
         "projectName": "Captive.Processing",
-        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj",
-        "packagesPath": "/home/edisket/.nuget/packages/",
-        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/obj/",
+        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
+        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/edisket/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -343,37 +371,44 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj": {
+    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj",
+        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj",
         "projectName": "Captive.Reports",
-        "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Reports/Captive.Reports.csproj",
-        "packagesPath": "/home/edisket/.nuget/packages/",
-        "outputPath": "/home/edisket/repo/personal-project/captive-api/Captive.Reports/obj/",
+        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\Captive.Reports.csproj",
+        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Reports\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/edisket/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Data/Captive.Data.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
               },
-              "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj": {
-                "projectPath": "/home/edisket/repo/personal-project/captive-api/Captive.Processing/Captive.Processing.csproj"
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj"
               }
             }
           }
@@ -408,7 +443,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

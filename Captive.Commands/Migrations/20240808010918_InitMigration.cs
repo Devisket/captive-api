@@ -165,7 +165,7 @@ namespace Captive.Commands.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,7 +174,8 @@ namespace Captive.Commands.Migrations
                         name: "FK_check_inventory_tag_TagId",
                         column: x => x.TagId,
                         principalTable: "tag",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,6 +201,26 @@ namespace Captive.Commands.Migrations
                         column: x => x.TagId,
                         principalTable: "tag",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tag_mapping",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProducTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tag_mapping", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tag_mapping_tag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "tag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -452,6 +473,11 @@ namespace Captive.Commands.Migrations
                 name: "IX_tag_BankInfoId",
                 table: "tag",
                 column: "BankInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tag_mapping_TagId",
+                table: "tag_mapping",
+                column: "TagId");
         }
 
         /// <inheritdoc />
@@ -471,6 +497,9 @@ namespace Captive.Commands.Migrations
 
             migrationBuilder.DropTable(
                 name: "seed");
+
+            migrationBuilder.DropTable(
+                name: "tag_mapping");
 
             migrationBuilder.DropTable(
                 name: "check_inventory");

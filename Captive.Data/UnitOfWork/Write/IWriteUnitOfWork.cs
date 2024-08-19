@@ -3,7 +3,7 @@ using Captive.Data.Repository.Write;
 
 namespace Captive.Data.UnitOfWork.Write
 {
-    public interface IWriteUnitOfWork:IDisposable
+    public interface IWriteUnitOfWork : IDisposable
     {
         public IWriteRepository<BankInfo> BankInfo { get; }
         public IWriteRepository<BankBranches> BankBranches{ get; }
@@ -17,6 +17,8 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<BatchFile> BatchFiles { get; }
         public IWriteRepository<Product> ProductTypes { get; }
         public IWriteRepository<ProductConfiguration> ProductConfigurations { get; }
+        public IWriteRepository<Tag> Tags{ get; }
+        public IWriteRepository<TagMapping> TagMappings { get; }
 
         Task Complete(CancellationToken cancellationToken = default);
     }

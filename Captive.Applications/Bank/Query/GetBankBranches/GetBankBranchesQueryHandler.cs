@@ -17,30 +17,33 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
         public async Task<GetBankBranchesQueryResponse> Handle(GetBankBranchesQuery request, CancellationToken cancellationToken)
         {
 
-            //if(!await _readUow.Banks.GetAll().AsNoTracking().AnyAsync(x=> x.Id == request.BankId, cancellationToken)) 
-            //{
-            //    throw new Exception("Bank doesn't exist");
-            //}
+            if (!await _readUow.Banks.GetAll().AsNoTracking().AnyAsync(x => x.Id == request.BankId, cancellationToken))
+            {
+                throw new Exception("Bank doesn't exist");
+            }
 
-            //var bankBranch = await _readUow.BankBranches.GetAll().Where(x => x.BankId == request.BankId).ToListAsync(cancellationToken);
+            var bankBranch = _readUow.BankBranches.GetAll()
+                .Where(x => x.BankInfoId == request.BankId);
 
-            //return new GetBankBranchesQueryResponse
-            //{
-            //    BankId = request.BankId,
-            //    Branches = bankBranch.Select(x => new BankBranchDto
-            //    {
-            //        Id = x.Id,
-            //        BranchName = x.BranchName,
-            //        BRSTN = x.BRSTNCode,
-            //        BranchAddress1 = x.BranchAddress1,
-            //        BranchAddress2 = x.BranchAddress2,
-            //        BranchAddress3 = x.BranchAddress3,
-            //        BranchAddress4 = x.BranchAddress4,
-            //        BranchAddress5 = x.BranchAddress5    
-            //    }).ToList()
-            //};
+            if(request.BranchId.HasValue)
+                bankBranch = bankBranch.Where(x => x.Id == request.BranchId);
 
-            return null;
+            return new GetBankBranchesQueryResponse
+            {
+                Branches = await bankBranch.Select(x => new BankBranchDto
+                {
+                    Id = x.Id,
+                    BranchName = x.BranchName,
+                    BRSTN = x.BRSTNCode,
+                    BranchAddress1 = x.BranchAddress1,
+                    BranchAddress2 = x.BranchAddress2,
+                    BranchAddress3 = x.BranchAddress3,
+                    BranchAddress4 = x.BranchAddress4,
+                    BranchAddress5 = x.BranchAddress5,
+                    BranchStatus = x.BranchStatus,
+                    MerginBranchId = x.MergingBranchId,
+                }).ToListAsync(cancellationToken)
+            };
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Captive.Data.Models
     {
         public Guid Id { get; set; }
 
-        public Guid? TagId { get; set; }
-        public Tag? Tag;
+        public Guid TagId { get; set; }
+        public Tag Tag;
 
         public ICollection<CheckInventoryDetail> CheckInventoryDetails { get; set; }
     }

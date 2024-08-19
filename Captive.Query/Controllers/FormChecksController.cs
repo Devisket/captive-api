@@ -16,7 +16,7 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet("bank/{bankId}")]
-        public async Task<IActionResult> GetBankFormChecks([FromRoute] Guid bankId)
+        public async Task<IActionResult> GetBankFormChecks([FromRoute] Guid bankId, [FromQuery] Guid productId)
         {
             var response = await _mediator.Send(
                 new GetBankFormCheckQuery { 

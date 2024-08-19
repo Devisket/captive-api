@@ -24,6 +24,8 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();
         IReadRepository<Product> IReadUnitOfWork.ProductTypes => GetStandardRepository<Product>();
         IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
+        IReadRepository<Tag> IReadUnitOfWork.Tags => GetStandardRepository<Tag>();
+        IReadRepository<TagMapping> IReadUnitOfWork.TagsMapping => GetStandardRepository<TagMapping>();
 
         public IReadRepository<T> GetStandardRepository<T>() where T : class => new ReadRepository<T>(_dbContext);
 

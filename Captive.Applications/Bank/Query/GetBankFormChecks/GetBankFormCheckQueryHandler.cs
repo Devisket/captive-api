@@ -17,19 +17,25 @@ namespace Captive.Applications.Bank.Query.GetBankFormChecks
 
         public async Task<GetBankFormCheckQueryResponse> Handle(GetBankFormCheckQuery request, CancellationToken cancellationToken)
         {
-            //var bankFormChecks = await _readUow.FormChecks.GetAll()
-            //    .Where(x => x.BankId == request.BankId).AsNoTracking().ToListAsync();
+            var bankFormChecks = _readUow.FormChecks.GetAll()
+                .Where(x => x.ProductId == request.ProductId).AsNoTracking();
 
-            //return new GetBankFormCheckQueryResponse { BankFormChecks = bankFormChecks.Select(x => new BankFormCheck
-            //{
-            //    Id = x.Id,
-            //    CheckType = x.CheckType,
-            //    FormType = x.FormType,
-            //    Description = x.Description,
-            //    Quanitity = x.Quantity
-            //}).ToList()};
 
-            return null;
+            if(request.Id.HasValue)
+                bankFormChecks = bankFormChecks.Where(x => x.Id == request.Id.Value);
+
+            return new GetBankFormCheckQueryResponse
+            {
+                BankFormChecks = await bankFormChecks.Select(x => new BankFormCheck
+                {
+                    Id = x.Id,
+                    ProductId = x.ProductId,
+                    CheckType = x.CheckType,
+                    FormType = x.FormType,
+                    Description = x.Description,
+                    Quanitity = x.Quantity
+                }).ToListAsync(cancellationToken)
+            };
         }
     }
 }

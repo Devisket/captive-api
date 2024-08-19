@@ -25,7 +25,7 @@ namespace Captive.Queries.Extensions
 
             services
                  .AddDbContext<CaptiveDataContext>(options =>
-                options.UseMySQL(connString));
+                options.UseSqlServer(connString));
 
             services.AddScoped<ITextFileProcessor, TextFileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();

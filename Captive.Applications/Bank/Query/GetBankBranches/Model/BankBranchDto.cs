@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,8 @@ namespace Captive.Applications.Bank.Query.GetBankBranches.Model
         public string? BranchAddress3 { get; set; }
         public string? BranchAddress4 { get; set; }
         public string? BranchAddress5 { get; set; }
+        public BranchStatus BranchStatus {  get; set; }
+        public Guid? MerginBranchId {  get; set; } 
+
     }
 }
