@@ -4,14 +4,16 @@ services:
       context: ../
       dockerfile: ./Captive.Query/Dockerfile
     environment:
-      ConnectionStrings__DefaultConnection: "Server=localhost;Database=captive_db;User Id=sa;Pwd=Password1;"
+      ConnectionStrings__DefaultConnection: "Server=localhost;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
       #ASPNETCORE_HTTPS_PORTS: 8443
       #ASPNETCORE_URLS: https://+:8443;http://+8080
+      #ASPNETCORE_HTTPS_PORTS: 8443
+      ASPNETCORE_HTTP_PORTS: 8030
       ASPNETCORE_ENVIRONMENT: Development
       # ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
       # ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
     ports:
-      - 7030:7030
+      - 8030:8030
     volumes:
       - ~/https:/https
     networks:
@@ -25,8 +27,9 @@ services:
       context: ../
       dockerfile: ./Captive.Commands/Dockerfile
     environment:
-      ConnectionStrings__DefaultConnection: "Server=localhost;Database=captive_db;User Id=sa;Pwd=Password1;"
+      ConnectionStrings__DefaultConnection: "Server=localhost;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
       #ASPNETCORE_HTTPS_PORTS: 7443
+      ASPNETCORE_HTTP_PORTS: 7020
       #ASPNETCORE_URLS: https://+:7443;http://+7080
       ASPNETCORE_ENVIRONMENT: Development
       # ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
