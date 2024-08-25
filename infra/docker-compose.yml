@@ -1,0 +1,81 @@
+services:
+  captive-api-query:
+    build:
+      context: ../
+      dockerfile: ./Captive.Query/Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=localhost;Database=captive_db;User Id=sa;Pwd=Password1;"
+      #ASPNETCORE_HTTPS_PORTS: 8443
+      #ASPNETCORE_URLS: https://+:8443;http://+8080
+      ASPNETCORE_ENVIRONMENT: Development
+      # ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
+      # ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
+    ports:
+      - 7030:7030
+    volumes:
+      - ~/https:/https
+    networks:
+      - captive_network
+    depends_on:
+      captive-api-command:
+        condition: service_started
+
+  captive-api-command: 
+    build:
+      context: ../
+      dockerfile: ./Captive.Commands/Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=localhost;Database=captive_db;User Id=sa;Pwd=Password1;"
+      #ASPNETCORE_HTTPS_PORTS: 7443
+      #ASPNETCORE_URLS: https://+:7443;http://+7080
+      ASPNETCORE_ENVIRONMENT: Development
+      # ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
+      # ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
+      OutputDirectory: /app/reports/Bank/Date,
+      ArchiveDirectory: /app/reports/Archive
+    ports:
+      - 7020:7020
+    networks:
+      - captive_network
+    volumes:
+      - ~/https:/https
+      - ~/Captive/Reports/:/app/reports
+      - ~/Captive/Reports/Archive:/app/reports/Archive
+    depends_on:
+      mssql-server:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    command: bash -c "dotnet ef database update && dotnet run"
+
+  mssql-server:
+    build: ./mssql-db
+    user: root
+    ports:
+      - 1433:1433
+    volumes:
+      - ~/mssql/data:/var/opt/mssql/data
+      - ~/mssql/log:/var/opt/mssql/log
+      - ~/mssql/secrets:/var/opt/mssql/secrets
+    networks:
+      - captive_network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+        - captive_network
+
+networks:
+  captive_network:
+    driver: bridge
+
+
+
+    

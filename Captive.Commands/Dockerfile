@@ -16,7 +16,7 @@ RUN dotnet restore "./Captive.Commands/Captive.Commands.csproj"
 COPY . .
 WORKDIR "/src/Captive.Commands"
 RUN dotnet build "./Captive.Commands.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
+RUN dotnet tool restore
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Captive.Commands.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
