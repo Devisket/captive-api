@@ -20,7 +20,9 @@ namespace Captive.Queries.Controllers
         {
             var response = await _mediator.Send(
                 new GetBankFormCheckQuery { 
-                    BankId = bankId });
+                    Id = bankId, 
+                    ProductId = productId
+                });
 
             return Ok(response);
         }
