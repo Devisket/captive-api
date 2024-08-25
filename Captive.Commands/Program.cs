@@ -22,8 +22,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await app.RunDatabaseMigration();
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
