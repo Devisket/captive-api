@@ -29,7 +29,7 @@ namespace Captive.Query
 
             app.UseAuthorization();
 
-
+            app.UseCors(x => x.AllowAnyOrigin());
             app.MapControllers();
 
             app.Run();
