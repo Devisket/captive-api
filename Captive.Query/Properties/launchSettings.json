@@ -10,7 +10,7 @@
       },
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "https://localhost:7030"
+      "applicationUrl": "https://localhost:8030"
     }
   }
 }
