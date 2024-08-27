@@ -15,6 +15,7 @@ namespace Captive.Query
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.ConfigureQueryServices(builder.Configuration);
+            builder.Services.AddCors();
 
             var app = builder.Build();
 
@@ -29,7 +30,8 @@ namespace Captive.Query
 
             app.UseAuthorization();
 
-            app.UseCors(x => x.AllowAnyOrigin());
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200", "https://localhost:4200"));
+
             app.MapControllers();
 
             app.Run();
