@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {}
+    "C:\\Users\\Helbert Pernecita\\source\\repos\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
+    "C:\\Users\\Helbert Pernecita\\source\\repos\\captive-api\\Captive.Processing\\Captive.Processing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
+        "projectUniqueName": "C:\\Users\\Helbert Pernecita\\source\\repos\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
         "projectName": "Captive.Processing",
-        "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
-        "packagesPath": "C:\\Users\\ediso\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Processing\\obj\\",
+        "projectPath": "C:\\Users\\Helbert Pernecita\\source\\repos\\captive-api\\Captive.Processing\\Captive.Processing.csproj",
+        "packagesPath": "C:\\Users\\Helbert Pernecita\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Helbert Pernecita\\source\\repos\\captive-api\\Captive.Processing\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ediso\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Helbert Pernecita\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -91,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
