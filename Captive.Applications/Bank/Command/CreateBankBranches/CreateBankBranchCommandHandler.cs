@@ -22,55 +22,55 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
 
         public async Task<Unit> Handle(CreateBankBranchCommand request, CancellationToken cancellationToken)
         {
-            //var bank = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.BankId, cancellationToken);
+            var bank = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.BankId, cancellationToken);
 
-            //if(bank == null)
-            //{
-            //    throw new Exception($"Bank Id: {request.BankId} doesn't exist.");
-            //}
+            if(bank == null)
+            {
+               throw new Exception($"Bank Id: {request.BankId} doesn't exist.");
+            }
 
-            //if(request.BranchId != Guid.Empty)
-            //{
-            //    var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId, cancellationToken);
+            if(request.BranchId != Guid.Empty)
+            {
+               var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId, cancellationToken);
 
-            //    if(branch == null)
-            //        throw new Exception($"Branch Id: {request.BranchId} doesnt exist.");
+               if(branch == null)
+                   throw new Exception($"Branch Id: {request.BranchId} doesnt exist.");
 
-            //    if (await _readUow.BankBranches.GetAll().AsNoTracking().AnyAsync(x => x.BankId == request.BankId && 
-            //            x.BRSTNCode == request.BrstnCode && x.Id != request.BranchId, cancellationToken))
-            //        throw new Exception($"BRSTN Code: {request.BrstnCode} for bank ${bank.BankName} is conflicting.");
+               if (await _readUow.BankBranches.GetAll().AsNoTracking().AnyAsync(x => x.BankInfoId == request.BankId && 
+                       x.BRSTNCode == request.BrstnCode && x.Id != request.BranchId, cancellationToken))
+                   throw new Exception($"BRSTN Code: {request.BrstnCode} for bank ${bank.BankName} is conflicting.");
 
-            //    branch.BranchName = request.BranchName;
-            //    branch.BRSTNCode = request.BrstnCode;
-            //    branch.BranchAddress1 = request.BranchAddress1;
-            //    branch.BranchAddress2 = request.BranchAddress2;
-            //    branch.BranchAddress3 = request.BranchAddress3;
-            //    branch.BranchAddress4 = request.BranchAddress4;
-            //    branch.BranchAddress5 = request.BranchAddress5;
+               branch.BranchName = request.BranchName;
+               branch.BRSTNCode = request.BrstnCode;
+               branch.BranchAddress1 = request.BranchAddress1;
+               branch.BranchAddress2 = request.BranchAddress2;
+               branch.BranchAddress3 = request.BranchAddress3;
+               branch.BranchAddress4 = request.BranchAddress4;
+               branch.BranchAddress5 = request.BranchAddress5;
 
-            //    _writeUow.BankBranches.Update(branch);
-            //}
-            //else
-            //{
-            //    if (await _readUow.BankBranches.GetAll().AsNoTracking().AnyAsync(x => x.BankId == request.BankId && x.BRSTNCode == request.BrstnCode, cancellationToken))
-            //        throw new Exception($"BRSTN Code: {request.BrstnCode} for bank ${bank.BankName} is conflicting.");
+               _writeUow.BankBranches.Update(branch);
+            }
+            else
+            {
+               if (await _readUow.BankBranches.GetAll().AsNoTracking().AnyAsync(x => x.BankInfoId == request.BankId && x.BRSTNCode == request.BrstnCode, cancellationToken))
+                   throw new Exception($"BRSTN Code: {request.BrstnCode} for bank ${bank.BankName} is conflicting.");
 
-            //    await _writeUow.BankBranches.AddAsync(new BankBranches
-            //    {
-            //        BankId = request.BankId,
-            //        BranchAddress1 = request.BranchAddress1,
-            //        BranchAddress2 = request.BranchAddress2,
-            //        BranchAddress3 = request.BranchAddress3,
-            //        BranchAddress4 = request.BranchAddress4,
-            //        BranchAddress5 = request.BranchAddress5,
-            //        BRSTNCode = request.BrstnCode,
-            //        BranchName = request.BranchName,
-            //        BranchStatus = BranchStatus.Active,
+               await _writeUow.BankBranches.AddAsync(new BankBranches
+               {
+                   BankInfoId = request.BankId,
+                   BranchAddress1 = request.BranchAddress1,
+                   BranchAddress2 = request.BranchAddress2,
+                   BranchAddress3 = request.BranchAddress3,
+                   BranchAddress4 = request.BranchAddress4,
+                   BranchAddress5 = request.BranchAddress5,
+                   BRSTNCode = request.BrstnCode,
+                   BranchName = request.BranchName,
+                   BranchStatus = BranchStatus.Active,
 
-            //    },cancellationToken);
-            //}
+               },cancellationToken);
+            }
 
-            //await _writeUow.Complete();
+            await _writeUow.Complete();
 
             return Unit.Value;
         }
