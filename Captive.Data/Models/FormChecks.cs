@@ -17,7 +17,5 @@
 
         public ICollection<CheckOrders>? CheckOrders { get; set; }
 
-
-        
     }
 }

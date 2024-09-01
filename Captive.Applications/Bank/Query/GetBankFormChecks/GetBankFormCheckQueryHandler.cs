@@ -21,8 +21,9 @@ namespace Captive.Applications.Bank.Query.GetBankFormChecks
                 .Where(x => x.ProductId == request.ProductId).AsNoTracking();
 
 
-            if(request.Id.HasValue)
-                bankFormChecks = bankFormChecks.Where(x => x.Id == request.Id.Value);
+            // if(request.Id.HasValue)
+            //     bankFormChecks = bankFormChecks.Where(x => x.Id == request.Id.Value);
+            // REMOVE BY HELBERT (not in formcheck table)
 
             return new GetBankFormCheckQueryResponse
             {
