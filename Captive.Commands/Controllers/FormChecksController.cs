@@ -34,7 +34,7 @@ namespace Captive.Commands.Controllers
             await _mediator.Send(new CreateUpdateFormCheckCommand
             {
                 FormCheckId = formCheckId,
-                BankId = bankId,
+                // BankId = bankId, HELBERT
                 Detail = request
             });
 
@@ -46,7 +46,7 @@ namespace Captive.Commands.Controllers
         {
             await _mediator.Send(new DeleteFormCheckCommand
             {
-                BankId = bankId,
+                // BankId = bankId,
                 FormCheckId = formCheckId
             });
 

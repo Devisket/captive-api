@@ -20,11 +20,11 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
         public async Task<Unit> Handle(CreateUpdateFormCheckCommand request, CancellationToken cancellationToken)
         {
 
-            var bankExist = await _readUow.Banks.GetAll().AnyAsync(x => x.Id == request.BankId, cancellationToken);
+            // var bankExist = await _readUow.Banks.GetAll().AnyAsync(x => x.Id == request.BankId, cancellationToken);
             var productTypeExist = await _readUow.ProductTypes.GetAll().AnyAsync(x => x.Id == request.Detail.ProductTypeId, cancellationToken);
 
-            if (!bankExist)
-               throw new Exception($"BankId{request.BankId} doesn't exist.");
+            // if (!bankExist)
+            //    throw new Exception($"BankId{request.BankId} doesn't exist.");
 
             if (!productTypeExist)
                throw new Exception($"ProductTypeId{request.Detail.ProductTypeId} doesn't exist");

@@ -32,6 +32,7 @@ namespace Captive.Applications.Bank.Query.GetBankFormChecks
                     Id = x.Id,
                     ProductId = x.ProductId,
                     CheckType = x.CheckType,
+                    FileInitial = x.FileInitial,
                     FormType = x.FormType,
                     Description = x.Description,
                     Quanitity = x.Quantity
