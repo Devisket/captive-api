@@ -17,7 +17,9 @@ namespace Captive.Applications.Product.Query.GetAllProductType
 
         public async Task<GetAllProductTypeQueryResponse> Handle(GetAllProductTypeQuery request, CancellationToken cancellationToken)
         {
-            var bank = await _readUow.Banks.GetAll().Include(x => x.Products).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var bank = await _readUow.Banks.GetAll()
+                .Where(x => x.Id == request.BankId) // HELBERT
+                .Include(x => x.Products).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
 
             if (bank == null)
                throw new Exception($"Bank id: {request.BankId} doesn't exist");
@@ -39,8 +41,8 @@ namespace Captive.Applications.Product.Query.GetAllProductType
                ProductTypes = productTypes.Select(x =>
                new ProductTypeResponse
                {
-                   ProductTypeId = x.Id,
-                   ProductTypeName = x.ProductName
+                    ProductTypeId = x.Id,
+                    ProductTypeName = x.ProductName
                }).ToList()
             };
 
