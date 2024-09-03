@@ -16,26 +16,28 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 {
     public class UploadOrderFileCommandHandler : IRequestHandler<UploadOrderFileCommand,Unit>
     {
-        private readonly ITextFileProcessor _textFileProcessor;
-        private readonly IReadUnitOfWork _readUow;
-        private readonly IWriteUnitOfWork _writeUow;
-        private readonly IReportGenerator _reportGenerator;
-        private readonly IExcelFileProcessor _excelFileProcessor;
+        //private readonly ITextFileProcessor _textFileProcessor;
+        //private readonly IReadUnitOfWork _readUow;
+        //private readonly IWriteUnitOfWork _writeUow;
+        //private readonly IReportGenerator _reportGenerator;
+        //private readonly IExcelFileProcessor _excelFileProcessor;
 
-        public UploadOrderFileCommandHandler(
-            ITextFileProcessor fileProcessor,
-            IExcelFileProcessor excelFileProcessor,
-            IReadUnitOfWork readUow, 
-            IWriteUnitOfWork writeUow, 
-            IReportGenerator reportGenerator)
-        {
-            _textFileProcessor = fileProcessor;
-            _readUow = readUow;
-            _writeUow = writeUow;
-            _reportGenerator = reportGenerator;
-            _excelFileProcessor = excelFileProcessor;
-        }
+        //public UploadOrderFileCommandHandler(
+        //    ITextFileProcessor fileProcessor,
+        //    IExcelFileProcessor excelFileProcessor,
+        //    IReadUnitOfWork readUow, 
+        //    IWriteUnitOfWork writeUow, 
+        //    IReportGenerator reportGenerator)
+        //{
+        //    _textFileProcessor = fileProcessor;
+        //    _readUow = readUow;
+        //    _writeUow = writeUow;
+        //    _reportGenerator = reportGenerator;
+        //    _excelFileProcessor = excelFileProcessor;
+        //}
         
+        private readonly IRabbit
+        public UploadOrderFileCommandHandler() { }
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
         {
             //var bankInfo = await GetBankInfo(request.BankId);

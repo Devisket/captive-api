@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Captive.Queries", "Captive.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{65415523-43A3-44D0-A418-4627EA671BEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Captive.Messaging", "Captive.Messaging\Captive.Messaging.csproj", "{E6A99870-35E7-4609-8612-64C61C416FAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Captive.Messaging", "Captive.Messaging\Captive.Messaging.csproj", "{E6A99870-35E7-4609-8612-64C61C416FAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Captive.Fileprocessor", "Captive.Fileprocessor\Captive.Fileprocessor.csproj", "{E8466044-99C8-4FFB-8456-05DE9993818B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{E6A99870-35E7-4609-8612-64C61C416FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6A99870-35E7-4609-8612-64C61C416FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6A99870-35E7-4609-8612-64C61C416FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8466044-99C8-4FFB-8456-05DE9993818B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8466044-99C8-4FFB-8456-05DE9993818B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8466044-99C8-4FFB-8456-05DE9993818B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8466044-99C8-4FFB-8456-05DE9993818B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{693190CC-A40B-45C8-8354-D806D11E8D50} = {181839A3-D01B-456F-8BCD-B0E4ED1A4EEA}
 		{C28794FF-4F37-4D78-BD36-B714A2B34182} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 		{E6A99870-35E7-4609-8612-64C61C416FAF} = {65415523-43A3-44D0-A418-4627EA671BEE}
+		{E8466044-99C8-4FFB-8456-05DE9993818B} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A874DCB-688E-4709-8411-D9750ED55900}

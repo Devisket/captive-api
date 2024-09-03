@@ -8,6 +8,7 @@ using Captive.Reports.BlockReport;
 using Captive.Reports.PackingReport;
 using Captive.Reports.PrinterFileReport;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using System.Reflection;
 
 namespace Captive.Commands.Extensions
@@ -36,6 +37,7 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IPackingReport, PackingReport>();
             services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();
 
+            services.AddSingleton<Rabbit>
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
