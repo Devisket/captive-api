@@ -8,7 +8,6 @@ namespace Captive.Messaging.Producers.Messages
         public FileUploadProducerMessage(IConnectionFactory connectionFactory) : base(connectionFactory)
         {
         }
-        public override string queueName { get => ""; }
-
+        public override string queueName { get => "Fileupload"; }
     }
 }

@@ -2116,6 +2116,7 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Captive.Data": "1.0.0",
+          "Captive.Messaging": "1.0.0",
           "Captive.Processing": "1.0.0",
           "Captive.Reports": "1.0.0",
           "MediatR": "12.3.0",
@@ -2141,6 +2142,21 @@
         },
         "runtime": {
           "bin/placeholder/Captive.Data.dll": {}
+        }
+      },
+      "Captive.Messaging/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Newtonsoft.Json": "13.0.3",
+          "RabbitMQ.Client": "6.8.1"
+        },
+        "compile": {
+          "bin/placeholder/Captive.Messaging.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Captive.Messaging.dll": {}
         }
       },
       "Captive.Processing/1.0.0": {
@@ -6239,6 +6255,11 @@
       "type": "project",
       "path": "../Captive.Data/Captive.Data.csproj",
       "msbuildProject": "../Captive.Data/Captive.Data.csproj"
+    },
+    "Captive.Messaging/1.0.0": {
+      "type": "project",
+      "path": "../Captive.Messaging/Captive.Messaging.csproj",
+      "msbuildProject": "../Captive.Messaging/Captive.Messaging.csproj"
     },
     "Captive.Processing/1.0.0": {
       "type": "project",

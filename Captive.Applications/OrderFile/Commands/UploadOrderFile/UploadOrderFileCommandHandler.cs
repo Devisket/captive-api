@@ -2,6 +2,8 @@
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Messaging.Models;
+using Captive.Messaging.Producers;
 using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.Model;
 using Captive.Processing.Processor.TextFileProcessor;
@@ -36,10 +38,20 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
         //    _excelFileProcessor = excelFileProcessor;
         //}
         
-        private readonly IRabbit
-        public UploadOrderFileCommandHandler() { }
+        private readonly IProducer<FileUploadMessage> _producer;
+
+        public UploadOrderFileCommandHandler(IProducer<FileUploadMessage> producer) { 
+            _producer = producer;
+        }
+
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
         {
+            _producer.ProduceMessage(new FileUploadMessage
+            {
+                BankId = request.BankId,
+                BatchID = Guid.NewGuid(),
+                Files = new string[] { "sample" }
+            });
             //var bankInfo = await GetBankInfo(request.BankId);
 
             //if (bankInfo == null)

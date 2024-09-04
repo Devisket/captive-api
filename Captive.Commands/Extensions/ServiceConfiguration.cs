@@ -1,6 +1,10 @@
 ﻿using Captive.Data;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Messaging;
+using Captive.Messaging.Models;
+using Captive.Messaging.Producers;
+using Captive.Messaging.Producers.Messages;
 using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.TextFileProcessor;
 using Captive.Reports;
@@ -26,8 +30,7 @@ namespace Captive.Commands.Extensions
 
             services
                  .AddDbContext<CaptiveDataContext>(options =>
-                options.UseSqlServer(connString, b => b.MigrationsAssembly("Captive.Commands")));
-         
+                options.UseSqlServer(connString, b => b.MigrationsAssembly("Captive.Commands")), ServiceLifetime.Scoped);
             services.AddScoped<ITextFileProcessor, TextFileProcessor>();
             services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
             services.AddScoped<IWriteUnitOfWork, WriteUnitOfWork>();
@@ -37,10 +40,42 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IPackingReport, PackingReport>();
             services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();
 
-            services.AddSingleton<Rabbit>
+            services.AddSingleton<IConnectionFactory, ConnectionFactory>();
+            services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
+            services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        }
+
+        public static async Task MigrateDatabase(this WebApplication webApplication, ILogger logger)
+        {
+            try
+            {
+                using (var scope = webApplication.Services.CreateScope()) 
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<CaptiveDataContext>();
+
+                    logger.LogInformation("Checking for pending migration");
+
+                    var pendingMigration = await context.Database.GetPendingMigrationsAsync();
+                    
+                    if (pendingMigration.Any())
+                    {
+                        logger.LogInformation($"There are {pendingMigration.Count()} pending migrations");
+
+                        await context.Database.MigrateAsync();
+
+                        logger.LogInformation("Migration successfully run");
+                    }
+                }                
+            }
+            catch (Exception ex) 
+            {
+                logger.LogError(ex.Message);
+            }
+
+            return;
         }
     }
 }

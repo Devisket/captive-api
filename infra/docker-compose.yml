@@ -27,7 +27,7 @@ services:
       context: ../
       dockerfile: ./Captive.Commands/Dockerfile
     environment:
-      ConnectionStrings__DefaultConnection: "Server=localhost, 1433;Database=CaptiveDB;User Id=sa;Password=Password1;"
+      ConnectionStrings__DefaultConnection: "Server=mssql-server;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
       #ASPNETCORE_HTTPS_PORTS: 7443
       ASPNETCORE_HTTP_PORTS: 7020
       #ASPNETCORE_URLS: https://+:7443;http://+7080
@@ -45,10 +45,8 @@ services:
       - ~/Captive/Reports/:/app/reports
       - ~/Captive/Reports/Archive:/app/reports/Archive
     depends_on:
-      mssql-server:
-        condition: service_started
-      rabbitmq:
-        condition: service_started
+      - mssql-server
+      - rabbitmq
     command: bash -c "dotnet ef database update && dotnet run"
 
   mssql-server:
