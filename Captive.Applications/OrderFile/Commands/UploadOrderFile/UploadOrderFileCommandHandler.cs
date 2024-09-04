@@ -19,8 +19,8 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
     public class UploadOrderFileCommandHandler : IRequestHandler<UploadOrderFileCommand,Unit>
     {
         //private readonly ITextFileProcessor _textFileProcessor;
-        //private readonly IReadUnitOfWork _readUow;
-        //private readonly IWriteUnitOfWork _writeUow;
+        private readonly IReadUnitOfWork _readUow;
+        private readonly IWriteUnitOfWork _writeUow;
         //private readonly IReportGenerator _reportGenerator;
         //private readonly IExcelFileProcessor _excelFileProcessor;
 
@@ -40,12 +40,34 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
         
         private readonly IProducer<FileUploadMessage> _producer;
 
-        public UploadOrderFileCommandHandler(IProducer<FileUploadMessage> producer) { 
-            _producer = producer;
+        public UploadOrderFileCommandHandler(
+            IReadUnitOfWork readUow, 
+            IWriteUnitOfWork writeUow,  
+            IProducer<FileUploadMessage> producer) 
+        {
+            _readUow = readUow;
+            _writeUow = writeUow;
+            _producer = producer;            
         }
 
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
         {
+            var bankInfo = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.BankId);
+
+            if (bankInfo == null)
+            {
+                throw new Exception($"the bankId: {request.BankId} doesn't exist");
+            }
+
+            var batch = new BatchFile
+            {
+                Id = Guid.NewGuid(),
+                BatchName = "sample", // <- Should we generate batch name? If yes what should be the format?
+                BankInfoId = bankInfo.Id,
+                BankInfo = bankInfo,
+                BatchFileStatus = BatchFileStatus.Pending,
+            };
+
             _producer.ProduceMessage(new FileUploadMessage
             {
                 BankId = request.BankId,
