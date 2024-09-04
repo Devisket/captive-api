@@ -19,6 +19,7 @@ builder.Logging.ClearProviders().AddConsole();
 var app = builder.Build();
 
 await app.MigrateDatabase(app.Logger);
+await app.SeetData(app.Logger, app.Configuration);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
