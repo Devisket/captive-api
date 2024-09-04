@@ -2,6 +2,8 @@
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Messaging.Models;
+using Captive.Messaging.Producers;
 using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.Model;
 using Captive.Processing.Processor.TextFileProcessor;
@@ -16,28 +18,40 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
 {
     public class UploadOrderFileCommandHandler : IRequestHandler<UploadOrderFileCommand,Unit>
     {
-        private readonly ITextFileProcessor _textFileProcessor;
-        private readonly IReadUnitOfWork _readUow;
-        private readonly IWriteUnitOfWork _writeUow;
-        private readonly IReportGenerator _reportGenerator;
-        private readonly IExcelFileProcessor _excelFileProcessor;
+        //private readonly ITextFileProcessor _textFileProcessor;
+        //private readonly IReadUnitOfWork _readUow;
+        //private readonly IWriteUnitOfWork _writeUow;
+        //private readonly IReportGenerator _reportGenerator;
+        //private readonly IExcelFileProcessor _excelFileProcessor;
 
-        public UploadOrderFileCommandHandler(
-            ITextFileProcessor fileProcessor,
-            IExcelFileProcessor excelFileProcessor,
-            IReadUnitOfWork readUow, 
-            IWriteUnitOfWork writeUow, 
-            IReportGenerator reportGenerator)
-        {
-            _textFileProcessor = fileProcessor;
-            _readUow = readUow;
-            _writeUow = writeUow;
-            _reportGenerator = reportGenerator;
-            _excelFileProcessor = excelFileProcessor;
-        }
+        //public UploadOrderFileCommandHandler(
+        //    ITextFileProcessor fileProcessor,
+        //    IExcelFileProcessor excelFileProcessor,
+        //    IReadUnitOfWork readUow, 
+        //    IWriteUnitOfWork writeUow, 
+        //    IReportGenerator reportGenerator)
+        //{
+        //    _textFileProcessor = fileProcessor;
+        //    _readUow = readUow;
+        //    _writeUow = writeUow;
+        //    _reportGenerator = reportGenerator;
+        //    _excelFileProcessor = excelFileProcessor;
+        //}
         
+        private readonly IProducer<FileUploadMessage> _producer;
+
+        public UploadOrderFileCommandHandler(IProducer<FileUploadMessage> producer) { 
+            _producer = producer;
+        }
+
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
         {
+            _producer.ProduceMessage(new FileUploadMessage
+            {
+                BankId = request.BankId,
+                BatchID = Guid.NewGuid(),
+                Files = new string[] { "sample" }
+            });
             //var bankInfo = await GetBankInfo(request.BankId);
 
             //if (bankInfo == null)

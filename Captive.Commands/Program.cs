@@ -14,7 +14,11 @@ builder.Services.AddCors();
 
 builder.Services.ConfigureExtensionServices(builder.Configuration);
 
+builder.Logging.ClearProviders().AddConsole();
+
 var app = builder.Build();
+
+await app.MigrateDatabase(app.Logger);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

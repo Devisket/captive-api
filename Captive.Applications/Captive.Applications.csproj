@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
+    <ProjectReference Include="..\Captive.Messaging\Captive.Messaging.csproj" />
     <ProjectReference Include="..\Captive.Processing\Captive.Processing.csproj" />
     <ProjectReference Include="..\Captive.Reports\Captive.Reports.csproj" />
   </ItemGroup>
