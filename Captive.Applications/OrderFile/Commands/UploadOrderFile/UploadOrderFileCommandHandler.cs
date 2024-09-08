@@ -50,6 +50,12 @@ namespace Captive.Applications.OrderFile.Commands.UploadOrderFile
             _producer = producer;            
         }
 
+
+        /*
+         * TODO: 
+         *  a. Handle file upload
+         *  b. Check if the file is encrypted or not 
+         */
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
         {
             var bankInfo = await _readUow.Banks.GetAll().FirstOrDefaultAsync(x => x.Id == request.BankId);

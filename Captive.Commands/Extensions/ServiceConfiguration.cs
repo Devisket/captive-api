@@ -14,6 +14,9 @@ using Captive.Reports.PrinterFileReport;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using System.Reflection;
+using Captive.Utility;
+using MediatR;
+using Captive.Commands.Pipelines;
 
 namespace Captive.Commands.Extensions
 {
@@ -43,6 +46,8 @@ namespace Captive.Commands.Extensions
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
+            services.AddScoped<StringHelper>();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

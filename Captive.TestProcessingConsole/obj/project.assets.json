@@ -952,6 +952,59 @@
           "buildTransitive/netcoreapp3.1/_._": {}
         }
       },
+      "System.Data.Odbc/8.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Text.Encoding.CodePages": "8.0.0"
+        },
+        "compile": {
+          "lib/net8.0/System.Data.Odbc.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Data.Odbc.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/freebsd/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "freebsd"
+          },
+          "runtimes/illumos/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "illumos"
+          },
+          "runtimes/ios/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "ios"
+          },
+          "runtimes/linux/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "linux"
+          },
+          "runtimes/osx/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "osx"
+          },
+          "runtimes/solaris/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "solaris"
+          },
+          "runtimes/tvos/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "tvos"
+          },
+          "runtimes/win/lib/net8.0/System.Data.Odbc.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
       "System.Diagnostics.DiagnosticSource/7.0.2": {
         "type": "package",
         "compile": {
@@ -1484,7 +1537,8 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.6",
           "Microsoft.Extensions.Configuration": "8.0.0",
           "MySql.EntityFrameworkCore": "8.0.0",
-          "Newtonsoft.Json": "13.0.3"
+          "Newtonsoft.Json": "13.0.3",
+          "System.Data.Odbc": "8.0.0"
         },
         "compile": {
           "bin/placeholder/Captive.Processing.dll": {}
@@ -3024,6 +3078,76 @@
         "runtimes/win/lib/net461/System.Configuration.ConfigurationManager.xml",
         "system.configuration.configurationmanager.6.0.1.nupkg.sha512",
         "system.configuration.configurationmanager.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Data.Odbc/8.0.0": {
+      "sha512": "c+GfnZt2/HyU+voKw2fctLZClcNjPZPWS+mnIhGvDknRMqL/fwWlREWPgA4csbp9ZkQIgB4qkufgdh/oh5Ubow==",
+      "type": "package",
+      "path": "system.data.odbc/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Data.Odbc.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Data.Odbc.targets",
+        "lib/net462/System.Data.Odbc.dll",
+        "lib/net462/System.Data.Odbc.xml",
+        "lib/net6.0/System.Data.Odbc.dll",
+        "lib/net6.0/System.Data.Odbc.xml",
+        "lib/net7.0/System.Data.Odbc.dll",
+        "lib/net7.0/System.Data.Odbc.xml",
+        "lib/net8.0/System.Data.Odbc.dll",
+        "lib/net8.0/System.Data.Odbc.xml",
+        "lib/netstandard2.0/System.Data.Odbc.dll",
+        "lib/netstandard2.0/System.Data.Odbc.xml",
+        "runtimes/freebsd/lib/net6.0/System.Data.Odbc.dll",
+        "runtimes/freebsd/lib/net6.0/System.Data.Odbc.xml",
+        "runtimes/freebsd/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/freebsd/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/freebsd/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/freebsd/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/illumos/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/illumos/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/illumos/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/illumos/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/ios/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/ios/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/ios/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/ios/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/linux/lib/net6.0/System.Data.Odbc.dll",
+        "runtimes/linux/lib/net6.0/System.Data.Odbc.xml",
+        "runtimes/linux/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/linux/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/linux/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/linux/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/osx/lib/net6.0/System.Data.Odbc.dll",
+        "runtimes/osx/lib/net6.0/System.Data.Odbc.xml",
+        "runtimes/osx/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/osx/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/osx/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/osx/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/solaris/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/solaris/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/solaris/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/solaris/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/tvos/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/tvos/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/tvos/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/tvos/lib/net8.0/System.Data.Odbc.xml",
+        "runtimes/win/lib/net6.0/System.Data.Odbc.dll",
+        "runtimes/win/lib/net6.0/System.Data.Odbc.xml",
+        "runtimes/win/lib/net7.0/System.Data.Odbc.dll",
+        "runtimes/win/lib/net7.0/System.Data.Odbc.xml",
+        "runtimes/win/lib/net8.0/System.Data.Odbc.dll",
+        "runtimes/win/lib/net8.0/System.Data.Odbc.xml",
+        "system.data.odbc.8.0.0.nupkg.sha512",
+        "system.data.odbc.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
