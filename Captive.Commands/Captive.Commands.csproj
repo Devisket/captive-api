@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Captive.Applications\Captive.Applications.csproj" />
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
     <ProjectReference Include="..\Captive.Reports\Captive.Reports.csproj" />
+    <ProjectReference Include="..\Captive.Utility\Captive.Utility.csproj" />
   </ItemGroup>
   
   <ItemGroup>

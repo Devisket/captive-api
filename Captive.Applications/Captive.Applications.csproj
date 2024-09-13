@@ -16,10 +16,11 @@
     <ProjectReference Include="..\Captive.Messaging\Captive.Messaging.csproj" />
     <ProjectReference Include="..\Captive.Processing\Captive.Processing.csproj" />
     <ProjectReference Include="..\Captive.Reports\Captive.Reports.csproj" />
+    <ProjectReference Include="..\Captive.Utility\Captive.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Batch\" />
+    <Folder Include="Batch\Query\" />
     <Folder Include="CheckInventory\Commands\AddCheckInventoryDetails\" />
     <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
   </ItemGroup>
