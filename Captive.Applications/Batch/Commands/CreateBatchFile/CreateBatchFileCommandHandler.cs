@@ -4,6 +4,7 @@ using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Captive.Utility;
+using Captive.Data.Enums;
 
 namespace Captive.Applications.Batch.Commands.CreateBatchFile
 {
@@ -22,22 +23,23 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
 
         public async Task<CreateBatchFileResponse> Handle(CreateBatchFileCommand request, CancellationToken cancellationToken)
         {
-            var bankInfo = _readUow.Banks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.Id == request.BankInfoId);
+            var bankInfo = await _readUow.Banks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.Id == request.BankInfoId);
 
             if (bankInfo == null) 
             {
                 throw new Exception($"Bank Id:{request.BankInfoId} doesn't exist");
             }
-
-           //var ordeNumber = _readUow.BatchFiles.GetAll().AsNoTracking().Where(x =>).OrderByDescending(x => x.OrderNumber)
-            
+                      
             var batchName = String.Format("{0}{1}",DateTime.UtcNow.ToString("MM-dd-yyyy").Replace("-",""), _stringHelper.GenerateRandomChar(5));
-            var batchFile = new BatchFile()
-            {       
-                BatchName = batchName,
-                BankInfoId = request.BankInfoId,
-                Id = Guid.NewGuid(),
 
+            var batchFile = new BatchFile()
+            {
+                Id = Guid.NewGuid(),
+                BatchName = batchName,
+                OrderNumber = GetNewOrderNumber(bankInfo),
+                BankInfoId = request.BankInfoId,
+                CreatedDate = DateTime.UtcNow,
+                BatchFileStatus = BatchFileStatus.Pending,
             };
 
             await _writeUow.BatchFiles.AddAsync(batchFile, cancellationToken);
@@ -47,6 +49,18 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
                 BankInfoId = request.BankInfoId,
                 Id = batchFile.Id,
             };
+        }
+
+        public int GetNewOrderNumber(BankInfo bankInfo)
+        {
+            int orderNumber = 0;
+
+            var lastBatch = bankInfo.BatchFiles?.Where(x => x.CreatedDate > DateTime.UtcNow.Date).OrderByDescending(x => x.OrderNumber).FirstOrDefault();
+
+            if (lastBatch != null) 
+                orderNumber = lastBatch.OrderNumber;
+            
+            return orderNumber;
         }
     }
 }

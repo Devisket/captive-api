@@ -3,7 +3,6 @@ using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Messaging.Models;
 using Captive.Messaging.Producers.Messages;
-using Captive.Messaging.Producers;
 using Captive.Messaging;
 using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.TextFileProcessor;
@@ -14,6 +13,7 @@ using Captive.Reports.PrinterFileReport;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using System.Reflection;
+using Captive.Messaging.Interfaces;
 
 namespace Captive.Queries.Extensions
 {

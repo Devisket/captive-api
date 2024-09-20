@@ -11,10 +11,10 @@ namespace Captive.TestProcessingConsole
         {
             var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
 
-            IFileProcessor mdbFileProcessor = new MDBFileProcessor();
+            //IFileProcessor mdbFileProcessor = new MDBFileProcessor();
 
 
-            mdbFileProcessor.OnProcessFile([], string.Empty);
+            //mdbFileProcessor.OnProcessFile([], string.Empty);
 
             //var fileProcessor = new TextFileProcessor(builder.Build());
 

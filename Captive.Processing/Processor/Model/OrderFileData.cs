@@ -13,5 +13,6 @@ namespace Captive.Processing.Processor.Model
         public string? DeliverTo { get; set; }
 
         public string? StartingSeries { get; set; }
+        public string? EndingSeries { get; set; }
     }
 }

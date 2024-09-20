@@ -1,9 +1,9 @@
 ﻿using RabbitMQ.Client;
 
-namespace Captive.Messaging
+namespace Captive.Messaging.Interfaces
 {
     public interface IRabbitConnectionManager
     {
-        IConnectionFactory GetRabbitMQConnection();
+        IConnection GetRabbitMQConnection();
     }
 }

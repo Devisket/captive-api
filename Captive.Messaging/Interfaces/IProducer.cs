@@ -1,5 +1,4 @@
-﻿
-namespace Captive.Messaging.Producers
+﻿namespace Captive.Messaging.Interfaces
 {
     public interface IProducer<T>
     {
