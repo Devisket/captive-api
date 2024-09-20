@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Captive.Messaging.Interfaces;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,9 @@ namespace Captive.Messaging
             };
         }
 
-        public IConnectionFactory GetRabbitMQConnection()
+        public IConnection GetRabbitMQConnection()
         {
-            return _connectionFactory;
+            return _connectionFactory.CreateConnection();
         }
     }
 }

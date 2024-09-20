@@ -9,19 +9,20 @@ namespace Captive.Commands.Controllers
     public class OrderFileController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public OrderFileController(IMediator mediator) 
+        public OrderFileController(IMediator mediator)
         {
-            _mediator = mediator;    
+            _mediator = mediator;
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult>UploadOrderFile( [FromForm] Guid bankId, [FromForm]IEnumerable<IFormFile> files) 
+        public async Task<IActionResult> UploadOrderFile([FromForm] Guid bankId, [FromForm] Guid batchId, [FromForm]IEnumerable<IFormFile> files) 
         {
             if (files.Any())
             {
                 await _mediator.Send(new UploadOrderFileCommand()
                 {
                     BankId = bankId,
+                    BatchId = batchId,
                     Files = files
                 }).ConfigureAwait(false);
             }

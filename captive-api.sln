@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Captive.Utility", "Captive.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Captive.MdbWatcher", "Captive.MdbWatcher\Captive.MdbWatcher.csproj", "{A286D372-8FF7-424D-BC78-2E5E598DBABB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Captive.MdbAPI", "Captive.MdbAPI\Captive.MdbAPI.csproj", "{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,14 @@ Global
 		{A286D372-8FF7-424D-BC78-2E5E598DBABB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A286D372-8FF7-424D-BC78-2E5E598DBABB}.Release|x86.ActiveCfg = Release|x86
 		{A286D372-8FF7-424D-BC78-2E5E598DBABB}.Release|x86.Build.0 = Release|x86
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Debug|x86.Build.0 = Debug|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Release|x86.ActiveCfg = Release|Any CPU
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +150,7 @@ Global
 		{E8466044-99C8-4FFB-8456-05DE9993818B} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 		{9FD5E4E3-59B3-4B0D-B9D3-1588FB7C407D} = {181839A3-D01B-456F-8BCD-B0E4ED1A4EEA}
 		{A286D372-8FF7-424D-BC78-2E5E598DBABB} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
+		{AD3671C5-29F8-4ECE-BAFA-1A8572F67117} = {CBE3248E-71F6-429C-A928-DB20B438CDA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A874DCB-688E-4709-8411-D9750ED55900}

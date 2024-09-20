@@ -3,7 +3,6 @@ using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Messaging;
 using Captive.Messaging.Models;
-using Captive.Messaging.Producers;
 using Captive.Messaging.Producers.Messages;
 using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.TextFileProcessor;
@@ -17,6 +16,7 @@ using System.Reflection;
 using Captive.Utility;
 using MediatR;
 using Captive.Commands.Pipelines;
+using Captive.Messaging.Interfaces;
 
 namespace Captive.Commands.Extensions
 {

@@ -1,23 +1,25 @@
-﻿
+﻿using Captive.Messaging.Interfaces;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
-namespace Captive.Messaging.Producers
+namespace Captive.Messaging.Base
 {
     public abstract class BaseProducer<T> : IProducer<T> where T : class
     {
-        private readonly IConnectionFactory _connectionFactory;
+        private readonly IRabbitConnectionManager _connectionFactory;
 
-        public BaseProducer(IConnectionFactory connectionFactory) { 
+        public BaseProducer(IRabbitConnectionManager connectionFactory)
+        {
             _connectionFactory = connectionFactory;
         }
-        public abstract string queueName { get;}
+        public abstract string queueName { get; }
 
         public async void ProduceMessage(T message)
         {
-            using (var con = _connectionFactory.CreateConnection()) { 
-                using(var channel = con.CreateModel())
+            using (var con = _connectionFactory.GetRabbitMQConnection())
+            {
+                using (var channel = con.CreateModel())
                 {
                     channel.QueueDeclare(queue: queueName, false, exclusive: false, autoDelete: false, arguments: null);
 

@@ -10,7 +10,7 @@ namespace Captive.Data.ModelBuilders
             var entity = modelBuilder.Entity<BatchFile>();
 
             entity.HasKey(x => x.Id);
-            entity.Property(x => x.UploadDate).IsRequired();
+            entity.Property(x => x.CreatedDate).IsRequired();
 
             entity.Property(x => x.BatchFileStatus).IsRequired();
 

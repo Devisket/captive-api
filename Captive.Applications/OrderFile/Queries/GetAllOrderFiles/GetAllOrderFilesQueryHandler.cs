@@ -57,7 +57,7 @@ namespace Captive.Applications.OrderFile.Queries.GetAllOrderFiles
                     new BatchFileDtoResponse
                     {
                         Id = x.Id,
-                        UploadDate = x.UploadDate,
+                        CreatedDate = x.CreatedDate,
                     }).ToListAsync()
                 };
 

@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }   
         public required string BankName { get; set; }
-        public string? ShortName { get; set; }
+        public required string ShortName { get; set; }
         public string? BankDescription { get; set;}
         public required DateTime CreatedDate { get; set; }
         public ICollection<BankBranches>? BankBranches { get; set; }
