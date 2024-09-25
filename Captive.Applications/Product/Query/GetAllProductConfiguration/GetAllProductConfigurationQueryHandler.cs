@@ -1,5 +1,7 @@
-﻿using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Applications.Product.Query.GetAllProductConfiguration.Model;
+using Captive.Data.UnitOfWork.Read;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.Product.Query.GetAllProductConfiguration
 {
@@ -14,24 +16,23 @@ namespace Captive.Applications.Product.Query.GetAllProductConfiguration
 
         public async Task<GetAllProductConfigurationQueryResponse> Handle(GetAllProductConfigurationQuery request, CancellationToken cancellationToken)
         {
-            var response = new GetAllProductConfigurationQueryResponse(request.BankId);
+            var response = new GetAllProductConfigurationQueryResponse();
 
-            //var productConfigurations = _readUow.ProductConfigurations
-            //    .GetAll()
-            //    .Include(x => x.ProductType)
-            //    .AsNoTracking()
-            //    .Where(x => x.BankId == request.BankId);
+            var productConfigurations = _readUow.ProductConfigurations
+                .GetAll()
+                .AsNoTracking()
+                .Where(x => x.ProductId == request.ProductId);
 
-            //var productConfigDtos = await productConfigurations.Select(x => new ProductConfigurationResponse
-            //{
-            //    Id = x.Id,
-            //    ProductTypeId = x.ProductType.Id,
-            //    ProductTypeName= x.ProductType.ProductName,
-            //    ConfigurationData = x.ConfigurationData,
-            //}).ToListAsync(cancellationToken);
+            var productConfigDtos = await productConfigurations.Select(x => new ProductConfigurationResponse
+            {
+                Id = x.Id,
+                ProductId = x.Product.Id,
+                ProductName = x.Product.ProductName,
+                ConfigurationData = x.ConfigurationData,
+            }).ToListAsync(cancellationToken);
 
-            //if (productConfigDtos != null && productConfigDtos.Any())
-            //    response.ProductConfigurations = productConfigDtos;
+            if (productConfigDtos != null && productConfigDtos.Any())
+                response.ProductConfigurations = productConfigDtos;
 
             return response;          
         }
