@@ -1,4 +1,4 @@
-﻿using Captive.Applications.OrderFile.Queries.GetAllOrderFiles;
+﻿using Captive.Applications.ProcessOrderFiles.Queries.GetAllOrderFiles;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

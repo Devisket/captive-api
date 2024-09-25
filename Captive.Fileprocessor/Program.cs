@@ -1,4 +1,5 @@
-﻿using Captive.Messaging;
+﻿using Captive.Fileprocessor.Services.FileProcessOrchestrator.cs;
+using Captive.Messaging;
 using Captive.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,7 @@ namespace Captive.Fileprocessor
                 .AddJsonFile("appsettings.json");
             builder.Services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             builder.Services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
-
+            builder.Services.AddScoped<IFileProcessOrchestratorService, FileProcessOrchestratorService>();
             builder.Services.AddHostedService<FileProcessorConsumerService>();
 
             IHost host = builder.Build();

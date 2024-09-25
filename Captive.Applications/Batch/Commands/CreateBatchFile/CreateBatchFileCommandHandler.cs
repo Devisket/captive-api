@@ -12,13 +12,11 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
     {
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IReadUnitOfWork _readUow;
-        private readonly StringHelper _stringHelper; 
 
-        public CreateBatchFileCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, StringHelper stringHelper)
+        public CreateBatchFileCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow)
         {
             _writeUow = writeUow;
             _readUow = readUow;
-            _stringHelper = stringHelper;
         }
 
         public async Task<CreateBatchFileResponse> Handle(CreateBatchFileCommand request, CancellationToken cancellationToken)
@@ -30,7 +28,7 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
                 throw new Exception($"Bank Id:{request.BankInfoId} doesn't exist");
             }
                       
-            var batchName = String.Format("{0}{1}",DateTime.UtcNow.ToString("MM-dd-yyyy").Replace("-",""), _stringHelper.GenerateRandomChar(5));
+            var batchName = String.Format("{0}{1}",DateTime.UtcNow.ToString("MM-dd-yyyy").Replace("-",""), StringHelper.GenerateRandomChar(5));
 
             var batchFile = new BatchFile()
             {
