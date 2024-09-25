@@ -24,10 +24,10 @@ namespace Captive.Queries.Controllers
             return Ok(response);
         }
 
-        [HttpGet("configuration")]
-        public async Task<IActionResult> GetAllProductConfiguration([FromRoute] Guid bankId)
+        [HttpGet("{productId}/configuration")]
+        public async Task<IActionResult> GetAllProductConfiguration([FromRoute] Guid productId)
         {
-            var response = await _mediator.Send(new GetAllProductConfigurationQuery() { BankId = bankId });
+            var response = await _mediator.Send(new GetAllProductConfigurationQuery() { ProductId = productId });
 
             return Ok(response);
         }
