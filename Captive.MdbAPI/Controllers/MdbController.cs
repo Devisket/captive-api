@@ -1,7 +1,11 @@
 ﻿using Captive.Data.UnitOfWork.Read;
+using Captive.Model;
+using Captive.Model.Dto;
+using Captive.Model.Processing.Configurations;
 using Captive.Processing.Processor.MDBFileProcessor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Captive.MdbAPI.Controllers
 {
@@ -11,23 +15,33 @@ namespace Captive.MdbAPI.Controllers
     {
         private readonly IMDBFileProcessor _mdbProcessor;
         private readonly IReadUnitOfWork _readUow;
-        public MdbController(IMDBFileProcessor mdbProcessor, IReadUnitOfWork readUow) 
-        { 
+        public MdbController(IMDBFileProcessor mdbProcessor, IReadUnitOfWork readUow)
+        {
             _mdbProcessor = mdbProcessor;
             _readUow = readUow;
         }
 
-        [HttpPost("batchId")]
-        public async Task<IActionResult> ExtractMdb([FromQuery]Guid batchId, [FromBody] string fileName)
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<CheckOrderDto>>> ExtractMdb([FromBody] OrderfileDto request)
         {  
-            var config = await _readUow.ProductConfigurations.GetAll().FirstOrDefaultAsync(x => fileName.Contains(x.FileName));
+            var config = await _readUow.ProductConfigurations.GetAll().FirstOrDefaultAsync(x => request.FileName.Contains(x.FileName));
+
+            if (config == null)
+                throw new Exception("Null configuration");
+
+            var extractedConfig = JsonConvert.DeserializeObject<MdbConfiguration>(config.ConfigurationData);
+
+            if (extractedConfig == null)
+                throw new Exception("Can't extract configuration");
             
             if (config == null) 
             {
-                return Problem(detail:$"Can't find configuration for {fileName}", statusCode: 500);
+                return Problem(detail:$"Can't find configuration for {request.FileName}", statusCode: 500);
             }
 
-            return Ok();
+            _mdbProcessor.Extractfile(request, extractedConfig);
+
+            return Ok(new List<OrderFileData>());
         }
     }
 }

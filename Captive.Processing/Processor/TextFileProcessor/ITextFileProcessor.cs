@@ -1,5 +1,4 @@
-﻿using Captive.Processing.Processor.Model;
-
+﻿
 namespace Captive.Processing.Processor.TextFileProcessor
 {
     public interface ITextFileProcessor

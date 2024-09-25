@@ -46,7 +46,6 @@ namespace Captive.Commands.Extensions
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
-            services.AddScoped<StringHelper>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));
 
             var assembly = Assembly.Load("Captive.Applications");

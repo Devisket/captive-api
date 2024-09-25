@@ -1,5 +1,4 @@
-﻿using Captive.Processing.Processor.Model;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Captive.Processing.Processor.TextFileProcessor
