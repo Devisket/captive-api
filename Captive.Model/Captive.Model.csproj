@@ -10,4 +10,8 @@
     <Folder Include="Reporting\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
+  </ItemGroup>
+
 </Project>

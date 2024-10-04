@@ -68,6 +68,7 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                     BatchId = x.BatchFileId,
                     FileName = x.FileName,
                     FilePath = x.FilePath,
+                    Status = x.Status.ToString(),
                 })
             });
 

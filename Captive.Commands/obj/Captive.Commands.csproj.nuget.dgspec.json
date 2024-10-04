@@ -415,7 +415,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj": {
+                "projectPath": "C:\\Users\\ediso\\repo\\personal\\captive-api\\Captive.Data\\Captive.Data.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
