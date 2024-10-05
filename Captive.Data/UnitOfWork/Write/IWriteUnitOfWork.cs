@@ -10,7 +10,6 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<CheckInventory> CheckInventory { get; }
         public IWriteRepository<CheckOrders> CheckOrders { get; }
         public IWriteRepository<FormChecks> FormChecks { get; }
-        public IWriteRepository<OrderFileConfiguration> OrderFileConfiguration { get; }
         public IWriteRepository<OrderFileLog> OrderFileLogs { get; }
         public IWriteRepository<OrderFile> OrderFiles { get; }
 

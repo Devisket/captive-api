@@ -3,7 +3,7 @@ using Captive.Model.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Captive.Applications.Batch.Query
+namespace Captive.Applications.Batch.Query.GetAllBatch
 {
     public class GetBatchQueryHandler : IRequestHandler<GetBatchQuery, GetBatchQueryResponse>
     {
@@ -16,7 +16,16 @@ namespace Captive.Applications.Batch.Query
 
         public async Task<GetBatchQueryResponse> Handle(GetBatchQuery request, CancellationToken cancellationToken)
         {
-            var batches = await _readUow.BatchFiles.GetAll().Where(x => x.BankInfoId == request.BankId).Select(x => new BatchFileDto()
+            var query = _readUow.BatchFiles.GetAll();
+
+            if (request.BatchId.HasValue)
+            {
+                query.Where(x => x.Id == request.BatchId.Value);
+            }
+
+            var batches = await _readUow.BatchFiles.GetAll()
+                .Where(x => x.BankInfoId == request.BankId)
+                .Select(x => new BatchFileDto()
             {
                 Id = x.Id,
                 BatchFileStatus = x.BatchFileStatus,

@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241005063119_MakeProductAndProductConfigurationOneIsToOneMigration")]
+    partial class MakeProductAndProductConfigurationOneIsToOneMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,6 +309,39 @@ namespace Captive.Commands.Migrations
                     b.ToTable("order_files", (string)null);
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.OrderFileConfiguration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BankInfoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConfigurationData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConfigurationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BankInfoId");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("order_file_configuration", (string)null);
+                });
+
             modelBuilder.Entity("Captive.Data.Models.OrderFileLog", b =>
                 {
                     b.Property<int>("Id")
@@ -377,6 +413,9 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("OrderFileConfigurationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
@@ -384,6 +423,8 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderFileConfigurationId");
 
                     b.HasIndex("ProductId")
                         .IsUnique();
@@ -559,6 +600,17 @@ namespace Captive.Commands.Migrations
                     b.Navigation("BatchFile");
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.OrderFileConfiguration", b =>
+                {
+                    b.HasOne("Captive.Data.Models.BankInfo", "Bank")
+                        .WithMany()
+                        .HasForeignKey("BankInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bank");
+                });
+
             modelBuilder.Entity("Captive.Data.Models.OrderFileLog", b =>
                 {
                     b.HasOne("Captive.Data.Models.OrderFile", "OrderFile")
@@ -589,6 +641,10 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>
                 {
+                    b.HasOne("Captive.Data.Models.OrderFileConfiguration", null)
+                        .WithMany("ProductConfigurations")
+                        .HasForeignKey("OrderFileConfigurationId");
+
                     b.HasOne("Captive.Data.Models.Product", "Product")
                         .WithOne("ProductConfiguration")
                         .HasForeignKey("Captive.Data.Models.ProductConfiguration", "ProductId")
@@ -657,6 +713,11 @@ namespace Captive.Commands.Migrations
                     b.Navigation("CheckOrders");
 
                     b.Navigation("OrderFileLogs");
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.OrderFileConfiguration", b =>
+                {
+                    b.Navigation("ProductConfigurations");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.Product", b =>

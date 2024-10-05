@@ -11,7 +11,6 @@ namespace Captive.Data.UnitOfWork.Read
         public IReadRepository<CheckOrders> CheckOrders { get; }
         public IReadRepository<FormChecks> FormChecks { get; }
         public IReadRepository<OrderFile> OrderFiles { get; }
-        public IReadRepository<OrderFileConfiguration> OrderFileConfigurations { get; }
         public IReadRepository<OrderFileLog> OrderFileLogs { get; }
         public IReadRepository<BatchFile> BatchFiles { get; }
         public IReadRepository<Product> ProductTypes { get; }
