@@ -7,6 +7,12 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 {
     public class MDBFileProcessor : IMDBFileProcessor
     {
+        /*
+         * - Get configuraiton
+         * - Map configuration with the predefined column
+         * - Map records into CheckOrder
+         * - Send check order back into FileProcessorConsumer
+         */
         [SupportedOSPlatform("windows")]
         public IEnumerable<CheckOrderDto> Extractfile(OrderfileDto orderFile, MdbConfiguration config)
         {
