@@ -13,6 +13,6 @@ namespace Captive.Data.Models
         public Tag? Tag { get; set; }
 
         public ICollection<FormChecks>? FormChecks { get; set; }
-        public ICollection<ProductConfiguration>? ProductConfiguration { get; set; }
+        public ProductConfiguration? ProductConfiguration { get; set; }
     }
 }

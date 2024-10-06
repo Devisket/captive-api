@@ -15,7 +15,6 @@ namespace Captive.Data
             modelBuilder.BuildBankInfoModel();
             modelBuilder.BuildOrderFilesModel();
             modelBuilder.BuildCheckOrdersModel();
-            modelBuilder.BuildFileConfiguration();
             modelBuilder.BuildFormChecksTable();
             modelBuilder.OnBuildSeedTable();
             modelBuilder.BuildCheckInventoryTable();
