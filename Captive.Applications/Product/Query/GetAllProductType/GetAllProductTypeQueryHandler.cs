@@ -3,7 +3,6 @@ using Captive.Data.UnitOfWork.Read;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Captive.Applications.Product.Query.GetAllProductType
 {
     public class GetAllProductTypeQueryHandler : IRequestHandler<GetAllProductTypeQuery, GetAllProductTypeQueryResponse>
@@ -17,34 +16,18 @@ namespace Captive.Applications.Product.Query.GetAllProductType
 
         public async Task<GetAllProductTypeQueryResponse> Handle(GetAllProductTypeQuery request, CancellationToken cancellationToken)
         {
-            //var bank = await _readUow.Banks.GetAll().Include(x => x.ProductTypes).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var products = await _readUow.ProductTypes.GetAll().Where(x => x.BankInfoId == request.BankId)
+                .Select(x => new ProductTypeResponse
+                {
+                    ProductTypeId = x.Id,
+                    ProductTypeName = x.ProductName
+                }).ToListAsync();
 
-            //if (bank == null)
-            //    throw new Exception($"Bank id: {request.BankId} doesn't exist");
-
-            //var productTypes = bank.ProductTypes;
-
-            //if (productTypes == null || !productTypes.Any()) 
-            //{
-            //    return new GetAllProductTypeQueryResponse
-            //    {
-            //        BankId = bank.Id,
-            //        ProductTypes = []
-            //    };
-            //}
-
-            //return new GetAllProductTypeQueryResponse
-            //{
-            //    BankId = bank.Id,
-            //    ProductTypes = productTypes.Select(x =>
-            //    new ProductTypeResponse
-            //    {
-            //        ProductTypeId = x.Id,
-            //        ProductTypeName = x.ProductName
-            //    }).ToList()
-            //};
-
-            return null;
+            return new GetAllProductTypeQueryResponse
+            {
+                BankId = request.BankId,
+                ProductTypes = products
+            };
         }
     }
 }

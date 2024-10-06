@@ -16,12 +16,6 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
         }
         public async Task<GetBankBranchesQueryResponse> Handle(GetBankBranchesQuery request, CancellationToken cancellationToken)
         {
-
-            if (!await _readUow.Banks.GetAll().AsNoTracking().AnyAsync(x => x.Id == request.BankId, cancellationToken))
-            {
-                throw new Exception("Bank doesn't exist");
-            }
-
             var bankBranch = _readUow.BankBranches.GetAll()
                 .Where(x => x.BankInfoId == request.BankId);
 
