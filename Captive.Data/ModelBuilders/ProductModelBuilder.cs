@@ -14,15 +14,11 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.ProductName)
                 .IsRequired();
 
-            entity.HasOne(x => x.ProductConfiguration)
-                .WithOne(x => x.Product)
-                .HasForeignKey<ProductConfiguration>(x => x.ProductId);
-
             entity.HasMany(x => x.FormChecks)
                 .WithOne(x => x.Product)
                 .HasForeignKey(x => x.ProductId);
 
-            entity.ToTable("product_type");
+            entity.ToTable("products");
         }
     }
 }

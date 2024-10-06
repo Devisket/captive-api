@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241006193314_CorrectionOnProductMigration")]
+    partial class CorrectionOnProductMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -385,7 +388,8 @@ namespace Captive.Commands.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("product_configuration", (string)null);
                 });
@@ -589,8 +593,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>
                 {
                     b.HasOne("Captive.Data.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+                        .WithOne("ProductConfiguration")
+                        .HasForeignKey("Captive.Data.Models.ProductConfiguration", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -661,6 +665,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.Product", b =>
                 {
                     b.Navigation("FormChecks");
+
+                    b.Navigation("ProductConfiguration");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.Tag", b =>

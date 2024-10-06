@@ -4,11 +4,8 @@
     {
         TextConfiguration,
         ExcelConfiguration,
-        MsAccessConfiguration,
-        DbfConfiguration,
-        OrderDataConfiguration,
-        HashTotalConfiguration,
-        PrinterFileConfiguration,
-        PackingConfiguration        
+        MdbConfiguration,
+        McxConfiguration,
+        DbfConfiguration,      
     }
 }

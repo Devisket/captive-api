@@ -24,28 +24,18 @@ namespace Captive.Queries.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{bankId}/branches")]
+        [HttpGet("{bankId}/branch")]
         public async Task<IActionResult> GetAllBankBranches(Guid bankId)
         {
             var response = await _mediator.Send(new GetBankBranchesQuery { BankId = bankId });
 
-            if (response.Branches == null || !response.Branches.Any())
-            {
-                return NoContent();
-            }
-
             return Ok(response);
         }
 
-        [HttpGet("{bankId}/branches/{branchId}")]
+        [HttpGet("{bankId}/branch/{branchId}")]
         public async Task<IActionResult> GetSpecificBranch([FromRoute] Guid bankId, [FromRoute] Guid branchId)
         {
             var response = await _mediator.Send(new GetBankBranchesQuery { BankId = bankId, BranchId = branchId });
-
-            if (response.Branches == null || !response.Branches.Any())
-            {
-                return NoContent();
-            }
 
             return Ok(response);
         }

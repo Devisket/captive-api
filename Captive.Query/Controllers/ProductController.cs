@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Queries.Controllers
 {
-    [Route("api/[controller]/{bankId}")]
+    [Route("api/{bankId}/[controller]")]
     [ApiController]
-    public class ProductTypeController : ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public ProductTypeController(IMediator mediator)
+        public ProductController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -25,7 +25,7 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet("{productId}/configuration")]
-        public async Task<IActionResult> GetAllProductConfiguration([FromRoute] Guid productId)
+        public async Task<IActionResult> GetProductConfiguration([FromRoute] Guid productId)
         {
             var response = await _mediator.Send(new GetAllProductConfigurationQuery() { ProductId = productId });
 

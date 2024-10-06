@@ -94,7 +94,14 @@ namespace Captive.Commands.Extensions
                 new Product
                 {
                     Id = Guid.Empty,
-                    ProductName = "Sample Product",
+                    ProductName = "ACT Product",
+                    BankInfoId = bankInfos[0].Id,
+                    BankInfo = bankInfos[0]
+                },
+                new Product
+                {
+                    Id = Guid.Empty,
+                    ProductName = "CWS Product",
                     BankInfoId = bankInfos[0].Id,
                     BankInfo = bankInfos[0]
                 }
@@ -106,10 +113,20 @@ namespace Captive.Commands.Extensions
                     Id = Guid.NewGuid(),
                     ProductId = product[0].Id,
                     isActive = true,
-                    ConfigurationData = "",
-                    ConfigurationType = ConfigurationType.MsAccessConfiguration,
+                    ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"AcctNo\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
+                    ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[0],
-                    FileName = "sample"
+                    FileName = "ACT"
+                },
+                new ProductConfiguration
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = product[0].Id,
+                    isActive = true,
+                    ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"AcctNo\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
+                    ConfigurationType = ConfigurationType.MdbConfiguration,
+                    Product = product[1],
+                    FileName = "CWS"
                 }
             };
 
