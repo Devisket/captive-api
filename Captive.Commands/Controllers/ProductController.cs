@@ -71,7 +71,7 @@ namespace Captive.Commands.Controllers
 
             return NoContent();
         }
-        [HttpPut("/product/{productId}/configuration/{productConfigurationId}")]
+        [HttpPut("{productId}/configuration/{productConfigurationId}")]
         public async Task<IActionResult> AddProductConfiguration([FromRoute] Guid productId, [FromRoute] Guid productConfigurationId, [FromBody] ProductConfigurationRequest requestBody)
         {
             await _mediator.Send(new CreateProductConfigurationCommand

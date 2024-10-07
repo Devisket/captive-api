@@ -1,4 +1,5 @@
 ﻿using Captive.Applications.Batch.Query.GetAllBatch;
+using Captive.Applications.Batch.Query.GetBatchById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,7 @@ namespace Captive.Queries.Controllers
         [HttpGet("{batchId}")]
         public async Task<IActionResult> GetBatchById([FromRoute] Guid bankId, [FromRoute] Guid batchId)
         {
-            var response = await _mediator.Send(new GetBatchQuery
+            var response = await _mediator.Send(new GetBatchByIdQuery
             {
                 BankId = bankId,
                 BatchId = batchId

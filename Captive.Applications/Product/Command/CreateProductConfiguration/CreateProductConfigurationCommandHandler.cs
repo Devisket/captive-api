@@ -55,7 +55,6 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
                 ConfigurationData = request.ConfigurationData,
                 ConfigurationType = request.ConfigurationType,
                 isActive = true,
-                Product = product,
                 ProductId = product.Id,
             };
 
