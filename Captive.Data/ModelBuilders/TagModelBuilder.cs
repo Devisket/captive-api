@@ -13,25 +13,7 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.TagName).IsRequired(true);
 
-            entity.HasMany(x => x.CheckInventory)
-                .WithOne(x => x.Tag)
-                .HasForeignKey(x => x.TagId);
-
-            entity.HasMany(x => x.Products)
-                .WithOne(x => x.Tag)
-                .HasForeignKey(x => x.TagId);
-
-            entity.HasMany(x => x.FormChecks)
-                .WithOne(x => x.Tag)
-                .HasForeignKey(x => x.TagId);
-
-            entity.HasMany(x => x.BankBranches)
-                .WithOne(x => x.Tag)
-                .HasForeignKey(x => x.TagId);
-
-            entity.HasMany(x => x.TagMappings)
-                .WithOne(x => x.Tag)
-                .HasForeignKey(x => x.TagId);
+            entity.HasMany(x => x.Mapping).WithOne(x => x.Tag).HasForeignKey(x => x.TagId);
 
             entity.ToTable("tag");
         }

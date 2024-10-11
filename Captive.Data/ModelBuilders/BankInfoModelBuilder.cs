@@ -23,10 +23,6 @@ namespace Captive.Data.ModelBuilders
                 .WithOne(x => x.BankInfo)
                 .HasForeignKey(x => x.BankInfoId);
 
-            entity.HasMany(x => x.Tags)
-                .WithOne(x => x.BankInfo)
-                .HasForeignKey(x => x.BankInfoId);
-
             entity.Property(x=> x.BankName).IsRequired();
 
             entity.Property(x=> x.CreatedDate).IsRequired();

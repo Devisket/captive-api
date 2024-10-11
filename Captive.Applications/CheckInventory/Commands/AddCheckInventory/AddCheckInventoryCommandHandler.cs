@@ -88,22 +88,22 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
             await _writeUow.Complete();
         }
 
-        private async Task AddNoCheckInventoryWithNoSeries(Captive.Data.Models.FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
-        {
-            //for (var i = 0; i < checkQuantity; i++)
-            //{
-            //    var checkInventory = new Data.Models.CheckInventory
-            //    {
-            //        BranchId = branch.Id,
-            //        FormCheckId = formCheck.Id,
-            //        Quantity = formCheck.Quantity
-            //    };
+        //private async Task AddNoCheckInventoryWithNoSeries(Captive.Data.Models.FormChecks formCheck, int checkQuantity, BankBranches branch, CancellationToken cancellationToken)
+        //{
+        //    for (var i = 0; i < checkQuantity; i++)
+        //    {
+        //        var checkInventory = new Data.Models.CheckInventory
+        //        {
+        //            BranchId = branch.Id,
+        //            FormCheckId = formCheck.Id,
+        //            Quantity = formCheck.Quantity
+        //        };
 
-            //    await InsertCheckInventory(checkInventory, cancellationToken);
-            //}
+        //        await InsertCheckInventory(checkInventory, cancellationToken);
+        //    }
 
-            await _writeUow.Complete();
-        }
+        //    await _writeUow.Complete();
+        //}
 
         private async Task InsertCheckInventory(Data.Models.CheckInventory checkInventory, CancellationToken cancellationToken)
         {
