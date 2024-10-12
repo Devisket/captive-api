@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241011015639_AddCheckValidationModelMigration")]
+    partial class AddCheckValidationModelMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,11 +64,16 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid?>("MergingBranchId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BRSTNCode");
 
                     b.HasIndex("BankInfoId");
+
+                    b.HasIndex("TagId");
 
                     b.ToTable("bank_branchs", (string)null);
                 });
@@ -104,9 +112,8 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid>("BankInfoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BatchFileStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BatchFileStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("BatchName")
                         .IsRequired()
@@ -240,9 +247,6 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BankInfoId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -251,8 +255,6 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BankInfoId");
 
                     b.ToTable("CheckValidation");
                 });
@@ -284,9 +286,14 @@ namespace Captive.Commands.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("TagId");
 
                     b.HasIndex("FormType", "CheckType");
 
@@ -371,9 +378,14 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BankInfoId");
+
+                    b.HasIndex("TagId");
 
                     b.ToTable("products", (string)null);
                 });
@@ -460,7 +472,7 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid?>("FormCheckId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ProductId")
+                    b.Property<Guid?>("ProducTypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TagId")
@@ -481,7 +493,13 @@ namespace Captive.Commands.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Captive.Data.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId");
+
                     b.Navigation("BankInfo");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.BatchFile", b =>
@@ -542,17 +560,6 @@ namespace Captive.Commands.Migrations
                     b.Navigation("OrderFile");
                 });
 
-            modelBuilder.Entity("Captive.Data.Models.CheckValidation", b =>
-                {
-                    b.HasOne("Captive.Data.Models.BankInfo", "BankInfo")
-                        .WithMany()
-                        .HasForeignKey("BankInfoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BankInfo");
-                });
-
             modelBuilder.Entity("Captive.Data.Models.FormChecks", b =>
                 {
                     b.HasOne("Captive.Data.Models.Product", "Product")
@@ -561,7 +568,13 @@ namespace Captive.Commands.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Captive.Data.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId");
+
                     b.Navigation("Product");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.OrderFile", b =>
@@ -594,7 +607,13 @@ namespace Captive.Commands.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Captive.Data.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId");
+
                     b.Navigation("BankInfo");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>

@@ -14,6 +14,10 @@ namespace Captive.Data.Repository.Write
         {
             await _context.Set<T>().AddAsync(entity, cancellationToken);
         }
+        public async Task AddRange(T[] entity, CancellationToken cancellationToken)
+        {
+            await _context.Set<T>().AddRangeAsync(entity, cancellationToken);
+        }
 
         public void Delete(T entity)
         {
@@ -23,6 +27,11 @@ namespace Captive.Data.Repository.Write
         public void Update(T entity)
         {
             _context.Set<T>().Update(entity);
+        }
+
+        public void Update(T[] entity)
+        {
+            _context.Set<T>().UpdateRange(entity);
         }
 
         public void UpdateRange(IEnumerable<T> range)

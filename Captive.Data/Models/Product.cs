@@ -9,9 +9,6 @@ namespace Captive.Data.Models
         public Guid BankInfoId { get; set; }
         public BankInfo? BankInfo { get; set; }
 
-        public Guid? TagId { get; set; }
-        public Tag? Tag { get; set; }
-
         public ICollection<FormChecks>? FormChecks { get; set; }
     }
 }

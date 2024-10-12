@@ -4,6 +4,9 @@ namespace Captive.Data.Models
     public class CheckInventoryDetail
     {
         public Guid Id { get; set; }
+        public Guid? BranchId { get; set; }
+        public Guid? ProductId { get; set; }
+        public Guid? FormCheckId { get; set; }
 
         public string? StarSeries { get; set; }
         public string? EndSeries { get; set; }

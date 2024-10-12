@@ -10,6 +10,5 @@
         public ICollection<BankBranches>? BankBranches { get; set; }
         public ICollection<BatchFile>? BatchFiles { get;set; }
         public ICollection<Product>? Products { get; set; }
-        public ICollection<Tag> Tags { get; set; }
     }
 }
