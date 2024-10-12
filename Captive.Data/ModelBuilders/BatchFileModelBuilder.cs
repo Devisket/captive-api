@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Data.ModelBuilders
@@ -12,7 +13,9 @@ namespace Captive.Data.ModelBuilders
             entity.HasKey(x => x.Id);
             entity.Property(x => x.CreatedDate).IsRequired();
 
-            entity.Property(x => x.BatchFileStatus).IsRequired();
+            entity.Property(x => x.BatchFileStatus).IsRequired().HasConversion(
+                v=> v.ToString(),
+                v => (BatchFileStatus)Enum.Parse(typeof(BatchFileStatus), v.ToString()));
 
             entity.Property(x => x.BatchName)
                 .IsRequired();

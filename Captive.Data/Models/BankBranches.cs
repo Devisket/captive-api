@@ -16,9 +16,6 @@ namespace Captive.Data.Models
         public Guid? MergingBranchId { get; set; }
         public required BranchStatus BranchStatus { get; set; }
 
-        public Guid? TagId { get; set; }
-        public Tag? Tag { get; set; }
-
         public Guid BankInfoId { get; set; }
         public BankInfo BankInfo { get; set; }
     }

@@ -10,5 +10,7 @@ namespace Captive.Data.Repository.Write
         void Delete(T entity);
 
         Task AddAsync(T entity, CancellationToken cancellationToken);
+
+        Task AddRange(T[] entity, CancellationToken cancellationToken);
     }
 }

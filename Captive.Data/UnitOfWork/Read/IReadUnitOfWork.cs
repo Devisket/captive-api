@@ -8,6 +8,7 @@ namespace Captive.Data.UnitOfWork.Read
         public IReadRepository<BankInfo> Banks { get; }
         public IReadRepository<BankBranches> BankBranches { get; }
         public IReadRepository<CheckInventory> CheckInventory { get; }
+        public IReadRepository<CheckInventoryDetail> CheckInventoryDetails { get; }
         public IReadRepository<CheckOrders> CheckOrders { get; }
         public IReadRepository<FormChecks> FormChecks { get; }
         public IReadRepository<OrderFile> OrderFiles { get; }
@@ -17,6 +18,8 @@ namespace Captive.Data.UnitOfWork.Read
         public IReadRepository<ProductConfiguration> ProductConfigurations{ get; }
         public IReadRepository<Tag> Tags { get; }
         public IReadRepository<TagMapping> TagsMapping { get; }
+        public IReadRepository<CheckValidation> CheckValidations { get; }
+
 
         
     }
