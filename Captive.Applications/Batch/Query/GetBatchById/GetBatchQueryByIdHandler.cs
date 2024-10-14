@@ -19,7 +19,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
             var query = _readUow.BatchFiles.GetAll().Where(x => x.Id == request.BatchId);
 
             var batch = await _readUow.BatchFiles.GetAll()
-                .Where(x => x.BankInfoId == request.BankId)
+                .Where(x => x.BankInfoId == request.BankId && x.Id == request.BatchId)
                 .Select(x => new GetBatchByIdQueryResponse()
             {
                 Id = x.Id,
