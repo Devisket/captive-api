@@ -26,7 +26,7 @@ namespace Captive.Applications.TagAndMapping.Command.CreateMapping
             if (tag == null)
                 throw new Exception($"The Tag ID: {request.TagId} doesn't exist");
 
-            if (request.Mappings.Any())
+            if (request.Mappings.Any() )
             {
                 var mapping = request.Mappings.Select(x => new TagMapping
                 {

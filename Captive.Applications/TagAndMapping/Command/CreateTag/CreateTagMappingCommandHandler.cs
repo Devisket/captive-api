@@ -1,10 +1,9 @@
-﻿using Captive.Data.Models;
-using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Captive.Applications.TagAndMapping.Command.CreateTagAndMapping
+namespace Captive.Applications.TagAndMapping.Command.CreateTag
 {
     public class CreateTagMappingCommandHandler : IRequestHandler<CreateTagMappingCommand, Unit>
     {
@@ -28,31 +27,23 @@ namespace Captive.Applications.TagAndMapping.Command.CreateTagAndMapping
 
             if (!request.Id.HasValue)
             {
-
-                var newTag = new Data.Models.Tag()
+                await _writeUow.Tags.AddAsync(new Data.Models.Tag()
                 {
                     Id = Guid.NewGuid(),
                     CheckValidationId = checkValidation.Id,
                     TagName = request.TagName,
-                };
+                }, cancellationToken);
+            }
+            else
+            {
+                var tag = await _readUow.Tags.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id.Value, cancellationToken);
 
-                await _writeUow.Tags.AddAsync(newTag, cancellationToken);
-
-                await _writeUow.Complete();
-
-                if (request.TagMappings.Any())
+                if(tag == null)
                 {
-                    var mapping = request.TagMappings.Select(x => new TagMapping
-                    {
-                        TagId = newTag.Id,
-                        BranchId = x.BranchId,
-                        FormCheckId = x.FormCheckId,
-                        ProductId = x.ProductId,
-                    }).ToArray();
-
-                    if (mapping.Any())
-                        await _writeUow.TagMappings.AddRange(mapping, cancellationToken);
+                    throw new Exception($"The TagID: {request.Id.Value} doesn't exist");
                 }
+
+                tag.TagName = request.TagName;
 
             }
 
