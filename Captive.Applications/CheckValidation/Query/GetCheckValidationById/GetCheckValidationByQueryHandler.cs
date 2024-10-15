@@ -2,19 +2,19 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Captive.Applications.CheckValidation.Query
+namespace Captive.Applications.CheckValidation.Query.GetCheckValidationById
 {
-    public class GetCheckValidationQueryHandler : IRequestHandler<GetCheckValidationQuery, GetCheckValidationQueryResponse>
+    public class GetCheckValidationByIdQueryHandler : IRequestHandler<GetCheckValidationByIdQuery, GetCheckValidationByIdQueryResponse>
     {
         private readonly IReadUnitOfWork _readUnitOfWork;
-        public GetCheckValidationQueryHandler(IReadUnitOfWork readUnitOfWork) 
-        { 
+        public GetCheckValidationByIdQueryHandler(IReadUnitOfWork readUnitOfWork)
+        {
             _readUnitOfWork = readUnitOfWork;
         }
 
-        public async Task<GetCheckValidationQueryResponse> Handle(GetCheckValidationQuery request, CancellationToken cancellationToken)
-        {            
-            var checkValidation = await _readUnitOfWork.CheckValidations.GetAll().Where(x => x.Id == request.Id && x.BankInfoId == request.BankInfoId).Select(x => new GetCheckValidationQueryResponse
+        public async Task<GetCheckValidationByIdQueryResponse> Handle(GetCheckValidationByIdQuery request, CancellationToken cancellationToken)
+        {
+            var checkValidation = await _readUnitOfWork.CheckValidations.GetAll().Where(x => x.Id == request.Id && x.BankInfoId == request.BankInfoId).Select(x => new GetCheckValidationByIdQueryResponse
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -34,7 +34,7 @@ namespace Captive.Applications.CheckValidation.Query
                 }).ToList()
             }).FirstOrDefaultAsync(cancellationToken);
 
-            if (checkValidation == null) 
+            if (checkValidation == null)
             {
                 throw new Exception($"Check validation ID{request.Id} doesn't exist");
             }

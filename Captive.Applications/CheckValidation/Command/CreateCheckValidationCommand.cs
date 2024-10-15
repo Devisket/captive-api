@@ -1,5 +1,4 @@
-﻿using Captive.Data.Enums;
-using MediatR;
+﻿using MediatR;
 
 namespace Captive.Applications.CheckValidation.Command
 {
