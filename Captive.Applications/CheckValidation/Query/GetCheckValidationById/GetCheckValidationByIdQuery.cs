@@ -1,15 +1,14 @@
-﻿
-using Captive.Model.Dto;
+﻿using Captive.Model.Dto;
 using MediatR;
 
-namespace Captive.Applications.CheckValidation.Query
+namespace Captive.Applications.CheckValidation.Query.GetCheckValidationById
 {
-    public class GetCheckValidationQuery : IRequest<GetCheckValidationQueryResponse>
+    public class GetCheckValidationByIdQuery : IRequest<GetCheckValidationByIdQueryResponse>
     {
-        public Guid Id;
+        public Guid Id { get; set; }
         public Guid BankInfoId { get; set; }
     }
-    public class GetCheckValidationQueryResponse
+    public class GetCheckValidationByIdQueryResponse
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.CheckValidation.Command
 {
-    internal class CreateCheckValidationCommandHandler : IRequestHandler<CreateCheckValidationCommand, Unit>
+    public class CreateCheckValidationCommandHandler : IRequestHandler<CreateCheckValidationCommand, Unit>
     {
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IReadUnitOfWork _readUow;
