@@ -10,7 +10,7 @@ namespace Captive.Commands.Controllers
     public class CheckValidationController : ControllerBase
     {
         private readonly IMediator _mediator;
-        CheckValidationController(IMediator mediator) 
+        public CheckValidationController(IMediator mediator) 
         {
             _mediator = mediator;
         }
