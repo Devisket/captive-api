@@ -3,6 +3,7 @@ using Captive.Model;
 using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
 using Captive.Processing.Processor.MDBFileProcessor;
+using Captive.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -39,9 +40,9 @@ namespace Captive.MdbAPI.Controllers
                 return Problem(detail:$"Can't find configuration for {request.FileName}", statusCode: 500);
             }
 
-            _mdbProcessor.Extractfile(request, extractedConfig);
+            var response = _mdbProcessor.Extractfile(request, extractedConfig);
 
-            return Ok(new List<OrderFileData>());
+            return Ok(response);
         }
     }
 }

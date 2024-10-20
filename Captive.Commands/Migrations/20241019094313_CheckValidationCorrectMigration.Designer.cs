@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241019094313_CheckValidationCorrectMigration")]
+    partial class CheckValidationCorrectMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,9 +320,6 @@ namespace Captive.Commands.Migrations
                     b.Property<DateTime>("ProcessDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -329,8 +329,6 @@ namespace Captive.Commands.Migrations
                     b.HasIndex("BatchFileId");
 
                     b.HasIndex("FileName");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("order_files", (string)null);
                 });
@@ -390,16 +388,12 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CheckValidationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ConfigurationData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ConfigurationType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ConfigurationType")
+                        .HasColumnType("int");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -510,7 +504,7 @@ namespace Captive.Commands.Migrations
                     b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
                         .WithMany("CheckInventory")
                         .HasForeignKey("CheckValidationId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CheckValidation");
@@ -538,7 +532,7 @@ namespace Captive.Commands.Migrations
                     b.HasOne("Captive.Data.Models.FormChecks", "FormChecks")
                         .WithMany("CheckOrders")
                         .HasForeignKey("FormCheckId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Captive.Data.Models.OrderFile", "OrderFile")
@@ -582,15 +576,7 @@ namespace Captive.Commands.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Captive.Data.Models.Product", "Product")
-                        .WithMany("OrderFiles")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
-
                     b.Navigation("BatchFile");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.OrderFileLog", b =>
@@ -695,8 +681,6 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.Product", b =>
                 {
                     b.Navigation("FormChecks");
-
-                    b.Navigation("OrderFiles");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.Tag", b =>

@@ -10,5 +10,7 @@ namespace Captive.Data.Models
         public BankInfo? BankInfo { get; set; }
 
         public ICollection<FormChecks>? FormChecks { get; set; }
+        public ICollection<OrderFile>? OrderFiles { get; set; }
+
     }
 }

@@ -1,4 +1,7 @@
-﻿using Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile;
+﻿using Captive.Applications.Orderfiles.Command.UpdateOrderFile;
+using Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile;
+using Captive.Data.Enums;
+using Captive.Model.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +33,19 @@ namespace Captive.Commands.Controllers
             {
                 return BadRequest("Files is empty");
             }
+
+            return Ok();
+        }
+
+        [HttpPost("{id}/updateStatus")]
+        public async Task<IActionResult> UpdateOrderfile([FromRoute] Guid bankId, [FromRoute] Guid Id, [FromBody] UpdateOrderFileRequest request)
+        {
+            await _mediator.Send(new UpdateOrderFileCommand
+            {
+                Id = Id,
+                Status = (OrderFilesStatus) Enum.Parse(typeof(OrderFilesStatus), request.Status),
+                ErrorMessage = request.ErrorMessage,
+            });
 
             return Ok();
         }

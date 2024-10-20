@@ -1,5 +1,6 @@
 ﻿using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto;
+using Captive.Utility;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,6 @@ namespace Captive.Applications.Batch.Query.GetBatchById
 
         public async Task<GetBatchByIdQueryResponse> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
         {
-            var query = _readUow.BatchFiles.GetAll().Where(x => x.Id == request.BatchId);
-
             var batch = await _readUow.BatchFiles.GetAll()
                 .Where(x => x.BankInfoId == request.BankId && x.Id == request.BatchId)
                 .Select(x => new GetBatchByIdQueryResponse()
@@ -32,6 +31,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     Id = x.Id,
                     BatchId = x.BatchFileId,
                     FileName = x.FileName,
+                    FileType = Path.GetExtension(x.FileName).SanitizeFileName(),
                     FilePath = x.FilePath,
                     Status = x.Status.ToString()
                 }).ToList() : null

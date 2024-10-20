@@ -23,6 +23,7 @@ namespace Captive.Data
             modelBuilder.BuildProductConfigurationModel();
             modelBuilder.BuildProductModel();
             modelBuilder.BuildCheckInventoryDetailModel();
+            modelBuilder.BuildCheckValidationModel();
             modelBuilder.BuildTagModel();
             modelBuilder.BuildTagMappingModel();    
             

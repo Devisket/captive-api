@@ -1,4 +1,5 @@
-﻿using Captive.Model.Dto;
+﻿using Captive.Model;
+using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
 using System.Data.OleDb;
 using System.Runtime.Versioning;
@@ -7,18 +8,14 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 {
     public class MDBFileProcessor : IMDBFileProcessor
     {
-        /*
-         * - Get configuraiton
-         * - Map configuration with the predefined column
-         * - Map records into CheckOrder
-         * - Send check order back into FileProcessorConsumer
-         */
+        private Dictionary<string, string> columnFields; 
+
         [SupportedOSPlatform("windows")]
         public IEnumerable<CheckOrderDto> Extractfile(OrderfileDto orderFile, MdbConfiguration config)
         {
-            List<CheckOrderDto > checkOrders = new List<CheckOrderDto>();
+            List<CheckOrderDto> checkOrders = new List<CheckOrderDto>();
 
-            var filewatchingDir = Environment.GetEnvironmentVariable("CaptiveMDB");
+            this.columnFields = config.ToDictionary();
 
             string strConnectionString =
                 $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={orderFile.FilePath}" +
@@ -32,7 +29,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
             using (var connection = new OleDbConnection(strConnectionString))
             {
-                try
+                try 
                 {
                     connection.Open();
 
@@ -46,17 +43,58 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
                     while (reader.Read())
                     {
-                        //Iterate on the configuration for every value we have
-                    }
+                        var fieldValues = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
 
+                        if (fieldValues == null)
+                            continue;
+
+                        var checkOrder = new CheckOrderDto
+                        {
+                            CheckType = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CHECK_TYPE)) ?? string.Empty,
+                            FormType = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.FORM_TYPE)) ?? string.Empty,
+                            BRSTN = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRSTN)) ?? string.Empty,
+                            AccountNumber = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NUMBER)) ?? string.Empty,              
+                            AccountName1 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_1)),
+                            AccountName2 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_2)),
+                            Quantity = Convert.ToInt32(GetValue(fieldValues, GetColumnName(FileConfigurationConstants.QUANTITY)) ?? "0"),
+                            Concode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CONCODE)),
+                            DeliverTo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.DELIVER_TO)),
+                            StartingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.STARTING_SERIAL_NO)),
+                            EndingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ENDING_SERIAL_NO)),                          
+                        };
+
+                        checkOrders.Add(checkOrder);
+                    }
                     reader.Close();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error: " + ex.Message);
+                    throw new Exception(ex.Message);
                 }
             }
+
             return checkOrders;
         }
+
+        public string GetColumnName(string FieldName) => 
+            columnFields.ContainsKey(FieldName) ? columnFields[FieldName] : string.Empty;
+
+        public string? GetValue(Dictionary<string, object> fieldValues, string fieldName)
+        {
+
+            if (String.IsNullOrEmpty(fieldName))
+                return string.Empty;
+
+            if(fieldValues.TryGetValue(fieldName, out object value))
+            {
+                var valueString = Convert.ToString(value) ?? string.Empty;
+                return valueString;
+            }
+            else
+            {
+                throw new Exception($"Field name: {fieldName} doesn't exist");
+            };
+        }
+                
     }
 }

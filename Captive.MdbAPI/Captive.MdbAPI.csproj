@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
     <ProjectReference Include="..\Captive.MdbProcessor\Captive.MdbProcessor.csproj" />
     <ProjectReference Include="..\Captive.Processing\Captive.Processing.csproj" />
+    <ProjectReference Include="..\Captive.Utility\Captive.Utility.csproj" />
   </ItemGroup>
 
 </Project>

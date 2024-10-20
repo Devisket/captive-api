@@ -1,5 +1,4 @@
 ﻿using Captive.Data.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace Captive.Data.Models
 {
@@ -18,7 +17,8 @@ namespace Captive.Data.Models
 
         public Guid BatchFileId { get; set; }
         public BatchFile? BatchFile { get; set; }
-
         
+        public Guid ProductId { get; set; }
+        public Product Product { get; set; }
     }
 }
