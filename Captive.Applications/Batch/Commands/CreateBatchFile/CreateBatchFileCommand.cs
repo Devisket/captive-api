@@ -17,7 +17,5 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
         public Guid Id { get; set; }
 
         public Guid BankInfoId { get; set; }
-
-
     }
 }

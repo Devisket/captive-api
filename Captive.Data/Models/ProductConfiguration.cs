@@ -14,5 +14,7 @@ namespace Captive.Data.Models
 
         public required Guid ProductId { get; set; }
         public Product Product { get; set; }
+
+        public required Guid CheckValidationId { get; set; }
     }
 }

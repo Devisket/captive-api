@@ -4,6 +4,7 @@ using Captive.Data.UnitOfWork.Write;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using Captive.Model.Dto;
+using Captive.Utility;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -67,8 +68,10 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                     Id = x.Id,
                     BatchId = x.BatchFileId,
                     FileName = x.FileName,
+                    FileType = Path.GetExtension(x.FileName).SanitizeFileName(),
                     FilePath = x.FilePath,
                     Status = x.Status.ToString(),
+                    ProductId = x.ProductId
                 })
             });
 
@@ -92,6 +95,9 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
 
         private async Task<OrderFile> CreateOrderFileRecord(Guid batchId, string fileName, string batchDirectory, CancellationToken cancellationToken )
         {
+
+            var productId = await GetProductId(fileName, cancellationToken);
+
             var orderFile = new OrderFile
             {
                 Id = Guid.NewGuid(),
@@ -99,6 +105,7 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                 FileName = fileName,
                 FilePath = batchDirectory + fileName,
                 Status = Data.Enums.OrderFilesStatus.Processing,
+                ProductId = productId,
                 ProcessDate = DateTime.UtcNow,
             };
 
@@ -140,5 +147,15 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                 return fileBytes;
             }
         }      
+
+        private async Task<Guid> GetProductId(string fileName, CancellationToken cancellationToken)
+        {
+            var productConfiguration = await _readUow.ProductConfigurations.GetAll().FirstOrDefaultAsync(x => fileName.Contains(x.FileName), cancellationToken);
+
+            if (productConfiguration == null)
+                throw new Exception($"File name {fileName} has no product configuration");
+
+            return productConfiguration.ProductId;
+        }
     }
 }

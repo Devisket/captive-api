@@ -16,7 +16,13 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasMany(x => x.FormChecks)
                 .WithOne(x => x.Product)
-                .HasForeignKey(x => x.ProductId);
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(x => x.OrderFiles)
+                .WithOne(x => x.Product)
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
 
             entity.ToTable("products");
         }

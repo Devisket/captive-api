@@ -54,6 +54,7 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
                 FileName = request.FileName,
                 ConfigurationData = request.ConfigurationData,
                 ConfigurationType = request.ConfigurationType,
+                CheckValidationId = request.CheckValidationId,
                 isActive = true,
                 ProductId = product.Id,
             };

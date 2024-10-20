@@ -21,7 +21,9 @@ namespace Captive.Data.ModelBuilders
                 .HasForeignKey(x => x.CheckValidationId);
 
             entity.HasMany(x => x.CheckInventory)
-                .WithOne(x => x.CheckValidation).HasForeignKey(x => x.CheckValidationId);
+                .WithOne(x => x.CheckValidation)
+                .HasForeignKey(x => x.CheckValidationId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
 
             entity.ToTable("check_validation");
         }

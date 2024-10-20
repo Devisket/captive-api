@@ -1,4 +1,5 @@
 ﻿
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Captive.Model.Processing.Configurations
@@ -16,6 +17,19 @@ namespace Captive.Model.Processing.Configurations
 
         [JsonPropertyName("columnDefinition")]
         public List<MdbColumnDefinition> ColumnDefinition { get; set; }
+
+
+        public Dictionary<string,string> ToDictionary()
+        {
+            var dictionary = new Dictionary<string, string>();
+
+            foreach (var columnDefinition in ColumnDefinition)
+                dictionary.Add(columnDefinition.FieldName, columnDefinition.ColumnName);
+            
+            return dictionary;
+        }
+
+        
     }
 
     public class MdbColumnDefinition

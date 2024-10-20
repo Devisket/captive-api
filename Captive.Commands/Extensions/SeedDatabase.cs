@@ -39,7 +39,7 @@ namespace Captive.Commands.Extensions
                     Id = Guid.NewGuid(),
                     BankName = "Metrobank",
                     BankDescription = "Metrobank sample description",
-                    ShortName = "MTB",                    
+                    ShortName = "mbtc",                    
                     CreatedDate = DateTime.Now,
                 },
                 new BankInfo
@@ -47,7 +47,7 @@ namespace Captive.Commands.Extensions
                     Id = Guid.NewGuid(),
                     BankName = "Security Bank",
                     BankDescription = "Security Bank sample description",
-                    ShortName = "SBTC",
+                    ShortName = "sbtc",
                     CreatedDate = DateTime.Now,
                 },            
             };         
@@ -107,15 +107,34 @@ namespace Captive.Commands.Extensions
                 }
             };
 
+            var checkValidation = new List<CheckValidation>()
+            {
+                new CheckValidation
+                {
+                    Id = Guid.Empty,
+                    Name = "Check validation by Product",
+                    BankInfoId = bankInfos[0].Id,
+                    ValidationType = ValidationType.Product
+                },
+                new CheckValidation
+                {
+                    Id = Guid.Empty,
+                    Name = "Check validation by BRSTN",
+                    BankInfoId = bankInfos[0].Id,
+                    ValidationType = ValidationType.Branch
+                }
+            };
+
             var productConfiguration = new List<ProductConfiguration>{ 
                 new ProductConfiguration
                 {
                     Id = Guid.NewGuid(),
                     ProductId = product[0].Id,
                     isActive = true,
-                    ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"AcctNo\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
+                    ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"Acctno\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
                     ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[0],
+                    CheckValidationId = checkValidation[0].Id,
                     FileName = "ACT"
                 },
                 new ProductConfiguration
@@ -123,15 +142,17 @@ namespace Captive.Commands.Extensions
                     Id = Guid.NewGuid(),
                     ProductId = product[0].Id,
                     isActive = true,
-                    ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"AcctNo\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
+                    ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"Acctno\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
                     ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[1],
+                    CheckValidationId = checkValidation[1].Id,
                     FileName = "CWS"
                 }
             };
-
+            
             context.AddRange(bankInfos);
             context.AddRange(bankBranch);
+            context.AddRange(checkValidation);
             context.AddRange(product);
             context.AddRange(productConfiguration);           
         }

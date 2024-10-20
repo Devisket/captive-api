@@ -22,7 +22,7 @@ namespace Captive.Commands.Controllers
             await _mediator.Send(new CreateUpdateFormCheckCommand
             {
                 BankId = bankId,
-                Detail = request
+                Detail = request,
             });
             
             return Created();

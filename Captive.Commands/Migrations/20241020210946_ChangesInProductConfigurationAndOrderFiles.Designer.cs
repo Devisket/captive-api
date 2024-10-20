@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241020210946_ChangesInProductConfigurationAndOrderFiles")]
+    partial class ChangesInProductConfigurationAndOrderFiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -413,6 +416,8 @@ namespace Captive.Commands.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CheckValidationId");
+
                     b.HasIndex("ProductId");
 
                     b.ToTable("product_configuration", (string)null);
@@ -617,11 +622,19 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>
                 {
+                    b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
+                        .WithMany("ProductConfigurations")
+                        .HasForeignKey("CheckValidationId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .IsRequired();
+
                     b.HasOne("Captive.Data.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CheckValidation");
 
                     b.Navigation("Product");
                 });
@@ -676,6 +689,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.CheckValidation", b =>
                 {
                     b.Navigation("CheckInventory");
+
+                    b.Navigation("ProductConfigurations");
 
                     b.Navigation("Tags");
                 });
