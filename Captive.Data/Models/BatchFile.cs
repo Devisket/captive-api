@@ -9,6 +9,7 @@ namespace Captive.Data.Models
         public required string BatchName { get; set; }
         public required DateTime CreatedDate { get; set; }   
         public required BatchFileStatus BatchFileStatus { get; set; }
+        public string ErrorMessage { get; set; }
         public ICollection<OrderFile>? OrderFiles { get; set; }
         public Guid BankInfoId { get; set; }
         public BankInfo BankInfo{ get; set; }

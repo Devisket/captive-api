@@ -4,7 +4,7 @@ services:
       context: ../
       dockerfile: ./Captive.Query/Dockerfile
     environment:
-      ConnectionStrings__DefaultConnection: "Server=localhost, 1433;Database=CaptiveDB;User Id=sa;Password=Password1;"
+      ConnectionStrings__DefaultConnection: "Server=mssql-server;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
       #ASPNETCORE_HTTPS_PORTS: 8443
       #ASPNETCORE_URLS: https://+:8443;http://+8080
       #ASPNETCORE_HTTPS_PORTS: 8443

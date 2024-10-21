@@ -19,30 +19,68 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
             _writeUow = writeUow;
         }
 
-        public Task<Unit> Handle(CreateCheckOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateCheckOrderCommand request, CancellationToken cancellationToken)
         {
-            var orderFile = _readUow.OrderFiles.GetAll().FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
+            var orderFile = await _readUow.OrderFiles.GetAll().FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
 
             if (orderFile == null) {
                 throw new Exception("Orderfile ID doesn't exist");
             }
 
-            var checkOrders = request.CheckOrderDto.Select(x => new CheckOrders
-            {
-                AccountNo = x.AccountNumber,
-                AccountName = string.Concat(x.AccountName1, x.AccountName2),
-                BRSTN = x.BRSTN,
-                OrderQuanity = x.Quantity,
-                FormCheckId = request.FormCheckId,
-                DeliverTo = x.DeliverTo,
-                Concode = x.Concode,
-                InputEnable = false,
+            List<Captive.Data.Models.CheckOrders> newCheckOrders = new List<CheckOrders>();
+
+
+            foreach (var checkOrder in request.CheckOrders){
                 
-            }).ToArray();
+                if (checkOrder.IsValid)
+                {
+                    var formCheckId = await GetFormCheckId(orderFile.ProductId, checkOrder.FormType, checkOrder.CheckType, cancellationToken);
 
-            _writeUow.CheckOrders.AddRange(checkOrders,cancellationToken);
+                    newCheckOrders.Add(new CheckOrders
+                    {
+                        AccountNo = checkOrder.AccountNumber,
+                        AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
+                        BRSTN = checkOrder.BRSTN,
+                        OrderQuanity = checkOrder.Quantity,
+                        FormCheckId = formCheckId ?? null,
+                        DeliverTo = checkOrder.DeliverTo,
+                        Concode = checkOrder.Concode,
+                        ErrorMessage = formCheckId.HasValue ? string.Empty : "Cannot find formcheck",
+                        IsValid = formCheckId.HasValue,
+                        InputEnable = false,
+                    });
+                }
+                else
+                {
+                    newCheckOrders.Add(new CheckOrders
+                    {
+                        AccountNo = checkOrder.AccountNumber,
+                        AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
+                        BRSTN = checkOrder.BRSTN,
+                        OrderQuanity = checkOrder.Quantity,
+                        FormCheckId = null,
+                        DeliverTo = checkOrder.DeliverTo,
+                        Concode = checkOrder.Concode,
+                        ErrorMessage = checkOrder.ErrorMessage ?? string.Empty,
+                        IsValid = checkOrder.IsValid,
+                        InputEnable = false,
+                    });
+                }
+            }
 
-            throw new NotImplementedException();
+            if (newCheckOrders == null || !newCheckOrders.Any())
+                throw new Exception("Cannot create check order");
+
+            await _writeUow.CheckOrders.AddRange(newCheckOrders.ToArray(), cancellationToken);
+
+            return Unit.Value;
+        }
+
+        private async Task<Guid?> GetFormCheckId(Guid productId, string formType, string checkType, CancellationToken cancellationToken)
+        {
+            var formCheck = await _readUow.FormChecks.GetAll().FirstOrDefaultAsync(x => x.CheckType == checkType && x.FormType == formType && x.ProductId == productId, cancellationToken);
+
+            return formCheck != null ?  formCheck.Id : null;
         }
     }
 }

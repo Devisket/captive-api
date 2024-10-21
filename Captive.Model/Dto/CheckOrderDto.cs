@@ -2,7 +2,6 @@
 {
     public class CheckOrderDto
     {
-        public int RowNo { get; set; }
         public required string CheckType {  get; set; }
         public required string FormType {  get; set; }
         public required string AccountNumber {  get; set; }
