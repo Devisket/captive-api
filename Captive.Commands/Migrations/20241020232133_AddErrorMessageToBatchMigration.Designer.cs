@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241020232133_AddErrorMessageToBatchMigration")]
+    partial class AddErrorMessageToBatchMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,16 +220,10 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("FormCheckId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("FormChecksId")
+                    b.Property<Guid>("FormCheckId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("InputEnable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsValid")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("OrderFileId")
@@ -237,7 +234,7 @@ namespace Captive.Commands.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FormChecksId");
+                    b.HasIndex("FormCheckId");
 
                     b.HasIndex("OrderFileId");
 
@@ -547,8 +544,9 @@ namespace Captive.Commands.Migrations
                 {
                     b.HasOne("Captive.Data.Models.FormChecks", "FormChecks")
                         .WithMany("CheckOrders")
-                        .HasForeignKey("FormChecksId")
-                        .OnDelete(DeleteBehavior.ClientNoAction);
+                        .HasForeignKey("FormCheckId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .IsRequired();
 
                     b.HasOne("Captive.Data.Models.OrderFile", "OrderFile")
                         .WithMany("CheckOrders")

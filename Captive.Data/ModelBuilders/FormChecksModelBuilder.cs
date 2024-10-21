@@ -24,11 +24,6 @@ namespace Captive.Data.ModelBuilders
             entity
                 .Property(x => x.Description)
                 .IsRequired(false);
-
-            entity.HasMany(x => x.CheckOrders)
-                .WithOne(x => x.FormChecks)
-                .HasForeignKey(x => x.FormCheckId)
-                .OnDelete(DeleteBehavior.ClientNoAction);
                         
             entity.ToTable("form_checks");
 

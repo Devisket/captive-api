@@ -1,4 +1,5 @@
-﻿using Captive.Applications.CheckValidation.Query.ValidateCheckOrder;
+﻿using Captive.Applications.CheckOrder.Command.CreateCheckOrder;
+using Captive.Applications.CheckValidation.Query.ValidateCheckOrder;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,9 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCheckOrder()
+        public async Task<IActionResult> CreateCheckOrder([FromBody] CreateCheckOrderCommand request)
         {
+            await _mediator.Send(request);
             return Ok();
         }
         

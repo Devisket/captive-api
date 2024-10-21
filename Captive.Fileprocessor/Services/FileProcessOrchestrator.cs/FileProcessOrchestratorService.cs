@@ -1,6 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
 using Captive.Messaging.Models;
-using Captive.Model;
 using Captive.Model.Dto;
 using Captive.Utility;
 using Microsoft.Extensions.Configuration;
@@ -19,10 +18,10 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
 
         /*
          * Need tow work
-         * 1. Create a batch
-         * 2. Send into file processor
-         * 3. Extract the orderfile
-         * 4. Validate every orderfile
+         * 1. Create a batch [X]
+         * 2. Send into file processor [X]
+         * 3. Extract the orderfile [X]
+         * 4. Validate every orderfile [X]
          *      a. If there is invalid record update the order file error message and status
          * 4. Save into the database
          * 5. Update the order file status
@@ -32,10 +31,9 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
         public async Task ProcessFile(FileUploadMessage message)
         {
             var files = message.Files;
-
-            try
+            foreach (var file in files)
             {
-                foreach (var file in files)
+                try
                 {
                     List<CheckOrderDto> checkOrders = new List<CheckOrderDto>();
 
@@ -56,16 +54,31 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                             break;
                     }
 
-                    if (checkOrders == null || !checkOrders.Any()) 
+                    if (checkOrders == null || !checkOrders.Any())
                     {
+                        await SendOrderFileStatus(file.Id, "Can't map the check orders for this file", OrderFilesStatus.Error);
                         continue;
                     }
-                    
-                    await ValidateCheckOrder(checkOrders, file.Id, message.BankId, file.FileName);
+
+                    (var isValid, var validatedCheckOrders) = await ValidateCheckOrder(checkOrders, file.Id, message.BankId, file.FileName);
+
+                    if (!isValid)
+                    {
+                        await SendOrderFileStatus(file.Id, "Error in one of the check order", OrderFilesStatus.Error);
+                    }
+                    else
+                    {
+                        await SendOrderFileStatus(file.Id, string.Empty, OrderFilesStatus.Completed);
+                    }
+
+                    await CreateCheckOrder(file.Id, message.BankId,  validatedCheckOrders);
                 }
-            }
-            catch (Exception ex) {
-                Console.Error.WriteLine(ex.ToString());
+                catch (Exception ex)
+                {
+                    await SendOrderFileStatus(file.Id, ex.Message, OrderFilesStatus.Error);
+                    continue;
+                }
+
             }
         }
 
@@ -92,17 +105,19 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
 
                 orderfileDatas = JsonConvert.DeserializeObject<List<CheckOrderDto>>(responseData);
 
-                if(orderfileDatas == null)
+                if (orderfileDatas == null)
                     throw new Exception($"Failed to map check orders for  {orderFile.FileName}");
 
                 return orderfileDatas.ToList();
-            } else {
+            }
+            else
+            {
                 throw new Exception(responseData);
-            }            
+            }
         }
 
 
-        public async Task<(bool,List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName )
+        public async Task<(bool, List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName)
         {
             var reqBody = new
             {
@@ -129,7 +144,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
 
                 var validateCheckDto = JsonConvert.DeserializeObject<ValidateCheckOrderDto>(responseData);
 
-                if (validateCheckDto == null ) 
+                if (validateCheckDto == null)
                 {
                     throw new Exception($"Cannot deserialize response from Check Order Validation API ");
                 }
@@ -139,6 +154,84 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
             else
             {
                 throw new Exception(responseData);
+            }
+        }
+
+        public async Task SendOrderFileStatus(Guid orderFileId, string ErrorMessage, OrderFilesStatus status)
+        {
+            var reqBody = new
+            {
+                ErrorMessage,
+                Status = status.ToString(),
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/orderFile/{orderFileId}/updateStatus");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
+            }
+        }
+
+        public async Task SendBatchFileStatus(Guid batchId, string ErrorMessage, OrderFilesStatus status)
+        {
+            var reqBody = new
+            {
+                ErrorMessage,
+                Status = status.ToString(),
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/orderFile/{batchId}/updateStatus");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update the status of BatchID  {batchId}");
+            }
+        }
+
+        public async Task CreateCheckOrder(Guid orderFileId, Guid bankId,  List<CheckOrderDto> checkOrders)
+        {
+            var reqBody = new
+            {
+                orderFileId,
+                checkOrders
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/{bankId}/checkOrder");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
             }
         }
     }
