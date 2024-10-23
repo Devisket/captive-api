@@ -15,12 +15,12 @@ namespace Captive.Queries.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("bank/{bankId}")]
-        public async Task<IActionResult> GetBankFormChecks([FromRoute] Guid bankId, [FromQuery] Guid productId)
+        [HttpGet]
+        public async Task<IActionResult> GetProductFormChecks([FromQuery] Guid productId)
         {
             var response = await _mediator.Send(
-                new GetBankFormCheckQuery { 
-                    Id = bankId, 
+                new GetProductFormCheckQuery
+                { 
                     ProductId = productId
                 });
 

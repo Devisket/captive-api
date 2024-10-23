@@ -20,6 +20,8 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.BatchName)
                 .IsRequired();
 
+            entity.Property(x => x.ErrorMessage).IsRequired(false).HasDefaultValue(null);
+
             entity.HasMany(x => x.OrderFiles)
                 .WithOne(x => x.BatchFile)
                 .HasForeignKey(x => x.BatchFileId);

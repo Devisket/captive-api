@@ -38,6 +38,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
 
                     newCheckOrders.Add(new CheckOrders
                     {
+                        Id = Guid.Empty,
                         AccountNo = checkOrder.AccountNumber,
                         AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
                         BRSTN = checkOrder.BRSTN,
@@ -45,6 +46,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         FormCheckId = formCheckId ?? null,
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
+                        OrderFileId = request.OrderFileId,
                         ErrorMessage = formCheckId.HasValue ? string.Empty : "Cannot find formcheck",
                         IsValid = formCheckId.HasValue,
                         InputEnable = false,
@@ -54,6 +56,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                 {
                     newCheckOrders.Add(new CheckOrders
                     {
+                        Id = Guid.Empty,
                         AccountNo = checkOrder.AccountNumber,
                         AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
                         BRSTN = checkOrder.BRSTN,
@@ -61,6 +64,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         FormCheckId = null,
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
+                        OrderFileId = request.OrderFileId,
                         ErrorMessage = checkOrder.ErrorMessage ?? string.Empty,
                         IsValid = checkOrder.IsValid,
                         InputEnable = false,
