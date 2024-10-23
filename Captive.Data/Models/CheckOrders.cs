@@ -20,7 +20,7 @@ namespace Captive.Data.Models
         public OrderFile OrderFile { get; set; }
        
         public Guid? FormCheckId { get; set; }
-        public CheckInventoryDetail CheckInventoryDetail { get; set; } 
+        public CheckInventoryDetail? CheckInventoryDetail { get; set; } 
 
     }
 }

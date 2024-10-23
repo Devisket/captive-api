@@ -10,8 +10,6 @@
         public required string FileInitial { get; set; }
 
         public Guid ProductId { get; set; }
-        public Product Product { get; set; }
-
-        public ICollection<CheckOrders>? CheckOrders { get; set; }               
+        public Product Product { get; set; }             
     }
 }

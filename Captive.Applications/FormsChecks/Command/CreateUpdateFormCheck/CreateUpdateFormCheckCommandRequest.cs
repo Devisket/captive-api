@@ -10,6 +10,6 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
 
         public required string Description { get; set; }
         public int Quantity { get; set; }
-        public required string FileInitial { get; set; }
+        public string? FileInitial { get; set; }
     }
 }

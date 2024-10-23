@@ -9,5 +9,6 @@ namespace Captive.Applications.Bank.Query.GetBankFormChecks.Models
         public required string CheckType { get; set; }
         public required string FormType { get; set; }
         public required int Quanitity { get; set; }
+        public string? FileInitial { get; set; }
     }
 }

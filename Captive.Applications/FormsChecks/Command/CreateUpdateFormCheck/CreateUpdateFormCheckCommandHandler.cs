@@ -41,7 +41,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                 formCheck.FormType = request.Detail.FormType;
                 formCheck.Description = request.Detail.Description;
                 formCheck.Quantity = request.Detail.Quantity;
-                formCheck.FileInitial = request.Detail.FileInitial;
+                formCheck.FileInitial = request.Detail.FileInitial ?? string.Empty;
 
                 _writeUow.FormChecks.Update(formCheck);
             }
@@ -54,7 +54,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                     CheckType = request.Detail.CheckType,
                     FormType = request.Detail.FormType,
                     Description = request.Detail.Description,
-                    FileInitial = request.Detail.FileInitial,
+                    FileInitial = request.Detail.FileInitial ?? string.Empty,
                     Quantity = request.Detail.Quantity
                 }, cancellationToken);
             }

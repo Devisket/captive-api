@@ -78,7 +78,6 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                     await SendOrderFileStatus(file.Id, ex.Message, OrderFilesStatus.Error);
                     continue;
                 }
-
             }
         }
 
@@ -115,7 +114,6 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                 throw new Exception(responseData);
             }
         }
-
 
         public async Task<(bool, List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName)
         {
