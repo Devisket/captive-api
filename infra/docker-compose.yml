@@ -28,6 +28,7 @@ services:
       dockerfile: ./Captive.Commands/Dockerfile
     environment:
       ConnectionStrings__DefaultConnection: "Server=mssql-server;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
+      Rabbitmq__Hostname: "rabbitmq"
       #ASPNETCORE_HTTPS_PORTS: 7443
       ASPNETCORE_HTTP_PORTS: 7020
       #ASPNETCORE_URLS: https://+:7443;http://+7080

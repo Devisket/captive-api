@@ -10,5 +10,7 @@ namespace Captive.Model.Dto
         public required string FilePath { get; set; }
         public required string FileType { get; set; }
         public required string Status { get; set; }
+
+        public ICollection<CheckOrderDto>? CheckOrders { get; set; }
     }
 }
