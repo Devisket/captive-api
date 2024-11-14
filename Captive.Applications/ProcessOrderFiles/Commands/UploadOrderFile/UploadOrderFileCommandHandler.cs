@@ -80,11 +80,13 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
 
         private async Task<List<OrderFile>> ProcessFiles(Guid batchId, IEnumerable<IFormFile> files, string directoryPath, CancellationToken cancellationToken)
         {
+            var rootPath = Path.Combine(_configuration["Processing:FileProcessing"], directoryPath);
+
             List<OrderFile> result = new List<OrderFile>();
 
             foreach (var file in files) 
             { 
-                await SaveFile(file, directoryPath, cancellationToken);
+                await SaveFile(file, rootPath, cancellationToken);
 
                 var orderFile = await CreateOrderFileRecord(batchId, file.FileName, directoryPath, cancellationToken);
 
@@ -103,7 +105,7 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                 Id = Guid.NewGuid(),
                 BatchFileId = batchId,
                 FileName = fileName,
-                FilePath = batchDirectory + fileName,
+                FilePath = Path.Combine(batchDirectory , fileName),
                 Status = Data.Enums.OrderFilesStatus.Processing,
                 ProductId = productId,
                 ProcessDate = DateTime.UtcNow,
@@ -117,23 +119,24 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
         private async Task SaveFile(IFormFile file, string directoryPath,CancellationToken cancellationToken)
         {
             var fileBytes = await ExtractFile(file, cancellationToken);       
-            await File.WriteAllBytesAsync(directoryPath + file.FileName, fileBytes, cancellationToken);         
+            await File.WriteAllBytesAsync(Path.Combine(directoryPath, file.FileName), fileBytes, cancellationToken);            
         }
 
         private string CreateDirectory(string bankShortName, string batchName)
         {
-            var directoryPath = _configuration["Processing:FileProcessing"];
+            var rootPath = _configuration["Processing:FileProcessing"];
+                       
 
-            if (string.IsNullOrEmpty(directoryPath))
+            if (string.IsNullOrEmpty(rootPath))
                 throw new Exception("File processing directory is not defined");
+
+            Directory.CreateDirectory(rootPath);
+
+            var relativePath = Path.Combine(bankShortName, DateTime.UtcNow.ToString("MM-dd-yyyy"), batchName);
             
-            directoryPath = directoryPath.Replace("bankShortName", bankShortName);
-            directoryPath = directoryPath.Replace("currentDate", DateTime.UtcNow.ToString("MM-dd-yyyy"));
-            directoryPath = directoryPath.Replace("batchName", batchName);
+            Directory.CreateDirectory(Path.Combine(rootPath, relativePath));
 
-            Directory.CreateDirectory(directoryPath);
-
-            return directoryPath;
+            return relativePath;
         }
 
         private async Task<byte[]> ExtractFile(IFormFile rawFile, CancellationToken cancellationToken)

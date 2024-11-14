@@ -1,6 +1,7 @@
 ﻿using Captive.Model;
 using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
+using Microsoft.Extensions.Configuration;
 using System.Data.OleDb;
 using System.Runtime.Versioning;
 
@@ -8,17 +9,30 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 {
     public class MDBFileProcessor : IMDBFileProcessor
     {
-        private Dictionary<string, string> columnFields; 
+        private Dictionary<string, string> columnFields;
+        private readonly IConfiguration _configuration;
 
-        [SupportedOSPlatform("windows")]
+        public MDBFileProcessor(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public IEnumerable<CheckOrderDto> Extractfile(OrderfileDto orderFile, MdbConfiguration config)
         {
             List<CheckOrderDto> checkOrders = new List<CheckOrderDto>();
 
             this.columnFields = config.ToDictionary();
 
+            var rootPath = _configuration["Processing:FileProcessing"];
+
+            if (rootPath == null) {
+                throw new Exception("There is no FileProcessing directory configuration");
+            }
+
+            var fileDirectory = Path.Combine(rootPath, orderFile.FilePath);
+
             string strConnectionString =
-                $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={orderFile.FilePath}" +
+                $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory}" +
                 ";Jet OLEDB:Database Password=captain" +
                 ";Mode=Share Exclusive;Persist Security Info=True;";
 

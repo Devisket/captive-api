@@ -37,6 +37,7 @@ services:
       # ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
       OutputDirectory: /app/reports/Bank/Date,
       ArchiveDirectory: /app/reports/Archive
+      Processing__FileProcessing: /app/processing
     ports:
       - 7020:7020
     networks:
@@ -45,6 +46,7 @@ services:
       - ~/https:/https
       - ~/Captive/Reports/:/app/reports
       - ~/Captive/Reports/Archive:/app/reports/Archive
+      - C:/processing:/app/processing
     depends_on:
       - mssql-server
       - rabbitmq
