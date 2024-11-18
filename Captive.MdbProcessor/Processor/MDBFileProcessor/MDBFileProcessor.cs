@@ -3,7 +3,6 @@ using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
 using Microsoft.Extensions.Configuration;
 using System.Data.OleDb;
-using System.Runtime.Versioning;
 
 namespace Captive.Processing.Processor.MDBFileProcessor
 {

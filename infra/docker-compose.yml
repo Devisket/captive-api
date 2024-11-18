@@ -8,14 +8,14 @@ services:
       #ASPNETCORE_HTTPS_PORTS: 8443
       #ASPNETCORE_URLS: https://+:8443;http://+8080
       #ASPNETCORE_HTTPS_PORTS: 8443
-      ASPNETCORE_HTTP_PORTS: 8030
+      ASPNETCORE_HTTPS_PORTS: 8030
       ASPNETCORE_ENVIRONMENT: Development
-      # ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
-      # ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
     ports:
       - 8030:8030
     volumes:
-      - ~/https:/https
+      - C:/https:/https
     networks:
       - captive_network
     depends_on:
@@ -30,11 +30,11 @@ services:
       ConnectionStrings__DefaultConnection: "Server=mssql-server;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
       Rabbitmq__Hostname: "rabbitmq"
       #ASPNETCORE_HTTPS_PORTS: 7443
-      ASPNETCORE_HTTP_PORTS: 7020
+      ASPNETCORE_HTTPS_PORTS: 7020
       #ASPNETCORE_URLS: https://+:7443;http://+7080
       ASPNETCORE_ENVIRONMENT: Development
-      # ASPNETCORE_Kestrel__Certificates__Default__Path: /https/localhost.pfx
-      # ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
       OutputDirectory: /app/reports/Bank/Date,
       ArchiveDirectory: /app/reports/Archive
       Processing__FileProcessing: /app/processing
@@ -43,7 +43,7 @@ services:
     networks:
       - captive_network
     volumes:
-      - ~/https:/https
+      - C:/https:/https
       - ~/Captive/Reports/:/app/reports
       - ~/Captive/Reports/Archive:/app/reports/Archive
       - C:/processing:/app/processing
