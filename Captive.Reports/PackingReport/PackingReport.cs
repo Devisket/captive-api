@@ -2,12 +2,7 @@
 using Captive.Data.UnitOfWork.Read;
 using Captive.Reports.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Captive.Reports.PackingReport
 {
@@ -26,7 +21,7 @@ namespace Captive.Reports.PackingReport
 
         //    var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
 
-        //    foreach(var productData in productGroup)
+        //    foreach (var productData in productGroup)
         //    {
         //        var productName = productData.Key.ProductTypeName;
         //        var formCheckName = productData.Key.FormCheckName ?? string.Empty;
@@ -36,7 +31,7 @@ namespace Captive.Reports.PackingReport
 
         //        var orderFileBranchGroupBy = productData.GroupBy(x => new { x.BankBranch.BRSTNCode, DeliveryBrstn = x.DeliverTo == null ? string.Empty : x.DeliverTo.BRSTNCode, x.OrderFileName });
 
-        //        using(StreamWriter writer = new StreamWriter(productFilePath,true))
+        //        using (StreamWriter writer = new StreamWriter(productFilePath, true))
         //        {
         //            var pageNo = 1;
         //            foreach (var filBranch in orderFileBranchGroupBy)
@@ -64,7 +59,7 @@ namespace Captive.Reports.PackingReport
         //{
         //    var bankBranches = await _readUow.BankBranches.GetAll()
         //        .Include(x => x.BankInfo)
-        //        .Where(x => x.BankId == bankId)
+        //        .Where(x => x.BankInfoId == bankId)
         //        .AsNoTracking()
         //        .ToListAsync();
 
@@ -109,7 +104,7 @@ namespace Captive.Reports.PackingReport
         //                StartSeries = check.StarSeries ?? string.Empty,
         //                EndSeries = check.EndSeries ?? string.Empty,
         //                OrderFileId = checkOrder.OrderFileId,
-        //                OrderFileName =  checkOrder.OrderFile.FileName
+        //                OrderFileName = checkOrder.OrderFile.FileName
         //            });
         //        }
         //    }
@@ -125,14 +120,14 @@ namespace Captive.Reports.PackingReport
         //    var accNo = Regex.Replace(checkData.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
 
         //    writer.Write($"  {accNo}");
-            
-        //    if (!String.IsNullOrEmpty(checkData.AccountName)) 
+
+        //    if (!String.IsNullOrEmpty(checkData.AccountName))
         //    {
 
         //        RegexOptions options = RegexOptions.None;
         //        Regex regex = new Regex("[ ]{2,}", options);
         //        var accountName = regex.Replace(checkData.AccountName, " ");
-                                
+
         //        writer.Write($"  {string.Format("{0,-38}", accountName)}");
         //    }
         //    else
@@ -143,7 +138,7 @@ namespace Captive.Reports.PackingReport
 
         //}
 
-        //private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo) 
+        //private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)
         //{
         //    var bankShortName = orderBranch.BankInfo.ShortName;
 
@@ -153,13 +148,14 @@ namespace Captive.Reports.PackingReport
         //    writer.WriteLine($"\t\t\t\t\t\t\t  {bankShortName} - {formCheckName} Summary");
         //    writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\t\t  QTY\tSTART #\t  END #");
 
-        //    if(deliverTo != null)
+        //    if (deliverTo != null)
         //        writer.WriteLine($"\n ** DELIVER TO {deliverTo.BRSTNCode} {deliverTo.BranchName}");
 
         //    writer.WriteLine($"\n ** ORDERS OF BRSTN {orderBranch.BRSTNCode} {orderBranch.BranchName}");
         //    writer.WriteLine($"\n * Batch #: {orderFileName.ToUpper()} \n");
         //}
-        //private void RenderFooter(StreamWriter writer, int subTotal) {
+        //private void RenderFooter(StreamWriter writer, int subTotal)
+        //{
 
         //    writer.WriteLine($"\n *** SUB TOTAL: {subTotal}\n");
         //}

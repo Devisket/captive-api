@@ -28,7 +28,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                 throw new Exception("There is no FileProcessing directory configuration");
             }
 
-            var fileDirectory = Path.Combine(rootPath, orderFile.FilePath);
+            var fileDirectory = String.Concat(rootPath, orderFile.FilePath);
 
             string strConnectionString =
                 $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory}" +

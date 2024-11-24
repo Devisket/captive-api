@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CheckInventory\Commands\AddCheckInventoryDetails\" />
     <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
     <Folder Include="CheckOrder\Query\" />
     <Folder Include="Orderfiles\Query\" />

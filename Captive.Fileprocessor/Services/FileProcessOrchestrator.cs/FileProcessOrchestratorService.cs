@@ -232,5 +232,12 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                 throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
             }
         }
+
+        private async Task ExtractTextFile(OrderfileDto orderFile) { }
+        private async Task ExtractCsv(OrderfileDto orderFile) { }
+        public async Task GenerateOrderFIle(Guid orderFileId)
+        {
+           
+        }
     }
 }

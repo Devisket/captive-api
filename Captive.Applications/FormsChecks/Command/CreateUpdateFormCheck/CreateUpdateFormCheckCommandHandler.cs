@@ -1,5 +1,4 @@
-﻿using Captive.Data.Models;
-using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -19,23 +18,22 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
 
         public async Task<Unit> Handle(CreateUpdateFormCheckCommand request, CancellationToken cancellationToken)
         {
-
-            var bankExist = await _readUow.Banks.GetAll().AnyAsync(x => x.Id == request.BankId, cancellationToken);
-            var productTypeExist = await _readUow.ProductTypes.GetAll().AnyAsync(x => x.Id == request.Detail.ProductTypeId, cancellationToken);
-
-            if (!bankExist)
-                throw new Exception($"BankId{request.BankId} doesn't exist.");
-
+            var productTypeExist = await _readUow.ProductTypes.GetAll().AnyAsync(x => x.Id == request.ProductId, cancellationToken);
+            
             if (!productTypeExist)
-                throw new Exception($"ProductTypeId{request.Detail.ProductTypeId} doesn't exist");
+                throw new Exception($"ProductTypeId{request.ProductId} doesn't exist");
 
-
-            if (request.FormCheckId != Guid.Empty)
+            if (request.Detail.Id != Guid.Empty)
             {
-                var formCheck = await _readUow.FormChecks.GetAll().FirstOrDefaultAsync(x => x.Id == request.FormCheckId, cancellationToken);
+                if (await _readUow.FormChecks.GetAll().AsNoTracking().AnyAsync(x => x.ProductId == request.ProductId && x.CheckType == request.Detail.CheckType && x.FormType == request.Detail.FormType && x.Id != request.Detail.Id))
+                {
+                    throw new Exception($"Check Type: {request.Detail.CheckType} and Form type: {request.Detail.FormType} has already exist for ProductID: {request.ProductId}");
+                }
+
+                var formCheck = await _readUow.FormChecks.GetAll().FirstOrDefaultAsync(x => x.Id == request.Detail.Id, cancellationToken);
 
                 if (formCheck == null)
-                    throw new Exception($"FormCheckId{request.FormCheckId} doesn't exist");
+                    throw new Exception($"FormCheckId{request.Detail.Id} doesn't exist");
 
                 formCheck.CheckType = request.Detail.CheckType;
                 formCheck.FormType = request.Detail.FormType;
@@ -47,10 +45,14 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
             }
             else
             {
+                if (await _readUow.FormChecks.GetAll().AsNoTracking().AnyAsync(x => x.ProductId == request.ProductId && x.CheckType == request.Detail.CheckType && x.FormType == request.Detail.FormType))
+                {
+                    throw new Exception($"Check Type: {request.Detail.CheckType} and Form type: {request.Detail.FormType} has already exist for ProductID: {request.ProductId}");
+                }
 
                 await _writeUow.FormChecks.AddAsync(new Captive.Data.Models.FormChecks
                 {
-                    ProductId = request.Detail.ProductTypeId,
+                    ProductId = request.ProductId,
                     CheckType = request.Detail.CheckType,
                     FormType = request.Detail.FormType,
                     Description = request.Detail.Description,
@@ -58,8 +60,6 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                     Quantity = request.Detail.Quantity
                 }, cancellationToken);
             }
-
-            await _writeUow.Complete();
 
             return Unit.Value;
         }

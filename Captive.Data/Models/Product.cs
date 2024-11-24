@@ -11,6 +11,7 @@ namespace Captive.Data.Models
 
         public ICollection<FormChecks>? FormChecks { get; set; }
         public ICollection<OrderFile>? OrderFiles { get; set; }
+        public ICollection<ProductConfiguration> ProductConfigurations { get; set; }
 
     }
 }

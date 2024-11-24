@@ -5,36 +5,35 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Commands.Controllers
 {
-    [Route("api/[controller]/Bank/{bankId}")]
+    [Route("api/{productId}/[controller]")]
     [ApiController]
     public class FormChecksController : ControllerBase
     {
 
         private readonly IMediator _mediator;
-        public FormChecksController(IMediator mediator) 
+        public FormChecksController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFormCheck([FromRoute] Guid bankId,  [FromBody] CreateUpdateFormCheckCommandRequest request)
+        public async Task<IActionResult> CreateFormCheck([FromRoute] Guid productId, [FromBody] CreateUpdateFormCheckCommandRequest request)
         {
             await _mediator.Send(new CreateUpdateFormCheckCommand
             {
-                BankId = bankId,
+                ProductId = productId,
                 Detail = request,
             });
             
             return Created();
         }
 
-        [HttpPut("{formCheckId}")]
-        public async Task<IActionResult> UpdateFormCheck([FromRoute] Guid bankId,[FromRoute] Guid formCheckId, [FromBody] CreateUpdateFormCheckCommandRequest request)
+        [HttpPut]
+        public async Task<IActionResult> UpdateFormCheck([FromRoute] Guid productId, [FromBody] CreateUpdateFormCheckCommandRequest request)
         {
             await _mediator.Send(new CreateUpdateFormCheckCommand
             {
-                FormCheckId = formCheckId,
-                BankId = bankId,
+                ProductId = productId,
                 Detail = request
             });
 
@@ -42,11 +41,10 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpDelete("{formCheckId}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid bankId, [FromRoute] Guid formCheckId)
+        public async Task<IActionResult> Delete( [FromRoute] Guid formCheckId)
         {
             await _mediator.Send(new DeleteFormCheckCommand
             {
-                BankId = bankId,
                 FormCheckId = formCheckId
             });
 

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
 {
@@ -97,6 +98,7 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
 
         private async Task<OrderFile> CreateOrderFileRecord(Guid batchId, string fileName, string batchDirectory, CancellationToken cancellationToken )
         {
+            var relativePath = batchDirectory.Split("processing")[1];
 
             var productId = await GetProductId(fileName, cancellationToken);
 
@@ -105,7 +107,7 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                 Id = Guid.NewGuid(),
                 BatchFileId = batchId,
                 FileName = fileName,
-                FilePath = Path.Combine(batchDirectory , fileName),
+                FilePath = Path.Combine(relativePath, fileName),
                 Status = Data.Enums.OrderFilesStatus.Processing,
                 ProductId = productId,
                 ProcessDate = DateTime.UtcNow,
@@ -125,18 +127,18 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
         private string CreateDirectory(string bankShortName, string batchName)
         {
             var rootPath = _configuration["Processing:FileProcessing"];
-                       
+
+            rootPath = rootPath.Replace("bankShortName", bankShortName);
+            rootPath = rootPath.Replace("currentDate", DateTime.UtcNow.ToString("MM-dd-yyyy"));
+            rootPath = rootPath.Replace("batchName", batchName);
+
 
             if (string.IsNullOrEmpty(rootPath))
                 throw new Exception("File processing directory is not defined");
 
             Directory.CreateDirectory(rootPath);
 
-            var relativePath = Path.Combine(bankShortName, DateTime.UtcNow.ToString("MM-dd-yyyy"), batchName);
-            
-            Directory.CreateDirectory(Path.Combine(rootPath, relativePath));
-
-            return relativePath;
+            return rootPath;
         }
 
         private async Task<byte[]> ExtractFile(IFormFile rawFile, CancellationToken cancellationToken)

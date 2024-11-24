@@ -17,10 +17,10 @@ namespace Captive.Applications.Bank.Query.GetBankFormChecks
 
         public async Task<GetProductFormCheckQueryResponse> Handle(GetProductFormCheckQuery request, CancellationToken cancellationToken)
         {
-            var bankFormChecks = _readUow.FormChecks.GetAll()
+            var productFormChecks = _readUow.FormChecks.GetAll()
                 .Where(x => x.ProductId == request.ProductId).AsNoTracking();
 
-            var formChecks = await bankFormChecks.Select(x => new BankFormCheck
+            var formChecks = await productFormChecks.Select(x => new BankFormCheck
             {
                 Id = x.Id,
                 ProductId = x.ProductId,
@@ -33,7 +33,7 @@ namespace Captive.Applications.Bank.Query.GetBankFormChecks
 
             return new GetProductFormCheckQueryResponse
             {
-                FormChecks = formChecks
+                FormChecks = formChecks ?? new List<BankFormCheck> { }
             };
         }
     }
