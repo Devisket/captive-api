@@ -68,6 +68,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                     }
                     else
                     {
+                        await ApplyCheckInventoryDetails(file.Id, validatedCheckOrders);
                         await SendOrderFileStatus(file.Id, string.Empty, OrderFilesStatus.Completed);
                     }
 
@@ -216,6 +217,32 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
             };
 
             var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/{bankId}/checkOrder");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
+            }
+        }
+
+        private async Task ApplyCheckInventoryDetails(Guid orderFileId, List<CheckOrderDto> checkOrders)
+        {
+            var reqBody = new
+            {
+                orderFileId,
+                checkOrders
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/checkInventory/ApplyCheckInventoryDetails");
 
             var client = new HttpClient();
 

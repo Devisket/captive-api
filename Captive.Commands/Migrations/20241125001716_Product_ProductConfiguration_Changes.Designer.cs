@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241125001716_Product_ProductConfiguration_Changes")]
+    partial class Product_ProductConfiguration_Changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,8 +146,7 @@ namespace Captive.Commands.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CheckValidationId")
-                        .IsUnique();
+                    b.HasIndex("CheckValidationId");
 
                     b.ToTable("check_inventory", (string)null);
                 });
@@ -181,9 +183,6 @@ namespace Captive.Commands.Migrations
 
                     b.Property<string>("StartingSeries")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -253,9 +252,6 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BankInfoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CheckInventoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -524,8 +520,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.CheckInventory", b =>
                 {
                     b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
-                        .WithOne("CheckInventory")
-                        .HasForeignKey("Captive.Data.Models.CheckInventory", "CheckValidationId")
+                        .WithMany("CheckInventory")
+                        .HasForeignKey("CheckValidationId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
@@ -682,8 +678,7 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.CheckValidation", b =>
                 {
-                    b.Navigation("CheckInventory")
-                        .IsRequired();
+                    b.Navigation("CheckInventory");
 
                     b.Navigation("Tags");
                 });

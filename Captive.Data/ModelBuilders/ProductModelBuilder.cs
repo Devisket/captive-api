@@ -24,8 +24,8 @@ namespace Captive.Data.ModelBuilders
                 .HasForeignKey(x => x.ProductId)
                 .OnDelete(DeleteBehavior.ClientNoAction);
 
-            entity.HasMany(x => x.ProductConfigurations).WithOne(x => x.Product)
-                .HasForeignKey(x => x.ProductId)
+            entity.HasOne(x => x.ProductConfigurations).WithOne(x => x.Product)
+                .HasForeignKey<ProductConfiguration>(x => x.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.ToTable("products");

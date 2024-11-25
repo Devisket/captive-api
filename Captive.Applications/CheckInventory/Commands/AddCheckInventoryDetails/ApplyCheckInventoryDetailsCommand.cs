@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
 {
-    public class AddCheckInventoryDetailsCommand:IRequest<Unit>
+    public class ApplyCheckInventoryDetailsCommand:IRequest<Unit>
     {
         public Guid OrderFileId { get; set; }
         public List<CheckOrderDto> CheckOrders { get; set; }

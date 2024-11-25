@@ -10,6 +10,7 @@ namespace Captive.Data.Models
         public ICollection<Tag>? Tags { get; set; }        
         public Guid BankInfoId { get; set; }
         public BankInfo BankInfo { get; set; }
-        public ICollection<CheckInventory>? CheckInventory { get; set; }
+        public Guid CheckInventoryId { get; set; }   
+        public CheckInventory CheckInventory { get; set; }
     }
 }

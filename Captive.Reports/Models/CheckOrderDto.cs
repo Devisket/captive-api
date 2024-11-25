@@ -11,13 +11,10 @@ namespace Captive.Reports.Models
         public Guid CheckInventoryId { get; set; }
         public string StartSeries { get; set; }
         public string EndSeries { get; set; }
-
         public Guid? OrderFileId { get; set; }
         public string? OrderFileName { get; set; }
-
         public required string FileInitial { get; set; }
         public required BankBranches BankBranch { get; set; }
-
         public BankBranches? DeliverTo { get; set; }
     }  
 }
