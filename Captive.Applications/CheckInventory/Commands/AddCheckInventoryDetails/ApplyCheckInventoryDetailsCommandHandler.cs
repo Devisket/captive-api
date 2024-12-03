@@ -1,4 +1,5 @@
 ﻿using Captive.Applications.FormsChecks.Services;
+using Captive.Applications.Util;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
@@ -12,12 +13,14 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IReadUnitOfWork _readUow;
         private readonly IFormsChecksService _formsChecksService;
+        private readonly IStringService _stringService;
 
-        public ApplyCheckInventoryDetailsCommandHandler(IReadUnitOfWork readUow, IWriteUnitOfWork writeUow, IFormsChecksService formsChecksService) 
+        public ApplyCheckInventoryDetailsCommandHandler(IReadUnitOfWork readUow, IWriteUnitOfWork writeUow, IFormsChecksService formsChecksService, IStringService stringService) 
         {        
             _writeUow = writeUow;
             _readUow = readUow;
             _formsChecksService = formsChecksService;
+            _stringService = stringService;
         }
 
         /**
@@ -58,8 +61,8 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
                 var formCheck = await _formsChecksService.GetCheckOrderFormCheck(checkOrder, cancellationToken);
 
                 if (formCheck == null) 
-                { 
-                    
+                {
+                    throw new Exception("Form Check doesn't exist.");
                 }
 
                 if (!String.IsNullOrEmpty(checkOrder.StartingSeries))
@@ -73,9 +76,9 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
                 {
                     var pattern = checkInventory.SeriesPatern;
 
-                    var checkQuantity = formCheck?.Quantity ?? 1 * checkOrder.Quantity;
+                    var checkQuantity = (formCheck?.Quantity ?? 1) * checkOrder.Quantity;
 
-                    var lastCheckDetailRecord = _readUow.CheckInventoryDetails.GetAll().OrderByDescending(x => x.Sequence).FirstOrDefault();
+                    var lastCheckDetailRecord = _readUow.CheckInventoryDetails.GetAllLocal().OrderByDescending(x => x.Sequence).FirstOrDefault();
 
                     var startingSeriesNo = lastCheckDetailRecord != null ? lastCheckDetailRecord.EndingSeries : ConvertPatternIntoSeries(checkInventory.SeriesPatern, 1);
 
@@ -83,6 +86,12 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
 
                     var endingSeries = ConvertPatternIntoSeries(checkInventory.SeriesPatern, checkQuantity);
                 }
+
+
+                //_writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
+                //{
+
+                //});
             }          
             return Unit.Value;
         }
@@ -96,6 +105,13 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
             return string.Concat(pattern.Replace("0",string.Empty), seriesValue);            
         }
 
+        private int ConvertAlphaNumericIntoNumberOnly(string series)
+        {
+            var numString = series.Replace("[^\\d]", string.Empty);
+
+            return Convert.ToInt32(numString ?? string.Empty);
+        }
+
         /*
          * Validate Check Inventory
          * 1. Build check Inventory Details query out of checkValidation type
@@ -104,7 +120,7 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
         {
             var checkValidation = checkInventory.CheckValidation;
 
-            //var checkInventoryQuery = _readUow.CheckInventoryDetails.GetAll().Where(x => x.CheckInventoryId == CheckInventoryId);
+            //var checkInventoryDetailsQuery = _readUow.CheckInventoryDetails.GetAll().Where(x => x.CheckInventoryId == checkInventory.Id && x.StartingSeries == startingSeries && );
 
 
             //var checkInventoryDetails = await _readUow.CheckInventoryDetails.GetAll().AsNoTracking().AnyAsync(x => x.CheckInventoryId == CheckInventoryId);

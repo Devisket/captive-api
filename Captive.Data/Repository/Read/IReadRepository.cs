@@ -6,5 +6,6 @@ namespace Captive.Data.Repository.Read
         IQueryable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
         IQueryable<T> Find(Expression<Func<T, bool>> expression);
+        IQueryable<T> GetAllLocal();
     }
 }

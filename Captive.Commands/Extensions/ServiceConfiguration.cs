@@ -19,6 +19,7 @@ using Captive.Commands.Pipelines;
 using Captive.Messaging.Interfaces;
 using Captive.Applications.FormsChecks.Services;
 using Captive.Applications.CheckOrder.Services;
+using Captive.Applications.Util;
 
 namespace Captive.Commands.Extensions
 {
@@ -46,6 +47,7 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();
             services.AddScoped<IFormsChecksService, FormsChecksService>();
             services.AddScoped<ICheckOrderService, CheckOrderService>();
+            services.AddScoped<IStringService, StringService>();
 
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();

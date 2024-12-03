@@ -15,8 +15,10 @@ namespace Captive.Data.Repository.Read
 
         public IQueryable<T> Find(Expression<Func<T, bool>> expression) => _dbContext.Set<T>().Where(expression);
 
-        public IQueryable<T> GetAll() => _dbContext.Set<T>().AsNoTracking();
+        public IQueryable<T> GetAll() => _dbContext.Set<T>();
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default) => await _dbContext.Set<T>().AsNoTracking().ToListAsync(cancellationToken);
+        public IQueryable<T> GetAllLocal() => _dbContext.Set<T>().Local.AsQueryable();
+
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default) => await _dbContext.Set<T>().ToListAsync(cancellationToken);
     }
 }
