@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CheckOrder\Query\**" />
+    <EmbeddedResource Remove="CheckOrder\Query\**" />
+    <None Remove="CheckOrder\Query\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="12.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
@@ -21,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
-    <Folder Include="CheckOrder\Query\" />
     <Folder Include="Orderfiles\Query\" />
     <Folder Include="Product\Command\DeleteProductConfiguration\" />
   </ItemGroup>

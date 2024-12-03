@@ -36,6 +36,8 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     Status = x.Status.ToString(),
                     CheckOrders = x.CheckOrders != null && x.CheckOrders.Any() ? x.CheckOrders.Select(c => new CheckOrderDto
                     {
+                        Id = c.Id,
+                        ProductId = c.ProductId,
                         BRSTN = c.BRSTN,
                         AccountNumber = c.AccountNo,
                         MainAccountName = c.AccountName,

@@ -63,6 +63,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
                         var checkOrder = new CheckOrderDto
                         {
+                            ProductId = orderFile.ProductId,
                             CheckType = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CHECK_TYPE)) ?? string.Empty,
                             FormType = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.FORM_TYPE)) ?? string.Empty,
                             BRSTN = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRSTN)) ?? string.Empty,

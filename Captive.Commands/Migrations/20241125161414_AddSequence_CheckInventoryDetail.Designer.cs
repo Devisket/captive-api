@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241125161414_AddSequence_CheckInventoryDetail")]
+    partial class AddSequence_CheckInventoryDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,9 +158,6 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
@@ -188,7 +188,7 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("StartingSeries")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TagId")
+                    b.Property<Guid>("TagId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -245,9 +245,6 @@ namespace Captive.Commands.Migrations
                     b.Property<int>("OrderQuanity")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderFileId");
@@ -270,15 +267,6 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("ValidateByBranch")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ValidateByFormCheck")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ValidateByProduct")
-                        .HasColumnType("bit");
 
                     b.Property<string>("ValidationType")
                         .IsRequired()
@@ -404,9 +392,6 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BankInfoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductConfigurationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProductName")
@@ -647,7 +632,7 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>
                 {
                     b.HasOne("Captive.Data.Models.Product", "Product")
-                        .WithOne("ProductConfiguration")
+                        .WithOne("ProductConfigurations")
                         .HasForeignKey("Captive.Data.Models.ProductConfiguration", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -722,7 +707,7 @@ namespace Captive.Commands.Migrations
 
                     b.Navigation("OrderFiles");
 
-                    b.Navigation("ProductConfiguration")
+                    b.Navigation("ProductConfigurations")
                         .IsRequired();
                 });
 

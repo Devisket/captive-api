@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using System.Reflection;
 using Captive.Messaging.Interfaces;
+using Captive.Applications.CheckOrder.Services;
+using Captive.Applications.FormsChecks.Services;
 
 namespace Captive.Queries.Extensions
 {
@@ -40,6 +42,8 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IBlockReport, BlockReport>();
             services.AddScoped<IPackingReport, PackingReport>();
             services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();
+            services.AddScoped<IFormsChecksService, FormsChecksService>();
+            services.AddScoped<ICheckOrderService, CheckOrderService>();
 
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
