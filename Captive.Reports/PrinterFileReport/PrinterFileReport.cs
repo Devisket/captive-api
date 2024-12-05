@@ -119,6 +119,7 @@ namespace Captive.Reports.PrinterFileReport
                 var branch = branches.First(x => x.Id == checkOrder.BranchId);
 
                 var formCheck = formChecks.First(x => x.Id == checkOrder.FormCheckId);
+
                 foreach (var check in checkInventory)
                 {
                     returnDatas.Add(new CheckOrderDTO

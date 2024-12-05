@@ -62,8 +62,8 @@ namespace Captive.Reports
             var filePath = ConstructReportFolder(outputDir, batchFile.BankInfo, checkOrders,batchFile.BatchName);
 
             await _exportPrinterFile.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
-            //await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
-            //await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
 
             CreateZipFile(batchFile, filePath, archiveDir);
         }
