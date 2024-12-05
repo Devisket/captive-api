@@ -24,13 +24,10 @@ namespace Captive.Data.Models
         public OrderFile OrderFile { get; set; }
 
         public Guid? FormCheckId { get; set; }
-        public FormChecks? FormChecks { get; set; }
 
         public Guid ProductId { get; set; }
-        public Product Product { get; set; }
 
         public Guid BranchId { get; set; }
-        public BankBranches BankBranches { get; set; }
         public ICollection<CheckInventoryDetail>? CheckInventoryDetail { get; set; } 
 
     }

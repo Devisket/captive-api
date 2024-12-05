@@ -80,9 +80,11 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                     continue;
                 }
             }
+
+            await GenerateReport(message.BatchID);
         }
 
-        public async Task<List<CheckOrderDto>> ExtractMdb(OrderfileDto orderFile)
+        private async Task<List<CheckOrderDto>> ExtractMdb(OrderfileDto orderFile)
         {
             IEnumerable<CheckOrderDto> orderfileDatas = new List<CheckOrderDto>();
 
@@ -116,7 +118,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
             }
         }
 
-        public async Task<(bool, List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName)
+        private async Task<(bool, List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName)
         {
             var reqBody = new
             {
@@ -156,7 +158,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
             }
         }
 
-        public async Task SendOrderFileStatus(Guid orderFileId, string ErrorMessage, OrderFilesStatus status)
+        private async Task SendOrderFileStatus(Guid orderFileId, string ErrorMessage, OrderFilesStatus status)
         {
             var reqBody = new
             {
@@ -182,7 +184,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
             }
         }
 
-        public async Task SendBatchFileStatus(Guid batchId, string ErrorMessage, OrderFilesStatus status)
+        private async Task SendBatchFileStatus(Guid batchId, string ErrorMessage, OrderFilesStatus status)
         {
             var reqBody = new
             {
@@ -208,7 +210,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
             }
         }
 
-        public async Task CreateCheckOrder(Guid orderFileId, Guid bankId,  List<CheckOrderDto> checkOrders)
+        private async Task CreateCheckOrder(Guid orderFileId, Guid bankId,  List<CheckOrderDto> checkOrders)
         {
             var reqBody = new
             {
@@ -258,6 +260,32 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                 throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
             }
         }
+
+        private async Task GenerateReport(Guid batchId)
+        {
+            var reqBody = new
+            {
+                batchId
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/report");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Cannot generate report for BatchID: {batchId}");
+            }
+        }
+
 
         private async Task ExtractTextFile(OrderfileDto orderFile) { }
         private async Task ExtractCsv(OrderfileDto orderFile) { }

@@ -7,6 +7,8 @@ namespace Captive.Reports.Models
     {
         public required string ProductTypeName { get; set; }
         public string? FormCheckName { get; set; }
+        public string CheckType {  get; set; }  
+        public string FormType {  get; set; }
         public required CheckOrders CheckOrder { get; set; }
         public Guid CheckInventoryId { get; set; }
         public string StartSeries { get; set; }

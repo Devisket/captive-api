@@ -11,128 +11,130 @@ namespace Captive.Reports
 {
     public class ReportGenerator : IReportGenerator
     {
-        //private readonly IReadUnitOfWork _readUow;
-        //private readonly IConfiguration _configuration;
-        //private readonly IBlockReport _blockReport;
-        //private readonly IPrinterFileReport _exportPrinterFile;
-        //private readonly IPackingReport _packingReport;
+        private readonly IReadUnitOfWork _readUow;
+        private readonly IConfiguration _configuration;
+        private readonly IBlockReport _blockReport;
+        private readonly IPrinterFileReport _exportPrinterFile;
+        private readonly IPackingReport _packingReport;
 
-        //public ReportGenerator(
-        //    IReadUnitOfWork readUow,
-        //    IConfiguration configuration,
-        //    IPrinterFileReport exportPrinterFile,
-        //    IBlockReport blockReport,
-        //    IPackingReport packingReport
-        //    )
-        //{
-        //    _readUow = readUow;
-        //    _configuration = configuration;
-        //    _exportPrinterFile = exportPrinterFile;
-        //    _blockReport = blockReport;
-        //    _packingReport = packingReport;
-        //}
+        public ReportGenerator(
+            IReadUnitOfWork readUow,
+            IConfiguration configuration,
+            IPrinterFileReport exportPrinterFile,
+            IBlockReport blockReport,
+            IPackingReport packingReport
+            )
+        {
+            _readUow = readUow;
+            _configuration = configuration;
+            _exportPrinterFile = exportPrinterFile;
+            _blockReport = blockReport;
+            _packingReport = packingReport;
+        }
 
-        //public async Task OnGenerateReport(Guid batchFileId, CancellationToken cancellationToken)
-        //{
-        //    var batchFile = await GetBatchFile(batchFileId, cancellationToken);
+        public async Task OnGenerateReport(Guid batchFileId, CancellationToken cancellationToken)
+        {
+            var batchFile = await GetBatchFile(batchFileId, cancellationToken);
 
-        //    if(!batchFile.OrderFiles.Any(x => x.Status  == Data.Enums.OrderFilesStatus.Completed))
-        //    {
-        //        return;
-        //    }
+            if (!batchFile.OrderFiles.Any(x => x.Status == Data.Enums.OrderFilesStatus.Completed))
+            {
+                return;
+            }
 
-        //    var outputDir = _configuration["OutputDirectory"];
-        //    var archiveDir = _configuration["ArchiveDirectory"];
+            var outputDir = _configuration["Processing:OutputDirectory"];
+            var archiveDir = _configuration["Processing:ArchiveDirectory"];
 
-        //    if (batchFile.BankInfo == null || batchFile.OrderFiles == null)
-        //        throw new Exception("Batch file missing data");
+            if (batchFile.BankInfo == null || batchFile.OrderFiles == null)
+                throw new Exception("Batch file missing data");
 
-        //    if(outputDir == null || archiveDir == null)
-        //        throw new Exception("Output/Archive directory is not configured");
+            if (outputDir == null || archiveDir == null)
+                throw new Exception("Output/Archive directory is not configured");
 
-        //    var checkOrders = new List<CheckOrders>();
+            var checkOrders = new List<CheckOrders>();
 
-        //    foreach(var order in batchFile.OrderFiles)
-        //    {
-        //        var checkOrder = await GetCheckOrders(order, cancellationToken);
+            foreach (var order in batchFile.OrderFiles)
+            {
+                var checkOrder = await GetCheckOrders(order, cancellationToken);
 
-        //        checkOrders.AddRange(checkOrder);
-        //    }
-           
-        //    var filePath = ConstructReportFolder(outputDir, batchFile.BankInfo, checkOrders);
+                checkOrders.AddRange(checkOrder);
+            }
 
-        //    await _exportPrinterFile.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
-        //    await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
-        //    await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            var filePath = ConstructReportFolder(outputDir, batchFile.BankInfo, checkOrders,batchFile.BatchName);
 
-        //    CreateZipFile(batchFile, filePath, archiveDir);
-        //}
+            await _exportPrinterFile.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            //await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            //await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
 
-        //private string ConstructReportFolder(string outputDir, BankInfo bankInfo, ICollection<CheckOrders> checkOrders)
-        //{
-        //    var filePath = outputDir.Replace("Bank", bankInfo.BankName);
-        //    filePath = filePath.Replace("Date", DateTime.UtcNow.ToString("MM-dd-yyyy"));           
+            CreateZipFile(batchFile, filePath, archiveDir);
+        }
 
-        //    if (!Directory.Exists(filePath))
-        //        Directory.CreateDirectory(filePath);
-        //    else
-        //    {
-        //        Directory.Delete(filePath,true);
-        //        Directory.CreateDirectory(filePath);
-        //    }
+        private string ConstructReportFolder(string outputDir, BankInfo bankInfo, ICollection<CheckOrders> checkOrders, string batchName)
+        {
+            var filePath = outputDir.Replace("bankShortName", bankInfo.ShortName);
+            filePath = filePath.Replace("currentDate", DateTime.UtcNow.ToString("MM-dd-yyyy"));
+            filePath = filePath.Replace("batchName", batchName);
 
-        //    var productNames = checkOrders.Select(x => x.FormChecks.ProductType.ProductName).Distinct().ToList();
+            if (!Directory.Exists(filePath))
+                Directory.CreateDirectory(filePath);
+            else
+            {
+                Directory.Delete(filePath, true);
+                Directory.CreateDirectory(filePath);
+            }
 
-        //    foreach (var productName in productNames)
-        //    {
-        //        var subDir = Path.Combine(filePath, productName);
+            var productNames = checkOrders.Select(x => x.OrderFile.Product.ProductName).Distinct().ToList();
 
-        //        if (!Directory.Exists(subDir))
-        //        {
-        //            Directory.CreateDirectory(subDir);
-        //        }
-        //    }
+            foreach (var productName in productNames)
+            {
+                var subDir = Path.Combine(filePath, productName);
 
-        //    return filePath;
-        //}
+                if (!Directory.Exists(subDir))
+                {
+                    Directory.CreateDirectory(subDir);
+                }
+            }
 
-        //private async Task<BatchFile> GetBatchFile(Guid batchFileId, CancellationToken cancellationToken)
-        //{
-        //    var batchFile = await _readUow.BatchFiles
-        //        .GetAll()
-        //        .Include(x => x.BankInfo)
-        //        .Include(x => x.OrderFiles)
-        //        .FirstOrDefaultAsync(x => x.Id == batchFileId, cancellationToken);   
+            return filePath;
+        }
 
-        //    if (batchFile == null)
-        //        throw new Exception($"No Batch file with Id: {batchFileId}");
+        private async Task<BatchFile> GetBatchFile(Guid batchFileId, CancellationToken cancellationToken)
+        {
+            var batchFile = await _readUow.BatchFiles
+                .GetAll()
+                .Include(x => x.BankInfo)
+                .Include(x => x.OrderFiles)
+                .Include(x => x.OrderFiles)
+                    .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.Id == batchFileId, cancellationToken);
 
-        //    return batchFile;
-        //}
+            if (batchFile == null)
+                throw new Exception($"No Batch file with Id: {batchFileId}");
 
-        //private async Task<ICollection<CheckOrders>>GetCheckOrders(OrderFile orderFile, CancellationToken cancellationToken)
-        //{
-        //    var checkOrders = await _readUow.CheckOrders.GetAll()
-        //        .Include(x => x.OrderFile)
-        //        .Include(x => x.FormChecks)
-        //        .ThenInclude(x => x.ProductType)
-        //        .Where(x => x.OrderFileId == orderFile.Id)
-        //        .ToListAsync(cancellationToken);
+            return batchFile;
+        }
 
-        //    return checkOrders;
-        //}
+        private async Task<ICollection<CheckOrders>> GetCheckOrders(OrderFile orderFile, CancellationToken cancellationToken)
+        {
+            var checkOrders = await _readUow.CheckOrders.GetAll()
+                .Include(x => x.OrderFile)
+                .Include(x => x.CheckInventoryDetail)
+                .Where(x => x.OrderFileId == orderFile.Id)
+                .ToListAsync(cancellationToken);
 
-        //private void CreateZipFile(BatchFile file, string reportDir, string archiveDir)
-        //{
-        //    if (!Directory.Exists(archiveDir))
-        //        Directory.CreateDirectory(archiveDir);
+            return checkOrders;
+        }
 
-        //    var fileName = Path.Combine(archiveDir, String.Format("{0}_{1}",file.BatchName,file.OrderNumber.ToString()) + ".zip");
+        private void CreateZipFile(BatchFile file, string reportDir, string archiveDir)
+        {
+            if (!Directory.Exists(archiveDir))
+                Directory.CreateDirectory(archiveDir);
 
-        //    if (File.Exists(fileName))
-        //        File.Delete(fileName);
+            var fileName = Path.Combine(archiveDir, String.Format("{0}_{1}", file.BatchName, file.OrderNumber.ToString()) + ".zip");
 
-        //    ZipFile.CreateFromDirectory(reportDir, fileName);
-        //}
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+            ZipFile.CreateFromDirectory(reportDir, fileName);
+        }
     }
 }
