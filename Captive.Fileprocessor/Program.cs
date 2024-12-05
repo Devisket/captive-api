@@ -21,6 +21,7 @@ namespace Captive.Fileprocessor
             builder.Services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             builder.Services.AddScoped<IFileProcessOrchestratorService, FileProcessOrchestratorService>();
             builder.Services.AddHostedService<FileProcessorConsumerService>();
+            builder.Services.AddHostedService<SampleConsumer>();
 
             IHost host = builder.Build();
 

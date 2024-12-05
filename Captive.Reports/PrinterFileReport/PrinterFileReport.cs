@@ -71,9 +71,9 @@ namespace Captive.Reports.PrinterFileReport
         //    writer.WriteLine(endingSeries);
         //}
 
-        //private async Task<ICollection<CheckInventory>> GetCheckInventory(Guid checkOrderId)
+        //private async Task<ICollection<CheckInventoryDetail>> GetCheckInventory(Guid checkOrderId)
         //{
-        //    var checkInventory = await _readUow.CheckInventory.GetAll()
+        //    var checkInventory = await _readUow.CheckInventoryDetails.GetAll()
         //        .AsNoTracking()
         //        .Where(x => x.CheckOrderId == checkOrderId)
         //        .ToListAsync();
@@ -114,8 +114,8 @@ namespace Captive.Reports.PrinterFileReport
         //                CheckOrder = checkOrder,
         //                BankBranch = branch,
         //                CheckInventoryId = check.Id,
-        //                StartSeries = check.StarSeries ?? string.Empty,
-        //                EndSeries = check.EndSeries ?? string.Empty
+        //                StartSeries = check.StartingSeries ?? string.Empty,
+        //                EndSeries = check.EndingSeries ?? string.Empty
         //            });
         //        }
         //    }

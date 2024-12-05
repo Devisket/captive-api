@@ -68,11 +68,11 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                     }
                     else
                     {
-                        await ApplyCheckInventoryDetails(file.Id, validatedCheckOrders);
                         await SendOrderFileStatus(file.Id, string.Empty, OrderFilesStatus.Completed);
                     }
 
                     await CreateCheckOrder(file.Id, message.BankId,  validatedCheckOrders);
+                    await ApplyCheckInventoryDetails(file.Id);
                 }
                 catch (Exception ex)
                 {
@@ -230,16 +230,15 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
+                throw new Exception($"Failed to create check order for order file ID: {orderFileId}");
             }
         }
 
-        private async Task ApplyCheckInventoryDetails(Guid orderFileId, List<CheckOrderDto> checkOrders)
+        private async Task ApplyCheckInventoryDetails(Guid orderFileId)
         {
             var reqBody = new
             {
-                orderFileId,
-                checkOrders
+                orderFileId
             };
 
             var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/checkInventory/ApplyCheckInventoryDetails");

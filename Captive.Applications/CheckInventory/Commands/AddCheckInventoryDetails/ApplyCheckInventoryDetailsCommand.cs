@@ -6,6 +6,5 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
     public class ApplyCheckInventoryDetailsCommand:IRequest<Unit>
     {
         public Guid OrderFileId { get; set; }
-        public List<CheckOrderDto> CheckOrders { get; set; }
     }
 }

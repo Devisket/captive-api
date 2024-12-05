@@ -38,14 +38,16 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     {
                         Id = c.Id,
                         ProductId = c.ProductId,
-                        BRSTN = c.BRSTN,
+                        BRSTN = c.BRSTN,                        
                         AccountNumber = c.AccountNo,
                         MainAccountName = c.AccountName,
                         DeliverTo = c.DeliverTo,
-                        CheckType = "",
+                        FormType = _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefault(z => z.Id == c.FormCheckId).FormType ?? string.Empty,
+                        CheckType = _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefault(z => z.Id == c.FormCheckId).CheckType ?? string.Empty,
                         IsValid = c.IsValid,
                         Quantity = c.OrderQuanity,
-                        FormType = "",
+                        FormCheckId = c.FormCheckId ?? Guid.Empty,
+                        
                         ErrorMessage = c.ErrorMessage                        
                     }).ToList() : null
                 }).ToList() : null

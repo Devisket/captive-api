@@ -108,11 +108,37 @@ namespace Captive.Applications.CheckValidation.Query.ValidateCheckOrder
                     continue;
                 }
 
+                //Validate Check Inventory
+                /*
+                 * Only validate check inventory when the check order has predefine series
+                 * 1. Get the corresponding check validation thru ProductConfiguration
+                 * 2. Check the CheckValidation if it is Product, Mix, Account or Branch
+                 *  2a. If Mix get the TagMapping under check validation
+                 *  2b. Check the corresponding validation if validated by Branch, Product and FormCheck
+                 *  2c. Get the specific tag mapping according to the validation in the check validation table
+                 *  2d. Validate the series on check inventory details with specific tag
+                 */
+
+                if(!String.IsNullOrEmpty(checkOrder.StartingSeries) && !string.IsNullOrEmpty(checkOrder.EndingSeries))
+                {
+                    if (!ValidateCheckSeries(checkOrder))
+                    {
+                        checkOrder.IsValid = false;
+                        checkOrder.ErrorMessage = $"Check series is conflicted for check order series {checkOrder.StartingSeries} - {checkOrder.EndingSeries}";
+                        continue;
+                    }
+                }
+
                 checkOrder.IsValid = true;
                 checkOrder.ErrorMessage = string.Empty;
             }
 
             return checkOrders;
+        }
+
+        public bool ValidateCheckSeries(CheckOrderDto checkOrder)
+        {
+            return false;
         }
     }
 }

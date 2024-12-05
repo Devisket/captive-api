@@ -32,27 +32,34 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
             List<Captive.Data.Models.CheckOrders> newCheckOrders = new List<CheckOrders>();
 
 
-            foreach (var checkOrder in request.CheckOrders){
-                
+            foreach (var checkOrder in request.CheckOrders) {
+
+                var branch = await _readUow.BankBranches.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.BRSTNCode == checkOrder.BRSTN);
+
+                var formCheck = await _formCheckService.GetCheckOrderFormCheck(checkOrder, cancellationToken);
+
                 if (checkOrder.IsValid)
                 {
-                    var formCheck = await _formCheckService.GetCheckOrderFormCheck(checkOrder, cancellationToken);
-
                     newCheckOrders.Add(new CheckOrders
                     {
                         Id = Guid.Empty,
                         AccountNo = checkOrder.AccountNumber,
                         ProductId = checkOrder.ProductId,
+                        BranchId = branch?.Id ?? Guid.Empty,
+                        Quantity = checkOrder.Quantity,
+                        PreEndingSeries = checkOrder.EndingSeries,
+                        PreStartingSeries = checkOrder.StartingSeries,
                         AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
                         BRSTN = checkOrder.BRSTN,
                         OrderQuanity = checkOrder.Quantity,
-                        FormCheckId = formCheck?.Id,
+                        FormCheckId = formCheck?.Id ?? null,
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
                         ErrorMessage = formCheck != null ? string.Empty : "Cannot find formcheck",
                         IsValid = formCheck != null,
                         InputEnable = false,
+                        BranchCode = checkOrder.BranchCode ?? string.Empty,
                     });
                 }
                 else
@@ -62,16 +69,21 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         Id = Guid.Empty,
                         ProductId = checkOrder.ProductId,
                         AccountNo = checkOrder.AccountNumber,
+                        BranchId = branch?.Id ?? Guid.Empty,
+                        Quantity = checkOrder.Quantity,
+                        PreEndingSeries = checkOrder.EndingSeries,
+                        PreStartingSeries = checkOrder.StartingSeries,
                         AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
                         BRSTN = checkOrder.BRSTN,
                         OrderQuanity = checkOrder.Quantity,
-                        FormCheckId = null,
+                        FormCheckId = formCheck?.Id ?? null,
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
                         ErrorMessage = checkOrder.ErrorMessage ?? string.Empty,
                         IsValid = checkOrder.IsValid,
                         InputEnable = false,
+                        BranchCode = checkOrder.BranchCode ?? string.Empty,
                     });
                 }
             }

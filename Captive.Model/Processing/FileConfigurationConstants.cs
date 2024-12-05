@@ -4,6 +4,7 @@
     {
         public static readonly string CHECK_TYPE = "checkType";
         public static readonly string BRSTN = "brstn";
+        public static readonly string BRANCH_CODE = "branchcode";
         public static readonly string VOID_CHAR = "voidChar";
         public static readonly string ACCOUNT_NUMBER = "accountNumber";
         public static readonly string ACCOUNT_NAME = "accountName";

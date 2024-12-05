@@ -5,6 +5,7 @@ using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
 {
@@ -34,7 +35,14 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
 
         public async Task<Unit> Handle(ApplyCheckInventoryDetailsCommand request, CancellationToken cancellationToken)
         {
-            var orderFile = await _readUow.OrderFiles.GetAll().Include(x=> x.Product).ThenInclude(x => x.ProductConfiguration).FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
+            var orderFile = await _readUow.OrderFiles.GetAll()
+                .Include(x=> x.Product)
+                    .ThenInclude(x => x.ProductConfiguration)
+                .Include(x => x.Product)
+                    .ThenInclude(x => x.ProductConfiguration)
+                    .ThenInclude(x => x.CheckValidation)
+                .Include(x => x.CheckOrders)
+                .FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
 
             if (orderFile == null)
             {
@@ -55,77 +63,77 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
                 throw new Exception($"There is no check inventory record for the check validation id: {configuration.CheckValidationId}");
             }
             
-            foreach(var checkOrder in request.CheckOrders)
+            foreach(var checkOrder in orderFile.CheckOrders)
             {
-               
-                var formCheck = await _formsChecksService.GetCheckOrderFormCheck(checkOrder, cancellationToken);
+                var formCheck = await _readUow.FormChecks.GetAll().Where(x => x.Id == checkOrder.FormCheckId).FirstOrDefaultAsync();
 
                 if (formCheck == null) 
                 {
                     throw new Exception("Form Check doesn't exist.");
                 }
 
-                if (!String.IsNullOrEmpty(checkOrder.StartingSeries))
+                var tag = configuration.CheckValidation.ValidationType == Data.Enums.ValidationType.Mix ? await GetTag(checkOrder, configuration.CheckValidation) : null;
+
+                var pattern = checkInventory.SeriesPatern;
+
+                var checkQuantity = formCheck?.Quantity ?? 0;
+
+                for (int i = 0; i < checkOrder.Quantity; i++) 
                 {
-                    if (String.IsNullOrEmpty(checkOrder.EndingSeries))
-                        throw new Exception("Starting series is defined but the ending series is not.");
+                    var lastCheckDetailQuery = _readUow.CheckInventoryDetails.GetAllLocal().Where(x => x.CheckInventoryId == checkInventory.Id);
 
-                    await ValidateCheckSeries(checkInventory, checkOrder.StartingSeries, checkOrder.EndingSeries);
+                    if (tag != null)
+                        lastCheckDetailQuery.Where(x => x.TagId == tag.Id);
+
+                    var lastCheckDetailRecord = lastCheckDetailQuery.OrderByDescending(x => x.CreatedDateTime).FirstOrDefault();
+
+                    var tuple = _stringService.GetNextSeries(pattern, lastCheckDetailRecord?.EndingSeries, checkQuantity);
+
+                    var startingSeriesNo = !string.IsNullOrEmpty(checkOrder.PreStartingSeries) ? checkOrder.PreStartingSeries : tuple.Item1;
+
+                    var endingSeries = !string.IsNullOrEmpty(checkOrder.PreEndingSeries) ? checkOrder.PreEndingSeries : tuple.Item2;
+
+                    await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
+                    {
+                        Id = Guid.Empty,
+                        ProductId = orderFile.ProductId,
+                        CheckOrderId = checkOrder.Id,
+                        StartingSeries = startingSeriesNo,
+                        EndingSeries = endingSeries,
+                        CheckInventoryId = checkInventory.Id,
+                        Quantity = checkQuantity,
+                        BranchId = checkOrder.BranchId,
+                        AccountNumber = checkOrder.AccountNo,
+                        FormCheckId = checkOrder.FormCheckId,
+                        TagId = tag?.Id,
+                        CreatedDateTime = DateTime.UtcNow,
+                    }, cancellationToken);
                 }
-                else
-                {
-                    var pattern = checkInventory.SeriesPatern;
-
-                    var checkQuantity = (formCheck?.Quantity ?? 1) * checkOrder.Quantity;
-
-                    var lastCheckDetailRecord = _readUow.CheckInventoryDetails.GetAllLocal().OrderByDescending(x => x.Sequence).FirstOrDefault();
-
-                    var startingSeriesNo = lastCheckDetailRecord != null ? lastCheckDetailRecord.EndingSeries : ConvertPatternIntoSeries(checkInventory.SeriesPatern, 1);
-
-                    var startingSeries = startingSeriesNo;
-
-                    var endingSeries = ConvertPatternIntoSeries(checkInventory.SeriesPatern, checkQuantity);
-                }
-
-
-                //_writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
-                //{
-
-                //});
             }          
             return Unit.Value;
         }
 
-             
-        private string ConvertPatternIntoSeries(string pattern, int number)
+        private async Task<Tag?> GetTag(CheckOrders checkOrder, Captive.Data.Models.CheckValidation checkValidation)
         {
-            var paddingCount = pattern.Count(x => x == '0');
-            var seriesValue = number.ToString().PadLeft(paddingCount, '0');
+            var tagMappingQuery = _readUow.TagsMapping.GetAll().Include(x => x.Tag).Where(x => x.Tag.CheckValidationId == checkValidation.Id);
 
-            return string.Concat(pattern.Replace("0",string.Empty), seriesValue);            
-        }
+            if (checkValidation.ValidateByBranch)
+            {
+                tagMappingQuery.Where(x => x.BranchId == checkOrder.BranchId);
+            }
 
-        private int ConvertAlphaNumericIntoNumberOnly(string series)
-        {
-            var numString = series.Replace("[^\\d]", string.Empty);
+            if (checkValidation.ValidateByProduct)
+            {
+                tagMappingQuery.Where(x => x.ProductId == checkOrder.ProductId);
+            }
 
-            return Convert.ToInt32(numString ?? string.Empty);
-        }
+            if (checkValidation.ValidateByFormCheck)
+            {
+                tagMappingQuery.Where(x => x.FormCheckId == checkOrder.FormCheckId);
+            }
+            var tagMapping = await tagMappingQuery.FirstOrDefaultAsync();
 
-        /*
-         * Validate Check Inventory
-         * 1. Build check Inventory Details query out of checkValidation type
-         */
-        private async Task<bool> ValidateCheckSeries (Captive.Data.Models.CheckInventory checkInventory, string startingSeries, string endingSeries)
-        {
-            var checkValidation = checkInventory.CheckValidation;
-
-            //var checkInventoryDetailsQuery = _readUow.CheckInventoryDetails.GetAll().Where(x => x.CheckInventoryId == checkInventory.Id && x.StartingSeries == startingSeries && );
-
-
-            //var checkInventoryDetails = await _readUow.CheckInventoryDetails.GetAll().AsNoTracking().AnyAsync(x => x.CheckInventoryId == CheckInventoryId);
-
-            return false;
+            return tagMapping?.Tag;
         }
 
     }

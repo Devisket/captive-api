@@ -67,6 +67,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                             CheckType = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CHECK_TYPE)) ?? string.Empty,
                             FormType = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.FORM_TYPE)) ?? string.Empty,
                             BRSTN = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRSTN)) ?? string.Empty,
+                            BranchCode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRANCH_CODE)) ?? string.Empty,
                             AccountNumber = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NUMBER)) ?? string.Empty,              
                             AccountName1 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_1)),
                             AccountName2 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_2)),

@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241204174916_CheckInventoryDetails_SchemaChanges")]
+    partial class CheckInventoryDetails_SchemaChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +198,9 @@ namespace Captive.Commands.Migrations
 
                     b.HasIndex("CheckInventoryId");
 
-                    b.HasIndex("CheckOrderId");
+                    b.HasIndex("CheckOrderId")
+                        .IsUnique()
+                        .HasFilter("[CheckOrderId] IS NOT NULL");
 
                     b.ToTable("check_inventory_detail", (string)null);
                 });
@@ -217,12 +222,6 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("BRSTN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BranchCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Concode")
                         .HasColumnType("nvarchar(max)");
@@ -249,17 +248,8 @@ namespace Captive.Commands.Migrations
                     b.Property<int>("OrderQuanity")
                         .HasColumnType("int");
 
-                    b.Property<string>("PreEndingSeries")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PreStartingSeries")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -275,6 +265,9 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BankInfoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CheckInventoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -574,8 +567,8 @@ namespace Captive.Commands.Migrations
                         .IsRequired();
 
                     b.HasOne("Captive.Data.Models.CheckOrders", "CheckOrder")
-                        .WithMany("CheckInventoryDetail")
-                        .HasForeignKey("CheckOrderId");
+                        .WithOne("CheckInventoryDetail")
+                        .HasForeignKey("Captive.Data.Models.CheckInventoryDetail", "CheckOrderId");
 
                     b.Navigation("CheckInventory");
 
@@ -659,7 +652,7 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>
                 {
                     b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
-                        .WithMany("ProductConfigurations")
+                        .WithMany()
                         .HasForeignKey("CheckValidationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -725,8 +718,6 @@ namespace Captive.Commands.Migrations
                 {
                     b.Navigation("CheckInventory")
                         .IsRequired();
-
-                    b.Navigation("ProductConfigurations");
 
                     b.Navigation("Tags");
                 });

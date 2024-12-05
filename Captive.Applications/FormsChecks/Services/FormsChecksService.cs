@@ -14,7 +14,7 @@ namespace Captive.Applications.FormsChecks.Services
         }
         public async Task<Data.Models.FormChecks?> GetCheckOrderFormCheck(CheckOrderDto checkOrder, CancellationToken cancellationToken)
         {
-            var formCheck = await _readUow.FormChecks.GetAll().FirstOrDefaultAsync(x => x.CheckType == checkOrder.CheckType && x.FormType == checkOrder.FormType && x.ProductId == checkOrder.ProductId, cancellationToken);
+            var formCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.CheckType == checkOrder.CheckType && x.FormType == checkOrder.FormType && x.ProductId == checkOrder.ProductId, cancellationToken);
 
             return formCheck;
         }

@@ -16,7 +16,8 @@ namespace Captive.Data.Models
         public Guid BankInfoId { get; set; }
         public BankInfo BankInfo { get; set; }
 
-        public Guid CheckInventoryId { get; set; }
         public CheckInventory CheckInventory { get; set; }
+
+        public ICollection<ProductConfiguration> ProductConfigurations { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241205040426_saple")]
+    partial class saple
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +198,9 @@ namespace Captive.Commands.Migrations
 
                     b.HasIndex("CheckInventoryId");
 
-                    b.HasIndex("CheckOrderId");
+                    b.HasIndex("CheckOrderId")
+                        .IsUnique()
+                        .HasFilter("[CheckOrderId] IS NOT NULL");
 
                     b.ToTable("check_inventory_detail", (string)null);
                 });
@@ -574,8 +579,8 @@ namespace Captive.Commands.Migrations
                         .IsRequired();
 
                     b.HasOne("Captive.Data.Models.CheckOrders", "CheckOrder")
-                        .WithMany("CheckInventoryDetail")
-                        .HasForeignKey("CheckOrderId");
+                        .WithOne("CheckInventoryDetail")
+                        .HasForeignKey("Captive.Data.Models.CheckInventoryDetail", "CheckOrderId");
 
                     b.Navigation("CheckInventory");
 
