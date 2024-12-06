@@ -137,9 +137,14 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid>("CheckValidationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("SeriesPatern")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CheckValidationId");
+                    b.HasIndex("CheckValidationId")
+                        .IsUnique();
 
                     b.ToTable("check_inventory", (string)null);
                 });
@@ -150,6 +155,9 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
@@ -159,7 +167,10 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid?>("CheckOrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("EndSeries")
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EndingSeries")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("FormCheckId")
@@ -174,16 +185,17 @@ namespace Captive.Commands.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("StarSeries")
+                    b.Property<string>("StartingSeries")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TagId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CheckInventoryId");
 
-                    b.HasIndex("CheckOrderId")
-                        .IsUnique()
-                        .HasFilter("[CheckOrderId] IS NOT NULL");
+                    b.HasIndex("CheckOrderId");
 
                     b.ToTable("check_inventory_detail", (string)null);
                 });
@@ -205,6 +217,12 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("BRSTN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Concode")
                         .HasColumnType("nvarchar(max)");
@@ -231,6 +249,18 @@ namespace Captive.Commands.Migrations
                     b.Property<int>("OrderQuanity")
                         .HasColumnType("int");
 
+                    b.Property<string>("PreEndingSeries")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreStartingSeries")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderFileId");
@@ -250,6 +280,15 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ValidateByBranch")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ValidateByFormCheck")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ValidateByProduct")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ValidationType")
                         .IsRequired()
@@ -377,6 +416,9 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid>("BankInfoId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ProductConfigurationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -417,7 +459,10 @@ namespace Captive.Commands.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("CheckValidationId");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("product_configuration", (string)null);
                 });
@@ -512,8 +557,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.CheckInventory", b =>
                 {
                     b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
-                        .WithMany("CheckInventory")
-                        .HasForeignKey("CheckValidationId")
+                        .WithOne("CheckInventory")
+                        .HasForeignKey("Captive.Data.Models.CheckInventory", "CheckValidationId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
@@ -529,8 +574,8 @@ namespace Captive.Commands.Migrations
                         .IsRequired();
 
                     b.HasOne("Captive.Data.Models.CheckOrders", "CheckOrder")
-                        .WithOne("CheckInventoryDetail")
-                        .HasForeignKey("Captive.Data.Models.CheckInventoryDetail", "CheckOrderId");
+                        .WithMany("CheckInventoryDetail")
+                        .HasForeignKey("CheckOrderId");
 
                     b.Navigation("CheckInventory");
 
@@ -613,11 +658,19 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.ProductConfiguration", b =>
                 {
-                    b.HasOne("Captive.Data.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+                    b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
+                        .WithMany("ProductConfigurations")
+                        .HasForeignKey("CheckValidationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Captive.Data.Models.Product", "Product")
+                        .WithOne("ProductConfiguration")
+                        .HasForeignKey("Captive.Data.Models.ProductConfiguration", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CheckValidation");
 
                     b.Navigation("Product");
                 });
@@ -670,7 +723,10 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.CheckValidation", b =>
                 {
-                    b.Navigation("CheckInventory");
+                    b.Navigation("CheckInventory")
+                        .IsRequired();
+
+                    b.Navigation("ProductConfigurations");
 
                     b.Navigation("Tags");
                 });
@@ -687,6 +743,9 @@ namespace Captive.Commands.Migrations
                     b.Navigation("FormChecks");
 
                     b.Navigation("OrderFiles");
+
+                    b.Navigation("ProductConfiguration")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Captive.Data.Models.Tag", b =>

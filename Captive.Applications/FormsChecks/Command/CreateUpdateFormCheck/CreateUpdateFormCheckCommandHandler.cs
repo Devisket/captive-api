@@ -23,7 +23,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
             if (!productTypeExist)
                 throw new Exception($"ProductTypeId{request.ProductId} doesn't exist");
 
-            if (request.Detail.Id != Guid.Empty)
+            if (request.Detail.Id.HasValue)
             {
                 if (await _readUow.FormChecks.GetAll().AsNoTracking().AnyAsync(x => x.ProductId == request.ProductId && x.CheckType == request.Detail.CheckType && x.FormType == request.Detail.FormType && x.Id != request.Detail.Id))
                 {

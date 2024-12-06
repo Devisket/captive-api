@@ -125,6 +125,24 @@ namespace Captive.Commands.Extensions
                 }
             };
 
+            var checkInventory = new List<CheckInventory>()
+            {
+                new CheckInventory
+                {
+                    Id = Guid.NewGuid(),
+                    CheckValidationId = checkValidation[0].Id,
+                    CheckValidation = checkValidation[0],
+                    SeriesPatern = "ACT00000"
+                },
+                new CheckInventory
+                {
+                    Id = Guid.NewGuid(),
+                    CheckValidationId = checkValidation[1].Id,
+                    CheckValidation = checkValidation[1],
+                    SeriesPatern = "CWS000000"
+                }
+            };
+
             var productConfiguration = new List<ProductConfiguration>{ 
                 new ProductConfiguration
                 {
@@ -135,6 +153,7 @@ namespace Captive.Commands.Extensions
                     ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[0],
                     CheckValidationId = checkValidation[0].Id,
+                    CheckValidation = checkValidation[0],
                     FileName = "ACT"
                 },
                 new ProductConfiguration
@@ -146,15 +165,44 @@ namespace Captive.Commands.Extensions
                     ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[1],
                     CheckValidationId = checkValidation[1].Id,
+                    CheckValidation = checkValidation[1],
                     FileName = "CWS"
                 }
             };
-            
+
+            var formCheck = new List<FormChecks>
+            {
+               new FormChecks
+               {
+                   Id = Guid.NewGuid(),
+                   CheckType = "B",
+                   FormType = "16",
+                   Quantity = 10,
+                   Product = product[0],
+                   ProductId = product[0].Id,
+                   Description = "ACT Form Check Sample",
+                   FileInitial = "ACT"
+               },
+               new FormChecks
+               {
+                   Id = Guid.NewGuid(),
+                   CheckType = "B",
+                   FormType = "16",
+                   Quantity = 10,
+                   Product = product[0],
+                   ProductId = product[0].Id,
+                   Description = "CWS Form Check Sample",
+                   FileInitial = "CWS"
+               }
+            };
+
             context.AddRange(bankInfos);
             context.AddRange(bankBranch);
             context.AddRange(checkValidation);
+            context.AddRange(checkInventory);
             context.AddRange(product);
             context.AddRange(productConfiguration);           
+            context.AddRange(formCheck);
         }
     }
 
