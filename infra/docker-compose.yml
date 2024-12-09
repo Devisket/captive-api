@@ -35,17 +35,17 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
       ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
-      OutputDirectory: /app/reports/Bank/Date,
-      ArchiveDirectory: /app/reports/Archive
-      Processing__FileProcessing: /app/processing
+      Processing__OutputDirectory: /output/bankShortName/currentDate/batchName/
+      Processing__ArchiveDirectory: /app/archive
+      Processing__FileProcessing: /app/processing/bankShortName/currentDate/batchName/
     ports:
       - 7020:7020
     networks:
       - captive_network
     volumes:
       - C:/https:/https
-      - ~/Captive/Reports/:/app/reports
-      - ~/Captive/Reports/Archive:/app/reports/Archive
+      - C:/Captive/Reports/output:/app/output
+      - C:/Captive/Reports/archive:/app/archive
       - C:/processing:/app/processing
     depends_on:
       - mssql-server

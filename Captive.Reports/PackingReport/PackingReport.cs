@@ -170,6 +170,7 @@ namespace Captive.Reports.PackingReport
         private void RenderFooter(StreamWriter writer, int subTotal)
         {
             writer.WriteLine($"\n *** SUB TOTAL: {subTotal}\n");
+            writer.WriteLine("\f");
         }
     }
 }
