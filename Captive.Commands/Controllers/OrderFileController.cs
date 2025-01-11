@@ -1,4 +1,5 @@
-﻿using Captive.Applications.Orderfiles.Command.UpdateOrderFile;
+﻿using Captive.Applications.Orderfiles.Command.DeleteOrderFile;
+using Captive.Applications.Orderfiles.Command.UpdateOrderFile;
 using Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile;
 using Captive.Data.Enums;
 using Captive.Model.Request;
@@ -48,6 +49,13 @@ namespace Captive.Commands.Controllers
             });
 
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrderFile([FromRoute] Guid id)
+        {
+            await _mediator.Send(new DeleteOrderFileCommand { OrderFileId = id });
+            return NoContent();
         }
     }
 }

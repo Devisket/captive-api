@@ -54,9 +54,6 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
-                        ErrorMessage = formCheck != null ? string.Empty : "Cannot find formcheck",
-                        IsValid = formCheck != null,
-                        InputEnable = false,
                         BranchCode = checkOrder.BranchCode ?? string.Empty,
                     });
                 }
@@ -78,9 +75,6 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
-                        ErrorMessage = checkOrder.ErrorMessage ?? string.Empty,
-                        IsValid = checkOrder.IsValid,
-                        InputEnable = false,
                         BranchCode = checkOrder.BranchCode ?? string.Empty,
                     });
                 }

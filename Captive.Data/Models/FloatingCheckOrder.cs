@@ -17,6 +17,8 @@ namespace Captive.Data.Models
         public string FormType { get; set; } = string.Empty;
         public string CheckType { get; set; } = string.Empty;
         public int Quantity { get; set; }
+        public bool IsValid {  get; set; }
+        public string ErrorMessage { get; set; } = string.Empty;
         public Guid OrderFileId { get; set; }
         public OrderFile OrderFile { get; set; }
     }

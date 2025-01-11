@@ -30,9 +30,6 @@ namespace Captive.Applications.CheckOrder.Services
                     FormCheckId = null,
                     DeliverTo = checkOrderDto.DeliverTo,
                     Concode = checkOrderDto.Concode,
-                    ErrorMessage = checkOrderDto.ErrorMessage ?? string.Empty,
-                    IsValid = checkOrderDto.IsValid,
-                    InputEnable = false,
                 }
               ); 
         }

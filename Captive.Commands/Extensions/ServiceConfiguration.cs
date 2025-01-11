@@ -20,6 +20,7 @@ using Captive.Messaging.Interfaces;
 using Captive.Applications.FormsChecks.Services;
 using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.Util;
+using Captive.Applications.Orderfiles.Services;
 
 namespace Captive.Commands.Extensions
 {
@@ -48,6 +49,7 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IFormsChecksService, FormsChecksService>();
             services.AddScoped<ICheckOrderService, CheckOrderService>();
             services.AddScoped<IStringService, StringService>();
+            services.AddScoped<IOrderFileService, OrderFileService>();
 
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();

@@ -14,9 +14,6 @@ namespace Captive.Data.Models
         public string? Concode { get; set; }
         public required int OrderQuanity { get; set; }
         public string? DeliverTo { get; set; }
-        public bool InputEnable { get;set; }
-        public string ErrorMessage { get; set; }
-        public bool IsValid {  get; set; }  
         public string? PreStartingSeries {  get; set; }
         public string? PreEndingSeries {  get; set; }
         public int Quantity {  get; set; }

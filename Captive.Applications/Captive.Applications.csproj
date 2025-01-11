@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
+    <Folder Include="CheckOrder\Command\ValidateCheckOrder\" />
     <Folder Include="Orderfiles\Query\" />
     <Folder Include="Product\Command\DeleteProductConfiguration\" />
   </ItemGroup>
