@@ -25,8 +25,9 @@ namespace Captive.Data
             modelBuilder.BuildCheckInventoryDetailModel();
             modelBuilder.BuildCheckValidationModel();
             modelBuilder.BuildTagModel();
-            modelBuilder.BuildTagMappingModel();    
-            
+            modelBuilder.BuildTagMappingModel();
+            modelBuilder.BuildFloatingCheckOrdersModel();
+
             base.OnModelCreating(modelBuilder);
         }
     }

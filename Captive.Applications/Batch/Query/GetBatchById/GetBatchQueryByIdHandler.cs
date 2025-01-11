@@ -44,7 +44,6 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                         DeliverTo = c.DeliverTo,
                         FormType = _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefault(z => z.Id == c.FormCheckId).FormType ?? string.Empty,
                         CheckType = _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefault(z => z.Id == c.FormCheckId).CheckType ?? string.Empty,
-                        IsValid = c.IsValid,
                         Quantity = c.OrderQuanity,
                         FormCheckId = c.FormCheckId ?? Guid.Empty,
                         

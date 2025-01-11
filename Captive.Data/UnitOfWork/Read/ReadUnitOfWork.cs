@@ -19,6 +19,7 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<CheckInventory> IReadUnitOfWork.CheckInventory=> GetStandardRepository<CheckInventory>();
         IReadRepository<CheckInventoryDetail> IReadUnitOfWork.CheckInventoryDetails => GetStandardRepository<CheckInventoryDetail>();
         IReadRepository<FormChecks> IReadUnitOfWork.FormChecks => GetStandardRepository<FormChecks>();
+        IReadRepository<FloatingCheckOrder> IReadUnitOfWork.FloatingCheckOrders=> GetStandardRepository<FloatingCheckOrder>();
         IReadRepository<OrderFile> IReadUnitOfWork.OrderFiles => GetStandardRepository<OrderFile>();
         IReadRepository<OrderFileLog> IReadUnitOfWork.OrderFileLogs => GetStandardRepository<OrderFileLog>();
         IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();

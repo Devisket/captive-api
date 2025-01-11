@@ -1,4 +1,5 @@
-﻿using Captive.Fileprocessor.Services.FileProcessOrchestrator.cs;
+﻿using Captive.Fileprocessor.Services.CheckOrderService;
+using Captive.Fileprocessor.Services.FileProcessOrchestrator.cs;
 using Captive.Messaging;
 using Captive.Messaging.Interfaces;
 using Captive.Reports;
@@ -23,9 +24,8 @@ namespace Captive.Fileprocessor
                 .AddJsonFile("appsettings.json");
             builder.Services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             builder.Services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
-
-
             builder.Services.AddScoped<IFileProcessOrchestratorService, FileProcessOrchestratorService>();
+            builder.Services.AddScoped<ICheckOrderService, CheckOrderService>();
             builder.Services.AddHostedService<FileProcessorConsumerService>();
             builder.Services.AddHostedService<SampleConsumer>();
 

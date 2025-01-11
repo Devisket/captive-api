@@ -10,7 +10,6 @@
         public string? BranchCode { get; set; }
         public int Quantity {  get; set; }
         public string? DeliverTo { get; set; }
-        public string? FileBatchName { get; set; }
         public string? Concode {  get; set; }
         public string? StartingSeries {  get; set; }
         public string? EndingSeries { get; set; }    

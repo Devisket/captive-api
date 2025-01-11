@@ -11,6 +11,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<CheckInventoryDetail> CheckInventoryDetails { get; }
         public IWriteRepository<CheckOrders> CheckOrders { get; }
         public IWriteRepository<FormChecks> FormChecks { get; }
+        public IWriteRepository<FloatingCheckOrder> FloatingCheckOrders { get; }
         public IWriteRepository<OrderFileLog> OrderFileLogs { get; }
         public IWriteRepository<OrderFile> OrderFiles { get; }
         public IWriteRepository<BatchFile> BatchFiles { get; }
