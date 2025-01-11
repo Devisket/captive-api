@@ -10,6 +10,7 @@ namespace Captive.Fileprocessor.Services.CheckOrderService
         Task<List<CheckOrderDto>> ExtractMdb(OrderfileDto orderFile);
         Task<(bool, List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName);
         Task SendOrderFileStatus(Guid orderFileId, string ErrorMessage, OrderFilesStatus status);
+        Task SendOrderFileStatus(Guid orderFileId, OrderFilesStatus status);
         Task SendBatchFileStatus(Guid batchId, string ErrorMessage, OrderFilesStatus status);
         Task CreateFloatingCheckOrder(Guid orderFileId, Guid bankId, List<CheckOrderDto> checkOrders);
         Task ApplyCheckInventoryDetails(Guid orderFileId);
@@ -97,6 +98,31 @@ namespace Captive.Fileprocessor.Services.CheckOrderService
             else
             {
                 throw new Exception(responseData);
+            }
+        }
+
+        public async Task SendOrderFileStatus(Guid orderFileId, OrderFilesStatus status)
+        {
+            var reqBody = new
+            {
+                Status = status.ToString(),
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/orderFile/{orderFileId}/updateStatus");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update the status of OrderFileID  {orderFileId}");
             }
         }
 

@@ -23,7 +23,6 @@ namespace Captive.Applications.CheckOrder.Services
                 new CheckOrders
                 {
                     Id = Guid.Empty,
-                    ProductId = checkOrderDto.ProductId,
                     AccountNo = checkOrderDto.AccountNumber,
                     AccountName = string.Concat(checkOrderDto.AccountName1, checkOrderDto.AccountName2),
                     BRSTN = checkOrderDto.BRSTN,

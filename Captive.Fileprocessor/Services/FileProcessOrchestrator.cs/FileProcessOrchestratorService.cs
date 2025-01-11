@@ -48,7 +48,9 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
 
                     //Create Floating Check Order
                     await _checkOrderService.CreateFloatingCheckOrder(file.Id, message.BankId, checkOrders);
-                    
+
+
+                    await _checkOrderService.SendOrderFileStatus(file.Id, OrderFilesStatus.Completed);
                 }
                 catch (Exception ex)
                 {
@@ -56,8 +58,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                     continue;
                 }
             }
-
-            await _checkOrderService.GenerateReport(message.BatchID);
+            //await _checkOrderService.GenerateReport(message.BatchID);
         }
     }
 }

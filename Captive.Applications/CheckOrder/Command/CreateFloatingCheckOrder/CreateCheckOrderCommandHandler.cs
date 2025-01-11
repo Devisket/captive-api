@@ -34,14 +34,18 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
             {
                 Id = Guid.NewGuid(),
                 AccountName = x.MainAccountName ?? string.Empty,
+                AccountName1 = x.AccountName1 ?? string.Empty,
+                AccountName2 = x.AccountName2 ?? string.Empty,
                 BRSTN = x.BRSTN,
+                FormType = x.FormType,
+                CheckType = x.CheckType,
                 Concode = x.Concode,
                 BranchCode = x.BranchCode,
                 AccountNo = x.AccountNumber,
                 OrderFileId = request.OrderFileId,
                 PreEndingSeries = x.StartingSeries,
                 PreStartingSeries = x.EndingSeries,
-                OrderQuanity = x.Quantity,
+                Quantity = x.Quantity,
                 DeliverTo = x.DeliverTo,
             }).ToArray();
 

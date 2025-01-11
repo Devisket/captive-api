@@ -786,6 +786,7 @@
 
 	/* Seed Check Validations */
 	DELETE check_inventory;
+	
 	DELETE check_validation;
 	INSERT INTO check_validation (Id, Name, ValidationType, BankInfoId) VALUES 
 	(NEWID(), 'Check Validation By Products', 'Product', @bankID),
@@ -813,6 +814,9 @@
 	
 	/*Clear order_files*/
 	DELETE order_files;
+	
+	/*Clear floating_check_orders*/
+	DELETE floating_check_orders;
 	
 	/*Clear check_orders*/
 	DELETE check_orders;

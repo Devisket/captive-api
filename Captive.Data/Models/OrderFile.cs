@@ -11,7 +11,7 @@ namespace Captive.Data.Models
         public DateTime ProcessDate { get; set; }
         public string? ErrorMessage { get; set; }
 
-        
+        public ICollection<FloatingCheckOrder>? FloatingCheckOrders { get; set; }
         public ICollection<CheckOrders>? CheckOrders { get; set; }
         public ICollection<OrderFileLog>? OrderFileLogs { get; set; }
 

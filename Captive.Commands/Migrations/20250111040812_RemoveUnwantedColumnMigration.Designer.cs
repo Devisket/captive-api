@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20250111040812_RemoveUnwantedColumnMigration")]
+    partial class RemoveUnwantedColumnMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -328,18 +331,10 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("BranchCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CheckType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Concode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeliverTo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrderFileId")
@@ -355,8 +350,6 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderFileId");
 
                     b.ToTable("floating_check_orders", (string)null);
                 });
@@ -664,17 +657,6 @@ namespace Captive.Commands.Migrations
                     b.Navigation("BankInfo");
                 });
 
-            modelBuilder.Entity("Captive.Data.Models.FloatingCheckOrder", b =>
-                {
-                    b.HasOne("Captive.Data.Models.OrderFile", "OrderFile")
-                        .WithMany("FloatingCheckOrders")
-                        .HasForeignKey("OrderFileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderFile");
-                });
-
             modelBuilder.Entity("Captive.Data.Models.FormChecks", b =>
                 {
                     b.HasOne("Captive.Data.Models.Product", "Product")
@@ -805,8 +787,6 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.OrderFile", b =>
                 {
                     b.Navigation("CheckOrders");
-
-                    b.Navigation("FloatingCheckOrders");
 
                     b.Navigation("OrderFileLogs");
                 });

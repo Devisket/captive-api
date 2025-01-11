@@ -16,9 +16,6 @@
         public string? MainAccountName {  get; set; }
         public string? AccountName1 { get; set; }
         public string? AccountName2 { get; set; }
-        public Guid ProductId { get; set; }
-        public Guid BranchId { get; set; }
-        public Guid FormCheckId { get; set; }
         public bool IsValid {  get; set; }
         public string? ErrorMessage { get; set; }
     }

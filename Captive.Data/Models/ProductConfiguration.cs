@@ -6,7 +6,7 @@ namespace Captive.Data.Models
     public  class ProductConfiguration
     {
         public Guid Id { get; set; }
-        public string FileName {  get; set; }   
+        public string FileName { get; set; } = string.Empty;   
    
         public required string ConfigurationData { get; set; }
         public required ConfigurationType ConfigurationType { get; set; }
