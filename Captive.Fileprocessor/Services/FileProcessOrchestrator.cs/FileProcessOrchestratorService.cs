@@ -16,6 +16,7 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
 
         public async Task ProcessFile(FileUploadMessage message)
         {
+            var bankId = message.BankId;
             var files = message.Files;
             foreach (var file in files)
             {
@@ -49,6 +50,8 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                     //Create Floating Check Order
                     await _checkOrderService.CreateFloatingCheckOrder(file.Id, message.BankId, checkOrders);
 
+                    await _checkOrderService.CheckForDuplication(file.Id, message.BankId);
+                    
                     await _checkOrderService.SendOrderFileStatus(file.Id, OrderFilesStatus.Pending);
                 }
                 catch (Exception ex)

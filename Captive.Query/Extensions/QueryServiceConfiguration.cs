@@ -17,6 +17,7 @@ using Captive.Messaging.Interfaces;
 using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.FormsChecks.Services;
 using Captive.Applications.Util;
+using Captive.Applications.Batch.Services;
 
 namespace Captive.Queries.Extensions
 {
@@ -42,6 +43,8 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IReportGenerator, ReportGenerator>();
             services.AddScoped<IBlockReport, BlockReport>();
             services.AddScoped<IPackingReport, PackingReport>();
+            services.AddSignalR();
+            services.AddScoped<IBatchService, BatchService>();
             services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();
             services.AddScoped<IFormsChecksService, FormsChecksService>();
             services.AddScoped<ICheckOrderService, CheckOrderService>();

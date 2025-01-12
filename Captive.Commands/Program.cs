@@ -1,4 +1,6 @@
 
+using Captive.Applications.Batch.Hubs;
+using Captive.Applications.Orderfiles.Hubs;
 using Captive.Commands.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +36,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200", "https://localhost:4200"));
+app.MapHub<BatchHub>("/batch");
+app.MapHub<OrderFileHub>("/orderfile");
+
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
 app.Run();
 

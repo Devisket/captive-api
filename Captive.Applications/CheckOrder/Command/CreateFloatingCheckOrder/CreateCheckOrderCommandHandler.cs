@@ -36,6 +36,8 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                 AccountName = x.MainAccountName ?? string.Empty,
                 AccountName1 = x.AccountName1 ?? string.Empty,
                 AccountName2 = x.AccountName2 ?? string.Empty,
+                IsValid = false,
+                ErrorMessage = string.Empty,
                 BRSTN = x.BRSTN,
                 FormType = x.FormType,
                 CheckType = x.CheckType,

@@ -10,7 +10,7 @@ namespace Captive.Data.Models
         public required OrderFilesStatus Status { get; set; }
         public DateTime ProcessDate { get; set; }
         public string? ErrorMessage { get; set; }
-
+        public bool IsValidated { get; set; }
         public ICollection<FloatingCheckOrder>? FloatingCheckOrders { get; set; }
         public ICollection<CheckOrders>? CheckOrders { get; set; }
         public ICollection<OrderFileLog>? OrderFileLogs { get; set; }

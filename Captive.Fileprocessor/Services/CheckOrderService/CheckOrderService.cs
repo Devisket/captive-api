@@ -18,6 +18,7 @@ namespace Captive.Fileprocessor.Services.CheckOrderService
         Task ExtractTextFile(OrderfileDto orderFile);
         Task ExtractCsv(OrderfileDto orderFile);
         Task GenerateOrderFIle(Guid orderFileId);
+        Task CheckForDuplication(Guid orderFileId, Guid bankId);
     }
     public class CheckOrderService : ICheckOrderService
     {
@@ -201,6 +202,27 @@ namespace Captive.Fileprocessor.Services.CheckOrderService
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Failed to create check order for order file ID: {orderFileId}");
+            }
+        }
+
+
+        public async Task CheckForDuplication(Guid orderFileId, Guid bankId)
+        {
+            var baseUri = string.Concat(_configuration["Endpoints:CaptiveCommands"], $"/api/{bankId}/checkorder/{orderFileId}/duplicationcheck");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to check for duplication for order id: {orderFileId}");
             }
         }
 

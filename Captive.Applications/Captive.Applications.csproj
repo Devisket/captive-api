@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
-    <Folder Include="CheckOrder\Command\ValidateCheckOrder\" />
     <Folder Include="Orderfiles\Query\" />
     <Folder Include="Product\Command\DeleteProductConfiguration\" />
   </ItemGroup>
