@@ -12,9 +12,9 @@ namespace Captive.Applications.FormsChecks.Services
         {
             _readUow = readUow;
         }
-        public async Task<Data.Models.FormChecks?> GetCheckOrderFormCheck(Guid ProductID, string FormType, string CheckType, CancellationToken cancellationToken)
+        public async Task<Data.Models.FormChecks?> GetCheckOrderFormCheck(Guid ProductID, string formType, string checkType, CancellationToken cancellationToken)
         {
-            var formCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.CheckType == CheckType && x.FormType == FormType && x.ProductId == ProductID, cancellationToken);
+            var formCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.CheckType == checkType && x.FormType == formType && x.ProductId == ProductID, cancellationToken);
 
             return formCheck;
         }

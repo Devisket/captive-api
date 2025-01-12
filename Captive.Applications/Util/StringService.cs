@@ -23,5 +23,27 @@ namespace Captive.Applications.Util
 
             return returnObj;
         }
+
+        public Tuple<int, int> ExtractNumber(string seriesPattern, string startingSeries, string endingSeries)
+        {
+            var startingNumber = startingSeries.Replace(string.Empty, seriesPattern);
+            var endingNumber = endingSeries.Replace(string.Empty, seriesPattern);
+
+            var a = int.Parse(startingNumber);
+            var b = int.Parse(endingNumber);
+
+            return new Tuple<int, int>(a, b);
+        }
+
+        public Tuple<string, string> ConvertToSeries(string seriesPattern, int numberOfPadding, int startingNumber, int endingNumber)
+        {
+            var startingSeries = Convert.ToString(startingNumber).PadLeft(numberOfPadding);
+            var endingSeries = Convert.ToString(endingNumber).PadLeft(numberOfPadding);
+
+            startingSeries = String.Concat(seriesPattern, startingSeries);
+            endingSeries = String.Concat(seriesPattern, endingSeries);
+
+            return new Tuple<string, string>(startingSeries, endingSeries);
+        }
     }
 }

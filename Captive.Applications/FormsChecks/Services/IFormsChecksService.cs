@@ -3,6 +3,6 @@ namespace Captive.Applications.FormsChecks.Services
 {
     public interface IFormsChecksService
     {
-        Task<Captive.Data.Models.FormChecks?> GetCheckOrderFormCheck(Guid ProductID, string FormType, string CheckType, CancellationToken cancellationToken);
+        Task<Captive.Data.Models.FormChecks?> GetCheckOrderFormCheck(Guid ProductID, string formType, string checkType, CancellationToken cancellationToken);
     }
 }

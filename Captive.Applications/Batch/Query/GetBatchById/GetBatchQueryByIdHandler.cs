@@ -34,6 +34,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     FileType = Path.GetExtension(x.FileName).SanitizeFileName(),
                     FilePath = x.FilePath,
                     Status = x.Status.ToString(),
+                    IsValidated = x.IsValidated,
                     CheckOrders = x.FloatingCheckOrders != null && x.FloatingCheckOrders.Any() ? x.FloatingCheckOrders.Select(c => new CheckOrderDto
                     {
                         Id = c.Id,
@@ -43,7 +44,9 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                         DeliverTo = c.DeliverTo,
                         FormType = c.FormType,
                         CheckType = c.CheckType,
-                        Quantity = c.Quantity,                  
+                        Quantity = c.Quantity,
+                        ErrorMessage = c.ErrorMessage,
+                        IsValid = c.IsValid
                     }).ToList() : null
                 }).ToList() : null
             }).FirstOrDefaultAsync();
