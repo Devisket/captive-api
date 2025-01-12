@@ -1,19 +1,59 @@
-	
-	/*SEED DATA */
-	
-	
-	/* Seed Bank Infos */
-	
-	DELETE banks_info; 
+	/*Clear and seed bank_info*/	
+	DELETE banks_info
 	INSERT INTO banks_info (Id, BankName, ShortName, CreatedDate) VALUES 
-	(NEWID(), 'Metrobank', 'MBTC', GETDATE())
+	(NEWID(), 'Metrobank', 'MBTC', GETDATE());
 	
 	/* Set @bankID */
 	DECLARE @bankID as UNIQUEIDENTIFIER;
 	SET @bankID = (select Id from banks_info bi where bi.BankName = 'Metrobank');
 	
-	/*Seed Bank Branches*/
+	/*Seed bank_branchs*/
 	DELETE bank_branchs;
+	
+	/*Seed products*/
+	DELETE products;
+	
+	/*Clear form_checks*/
+	DELETE form_checks;
+	
+	/*Clear products*/
+	DELETE products;
+
+	/*Clear product_configuration*/
+	DELETE product_configuration;
+
+	/*Clear check_inventory*/
+	DELETE check_inventory;
+
+	/*Clear check_inventory_detail*/
+	DELETE check_inventory_detail;
+
+	/*Clear check_validation*/
+	DELETE check_validation;
+	
+	/*Clear check_inventory_detail*/
+	DELETE check_inventory_detail;
+	
+	/*Clear batch*/
+	DELETE batch_files;
+	
+	/*Clear order_files*/
+	DELETE order_files;
+	
+	/*Clear floating_check_orders*/
+	DELETE floating_check_orders;
+	
+	/*Clear check_orders*/
+	DELETE check_orders;
+	
+	/*Clear tags*/
+	DELETE [tag];
+
+	/*Clear tag_mapping*/
+	DELETE tag_mapping;
+	
+	
+	/*Seed bank_branchs*/
 	INSERT INTO bank_branchs (Id, BranchName, BRSTNCode, BranchAddress1, BranchStatus, BankInfoId) VALUES
 	(NEWID(), 'MARIKINA CENTER','010260063','J.P. RIZAL ST., MARIKINA CITY', 'Active',@bankID),
 	(NEWID(), 'PASAY-LIBERTAD BRANCH','010260076','232 LIBERTAD ST., PASAY CITY', 'Active',@bankID),
@@ -776,49 +816,61 @@
 	(NEWID(), 'BACOOR-BAYANAN BACOOR BLVD BRANCH','410260249','ALTROVE BLDG BACOOR BLVD BACOOR', 'Active',@bankID),
 	(NEWID(), 'NEGROS OCCIDENTAL - KABANKALAN CITY BR','700260014','GUANZON ST PUBLIC PLZA KABANKALAN CITY', 'Active',@bankID);
 	
-	/*Seed Products*/
-	DELETE products;
+	/*Seed products*/
 	INSERT INTO products (Id, ProductName, BankInfoId) VALUES
 	(NEWID(), 'ACT Product', @bankId),
 	(NEWID(), 'CWS Product', @bankId);
-	
-	
 
-	/* Seed Check Validations */
-	DELETE check_inventory;
-	DELETE check_validation;
-	INSERT INTO check_validation (Id, Name, ValidationType, BankInfoId) VALUES 
-	(NEWID(), 'Check Validation By Products', 'Product', @bankID),
-	(NEWID(), 'Check Validation By Branch', 'Branch', @bankID)
+	/*Seed form_checks*/
+	INSERT INTO form_checks  (Id, CheckType, FormType, Description, Quantity, FileInitial, ProductId, FormCheckType) VALUES 
+	(NEWID(), 'B', '16', 'Personal', 10, 'cws', (select Id from products where ProductName = 'CWS Product'), 'Personal'),
+	(NEWID(), 'C', '17', 'Commercial', 10, 'cws', (select Id from products where ProductName = 'CWS Product'), 'Commercial')
 	
+	/*Seed check_validation */
+	INSERT INTO check_validation (Id, Name, BankInfoId) VALUES 
+	(NEWID(), 'CWS', @bankID),
+	(NEWID(), 'ACT', @bankID)
+
+	/*Seed tag*/
+	INSERT INTO tag (Id, TagName, isDefaultTag, CheckValidationId) VALUES 
+	(NEWID(), 'DefaultTag', 1, (SELECT TOP 1 Id from check_validation where Name = 'CWS')),
+	(NEWID(), 'CategoryA', 0, (SELECT TOP 1 Id from check_validation where Name = 'CWS'));
+
+	/*Seed tag_mapping*/
+	INSERT INTO tag_mapping(Id, BranchId, ProductId, FormCheckId, TagId)
+	VALUES
+	(
+		NEWID(), 
+		(select top 1 Id from bank_branchs where BRSTNCode = '040260046'), 
+		(select top 1 Id from products where ProductName = 'CWS Product'), 
+		(select top 1 Id from form_checks where FormType = '16' and CheckType = 'B'), 
+		(select top 1 id from tag where TagName ='CategoryA')
+	),
+	(
+		NEWID(), 
+		(select top 1 Id from bank_branchs where BRSTNCode = '190260035'), 
+		(select top 1 Id from products where ProductName = 'CWS Product'), 
+		(select top 1 Id from form_checks where FormType = '16' and CheckType = 'B'), 
+		(select top 1 id from tag where TagName ='CategoryA')
+	),
+	(
 	
-	DELETE product_configuration;
+		NEWID(), 
+		(select top 1 Id from bank_branchs where BRSTNCode = '010260908'), 
+		(select top 1 Id from products where ProductName = 'CWS Product'), 
+		(select top 1 Id from form_checks where FormType = '17' and CheckType = 'C'), 
+		(select top 1 id from tag where TagName ='CategoryA')
+	)
+	
+	/*Seed product_configuration*/
 	INSERT INTO product_configuration (Id, FileName, ConfigurationData, ConfigurationType, isActive, ProductId, CheckValidationId) VALUES 
 	(NEWID(), 'ACT',N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
-	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product'), (select Id from check_validation where ValidationType = 'Product')),
+	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product'), (select Id from check_validation where Name = 'ACT')),
 	(NEWID(), 'CWS', N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
-	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'), (select Id from check_validation where ValidationType = 'Branch'));
-
-	DELETE form_checks;
-	INSERT INTO form_checks  (Id, CheckType, FormType, Description, Quantity, FileInitial, ProductId) VALUES 
-	(NEWID(), 'B', '16', 'Test form checks', 10, 'cws', (select Id from products where ProductName = 'CWS Product'))
+	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'), (select Id from check_validation where Name = 'CWS'));
 	
-	DELETE check_inventory;
-	INSERT INTO check_inventory (Id, CheckValidationId, SeriesPatern) VALUES
-	(NEWID(), (select top 1 Id from check_validation where ValidationType = 'Product'), 'ABCD00000'),
-	(NEWID(), (select top 1 Id from check_validation where ValidationType = 'Branch'), 'ABCDE00000')
+	/*Seed check_inventory*/
+	INSERT INTO check_inventory (Id, TagId, SeriesPatern, WarningSeries, NumberOfPadding, StartingSeries, isRepeating) VALUES
+	(NEWID(), (select Id from tag where TagName ='DefaultTag'), 'ABCD', 500, 5, 1, 0),
+	(NEWID(), (select Id from tag where TagName ='CategoryA'), 'XYZ', 500, 5, 1, 0)
 	
-	/*Clear batch*/
-	DELETE batch_files;
-	
-	/*Clear order_files*/
-	DELETE order_files;
-	
-	/*Clear check_orders*/
-	DELETE check_orders;
-	
-	/*Clear tags*/
-	DELETE [tag];
-
-	/*Clear tag_mapping*/
-	DELETE tag_mapping;

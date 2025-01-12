@@ -1,7 +1,6 @@
-﻿using Captive.Applications.CheckOrder.Command.CreateCheckOrder;
-using Captive.Applications.CheckValidation.Query.ValidateCheckOrder;
+﻿using Captive.Applications.CheckOrder.Command.CheckDuplication;
+using Captive.Applications.CheckOrder.Command.CreateCheckOrder;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Commands.Controllers
@@ -23,15 +22,19 @@ namespace Captive.Commands.Controllers
             await _mediator.Send(request);
             return Ok();
         }
-        
 
-        [HttpPost("validateCheck")]
-        public async Task<IActionResult> ValidateCheckOrders([FromBody] ValidateCheckOrderCommand request)
+        [HttpPost("floating")]
+        public async Task<IActionResult> CreateFloatingCheckOrder([FromBody] CreateFloatingCheckOrderCommand request)
         {
-            var response = await _mediator.Send(request);
-
-            return Ok(response);
+            await _mediator.Send(request);
+            return Ok();
         }
 
+        [HttpPost("{orderFileId}/duplicationcheck")]
+        public async Task<IActionResult> CheckDuplication([FromRoute] Guid orderFileId)
+        {
+            await _mediator.Send(new CheckDuplicationCommand { OrderFileId = orderFileId});
+            return NoContent();
+        }
     }
 }

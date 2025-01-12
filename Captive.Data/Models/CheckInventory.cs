@@ -3,18 +3,14 @@ namespace Captive.Data.Models
 {
     public class CheckInventory
     {
-        public Guid Id { get; set; }        
-        /**
-         * SERIES PATTERN: 
-         * (A-Z) - any letter
-         * 0 - incremental numerical value 
-         * example: "ABC0000" 
-         * system will create out of this pattern as "ABC0001", "ABC0002"
-         * but if the check order has pre-defined series, the system will disregard this pattern.
-         */
+        public Guid Id { get; set; }    
         public string SeriesPatern { get; set; }
-        public Guid CheckValidationId { get; set; }
-        public CheckValidation CheckValidation { get; set; }
+        public int StartingSeries { get; set; }
+        public int WarningSeries {  get; set; }
+        public int NumberOfPadding {  get; set; }
+        public bool isRepeating {  get; set; }
+        public Guid TagId { get; set; } 
+        public Tag Tag { get; set; }    
         public ICollection<CheckInventoryDetail> CheckInventoryDetails { get; set; }
     }
 }

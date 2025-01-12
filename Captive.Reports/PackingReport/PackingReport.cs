@@ -19,15 +19,18 @@ namespace Captive.Reports.PackingReport
         {
             var checkDto = await ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
 
-            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
+            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.FormCheckType });
 
             foreach (var productData in productGroup)
             {
                 var productName = productData.Key.ProductTypeName;
                 var formCheckName = productData.Key.FormCheckName ?? string.Empty;
 
+                var formCheckType = productData.Key.FormCheckType;
+                
+                var initialFileName = formCheckType == Data.Enums.FormCheckType.Personal ? "A" : "B";
 
-                var productFilePath = Path.Combine(filePath, productData.Key.ProductTypeName, $"Packing{formCheckName?.First()}.txt");
+                var productFilePath = Path.Combine(filePath, productData.Key.ProductTypeName, $"Packing{initialFileName}.txt");
 
                 var orderFileBranchGroupBy = productData.GroupBy(x => new { x.BankBranch.BRSTNCode, DeliveryBrstn = x.DeliverTo == null ? string.Empty : x.DeliverTo.BRSTNCode, x.OrderFileName });
 

@@ -33,8 +33,6 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
                 if (checkInventory == null) {
                     throw new Exception($"Check Inventory ID: {request.Id} doesn't exist");
                 }
-
-                checkInventory.CheckValidationId = request.CheckValidationId;
                 checkInventory.SeriesPatern = request.SeriesPattern;
 
                 _writeUow.CheckInventory.Update(checkInventory);
@@ -43,7 +41,6 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
             {
                 var newCheckInventory = new Captive.Data.Models.CheckInventory()
                 {
-                    CheckValidationId = checkValidation.Id,
                     SeriesPatern = request.SeriesPattern,
                 };
 

@@ -1,8 +1,11 @@
 ﻿using Captive.Applications.Batch.Commands.CreateBatchFile;
 using Captive.Applications.Batch.Commands.DeleteBatchFile;
+using Captive.Applications.Batch.Hubs;
+using Captive.Applications.Batch.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Captive.Commands.Controllers
 {
@@ -11,8 +14,12 @@ namespace Captive.Commands.Controllers
     public class BatchController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public BatchController(IMediator mediator) {
+        private readonly IHubContext<BatchHub> _hubContext;
+        private readonly IBatchService _batchService;
+        public BatchController(IMediator mediator, IHubContext<BatchHub> hubContext, IBatchService batchService) {
             _mediator = mediator;
+            _hubContext = hubContext;
+            _batchService = batchService;
         }
 
         [HttpPost]

@@ -1,4 +1,5 @@
 ﻿
+using Captive.Data.Enums;
 using Captive.Data.Models;
 
 namespace Captive.Reports.Models
@@ -14,6 +15,8 @@ namespace Captive.Reports.Models
         public string StartSeries { get; set; }
         public string EndSeries { get; set; }
         public Guid? OrderFileId { get; set; }
+
+        public FormCheckType FormCheckType { get; set; }
         public string? OrderFileName { get; set; }
         public required string FileInitial { get; set; }
         public required BankBranches BankBranch { get; set; }

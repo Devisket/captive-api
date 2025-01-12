@@ -34,21 +34,19 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     FileType = Path.GetExtension(x.FileName).SanitizeFileName(),
                     FilePath = x.FilePath,
                     Status = x.Status.ToString(),
-                    CheckOrders = x.CheckOrders != null && x.CheckOrders.Any() ? x.CheckOrders.Select(c => new CheckOrderDto
+                    IsValidated = x.IsValidated,
+                    CheckOrders = x.FloatingCheckOrders != null && x.FloatingCheckOrders.Any() ? x.FloatingCheckOrders.Select(c => new CheckOrderDto
                     {
                         Id = c.Id,
-                        ProductId = c.ProductId,
                         BRSTN = c.BRSTN,                        
                         AccountNumber = c.AccountNo,
                         MainAccountName = c.AccountName,
                         DeliverTo = c.DeliverTo,
-                        FormType = _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefault(z => z.Id == c.FormCheckId).FormType ?? string.Empty,
-                        CheckType = _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefault(z => z.Id == c.FormCheckId).CheckType ?? string.Empty,
-                        IsValid = c.IsValid,
-                        Quantity = c.OrderQuanity,
-                        FormCheckId = c.FormCheckId ?? Guid.Empty,
-                        
-                        ErrorMessage = c.ErrorMessage                        
+                        FormType = c.FormType,
+                        CheckType = c.CheckType,
+                        Quantity = c.Quantity,
+                        ErrorMessage = c.ErrorMessage,
+                        IsValid = c.IsValid
                     }).ToList() : null
                 }).ToList() : null
             }).FirstOrDefaultAsync();

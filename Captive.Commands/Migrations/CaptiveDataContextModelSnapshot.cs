@@ -134,16 +134,28 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CheckValidationId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("NumberOfPadding")
+                        .HasColumnType("int");
 
                     b.Property<string>("SeriesPatern")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StartingSeries")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("WarningSeries")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isRepeating")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CheckValidationId")
+                    b.HasIndex("TagId")
                         .IsUnique();
 
                     b.ToTable("check_inventory", (string)null);
@@ -170,6 +182,9 @@ namespace Captive.Commands.Migrations
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("EndingNumber")
+                        .HasColumnType("int");
+
                     b.Property<string>("EndingSeries")
                         .HasColumnType("nvarchar(max)");
 
@@ -183,6 +198,9 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StartingNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("StartingSeries")
@@ -230,18 +248,8 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("DeliverTo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ErrorMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("FormCheckId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("InputEnable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsValid")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("OrderFileId")
                         .HasColumnType("uniqueidentifier");
@@ -281,24 +289,78 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("ValidateByBranch")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ValidateByFormCheck")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ValidateByProduct")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ValidationType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BankInfoId");
 
                     b.ToTable("check_validation", (string)null);
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.FloatingCheckOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccountName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountName1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountName2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BRSTN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Concode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliverTo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErrorMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("OrderFileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PreEndingSeries")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreStartingSeries")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderFileId");
+
+                    b.ToTable("floating_check_orders", (string)null);
                 });
 
             modelBuilder.Entity("Captive.Data.Models.FormChecks", b =>
@@ -315,6 +377,10 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileInitial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormCheckType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -356,6 +422,9 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsValidated")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ProcessDate")
                         .HasColumnType("datetime2");
@@ -493,12 +562,18 @@ namespace Captive.Commands.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CheckInventoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("CheckValidationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TagName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isDefaultTag")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -556,13 +631,13 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.CheckInventory", b =>
                 {
-                    b.HasOne("Captive.Data.Models.CheckValidation", "CheckValidation")
+                    b.HasOne("Captive.Data.Models.Tag", "Tag")
                         .WithOne("CheckInventory")
-                        .HasForeignKey("Captive.Data.Models.CheckInventory", "CheckValidationId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .HasForeignKey("Captive.Data.Models.CheckInventory", "TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CheckValidation");
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.CheckInventoryDetail", b =>
@@ -602,6 +677,17 @@ namespace Captive.Commands.Migrations
                         .IsRequired();
 
                     b.Navigation("BankInfo");
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.FloatingCheckOrder", b =>
+                {
+                    b.HasOne("Captive.Data.Models.OrderFile", "OrderFile")
+                        .WithMany("FloatingCheckOrders")
+                        .HasForeignKey("OrderFileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderFile");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.FormChecks", b =>
@@ -723,9 +809,6 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.CheckValidation", b =>
                 {
-                    b.Navigation("CheckInventory")
-                        .IsRequired();
-
                     b.Navigation("ProductConfigurations");
 
                     b.Navigation("Tags");
@@ -734,6 +817,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.OrderFile", b =>
                 {
                     b.Navigation("CheckOrders");
+
+                    b.Navigation("FloatingCheckOrders");
 
                     b.Navigation("OrderFileLogs");
                 });
@@ -750,6 +835,9 @@ namespace Captive.Commands.Migrations
 
             modelBuilder.Entity("Captive.Data.Models.Tag", b =>
                 {
+                    b.Navigation("CheckInventory")
+                        .IsRequired();
+
                     b.Navigation("Mapping");
                 });
 #pragma warning restore 612, 618

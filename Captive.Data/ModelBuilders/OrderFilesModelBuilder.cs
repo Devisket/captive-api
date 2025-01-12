@@ -24,6 +24,10 @@ namespace Captive.Data.ModelBuilders
                 .WithOne(x => x.OrderFile)
                 .HasForeignKey(x => x.OrderFileId);
 
+            entity.HasMany(x => x.FloatingCheckOrders)
+                .WithOne(x => x.OrderFile)
+                .HasForeignKey(x => x.OrderFileId);
+
             entity.HasMany(x => x.OrderFileLogs)
                 .WithOne(x => x.OrderFile)
                 .HasForeignKey(x => x.OrderFileId);

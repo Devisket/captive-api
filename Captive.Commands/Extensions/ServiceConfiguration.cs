@@ -20,6 +20,10 @@ using Captive.Messaging.Interfaces;
 using Captive.Applications.FormsChecks.Services;
 using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.Util;
+using Captive.Applications.Orderfiles.Services;
+using Captive.Applications.Batch.Services;
+using Captive.Applications.CheckValidation.Services;
+using Captive.Applications.CheckInventory.Services;
 
 namespace Captive.Commands.Extensions
 {
@@ -48,12 +52,15 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IFormsChecksService, FormsChecksService>();
             services.AddScoped<ICheckOrderService, CheckOrderService>();
             services.AddScoped<IStringService, StringService>();
-
+            services.AddScoped<IOrderFileService, OrderFileService>();
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
+            services.AddScoped<IBatchService, BatchService>();
+            services.AddScoped<ICheckInventoryService, CheckInventoryService>();
+            services.AddSignalR();
+            services.AddScoped<ICheckValidationService, CheckValidationService>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));
-
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
         }

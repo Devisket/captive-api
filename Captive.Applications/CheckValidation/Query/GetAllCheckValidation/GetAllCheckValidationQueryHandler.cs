@@ -20,7 +20,6 @@ namespace Captive.Applications.CheckValidation.Query.GetAllCheckValidation
             {
                 Id = x.Id,
                 Name = x.Name,
-                ValidationType = x.ValidationType.ToString(),
                 Tags = x.Tags.Select(y => new Model.Dto.TagDto
                 {
                     Id = y.Id,

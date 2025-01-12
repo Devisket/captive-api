@@ -12,7 +12,6 @@ namespace Captive.Applications.CheckValidation.Query.GetCheckValidationById
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
-        public required string ValidationType { get; set; }
         public ICollection<TagDto>? Tags { get; set; }
     }
 }

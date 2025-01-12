@@ -23,7 +23,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
 
         public async Task<Unit> Handle(CreateCheckOrderCommand request, CancellationToken cancellationToken)
         {
-            var orderFile = await _readUow.OrderFiles.GetAll().FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
+            var orderFile = await _readUow.OrderFiles.GetAll().Include(x => x.Product).FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
 
             if (orderFile == null) {
                 throw new Exception("Orderfile ID doesn't exist");
@@ -33,10 +33,9 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
 
 
             foreach (var checkOrder in request.CheckOrders) {
-
                 var branch = await _readUow.BankBranches.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.BRSTNCode == checkOrder.BRSTN);
 
-                var formCheck = await _formCheckService.GetCheckOrderFormCheck(checkOrder, cancellationToken);
+                var formCheck = await _formCheckService.GetCheckOrderFormCheck(orderFile.ProductId, checkOrder.FormType, checkOrder.CheckType, cancellationToken);
 
                 if (checkOrder.IsValid)
                 {
@@ -44,7 +43,6 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                     {
                         Id = Guid.Empty,
                         AccountNo = checkOrder.AccountNumber,
-                        ProductId = checkOrder.ProductId,
                         BranchId = branch?.Id ?? Guid.Empty,
                         Quantity = checkOrder.Quantity,
                         PreEndingSeries = checkOrder.EndingSeries,
@@ -56,9 +54,6 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
-                        ErrorMessage = formCheck != null ? string.Empty : "Cannot find formcheck",
-                        IsValid = formCheck != null,
-                        InputEnable = false,
                         BranchCode = checkOrder.BranchCode ?? string.Empty,
                     });
                 }
@@ -67,7 +62,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                     newCheckOrders.Add(new CheckOrders
                     {
                         Id = Guid.Empty,
-                        ProductId = checkOrder.ProductId,
+                        ProductId = orderFile.ProductId,
                         AccountNo = checkOrder.AccountNumber,
                         BranchId = branch?.Id ?? Guid.Empty,
                         Quantity = checkOrder.Quantity,
@@ -80,9 +75,6 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         DeliverTo = checkOrder.DeliverTo,
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
-                        ErrorMessage = checkOrder.ErrorMessage ?? string.Empty,
-                        IsValid = checkOrder.IsValid,
-                        InputEnable = false,
                         BranchCode = checkOrder.BranchCode ?? string.Empty,
                     });
                 }
