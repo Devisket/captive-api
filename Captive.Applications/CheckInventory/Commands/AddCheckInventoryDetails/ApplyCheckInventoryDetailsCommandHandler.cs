@@ -114,28 +114,5 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails
             //}          
             return Unit.Value;
         }
-
-        private async Task<Tag?> GetTag(CheckOrders checkOrder, Captive.Data.Models.CheckValidation checkValidation)
-        {
-            var tagMappingQuery = _readUow.TagsMapping.GetAll().Include(x => x.Tag).Where(x => x.Tag.CheckValidationId == checkValidation.Id);
-
-            if (checkValidation.ValidateByBranch)
-            {
-                tagMappingQuery.Where(x => x.BranchId == checkOrder.BranchId);
-            }
-
-            if (checkValidation.ValidateByProduct)
-            {
-                tagMappingQuery.Where(x => x.ProductId == checkOrder.ProductId);
-            }
-
-            if (checkValidation.ValidateByFormCheck)
-            {
-                tagMappingQuery.Where(x => x.FormCheckId == checkOrder.FormCheckId);
-            }
-            var tagMapping = await tagMappingQuery.FirstOrDefaultAsync();
-
-            return tagMapping?.Tag;
-        }
     }
 }

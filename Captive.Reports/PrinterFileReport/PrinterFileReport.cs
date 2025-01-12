@@ -130,6 +130,7 @@ namespace Captive.Reports.PrinterFileReport
                         CheckType = formCheck.CheckType,
                         FormType = formCheck.FormType,
                         CheckOrder = checkOrder,
+                        FormCheckType = formCheck.FormCheckType,
                         BankBranch = branch,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,

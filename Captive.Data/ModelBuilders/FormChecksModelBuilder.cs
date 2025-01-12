@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Data.ModelBuilders
@@ -20,6 +21,10 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.Quantity).IsRequired();
 
             entity.Property(x => x.FileInitial).IsRequired();
+
+            entity.Property(x => x.FormCheckType).IsRequired().HasConversion(
+               v => v.ToString(),
+               v => (FormCheckType)Enum.Parse(typeof(FormCheckType), v.ToString()));
 
             entity
                 .Property(x => x.Description)

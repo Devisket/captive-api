@@ -114,33 +114,18 @@ namespace Captive.Commands.Extensions
                     Id = Guid.Empty,
                     Name = "Check validation by Product",
                     BankInfoId = bankInfos[0].Id,
-                    ValidationType = ValidationType.Product
                 },
                 new CheckValidation
                 {
                     Id = Guid.Empty,
                     Name = "Check validation by BRSTN",
                     BankInfoId = bankInfos[0].Id,
-                    ValidationType = ValidationType.Branch
                 }
             };
 
             var checkInventory = new List<CheckInventory>()
             {
-                new CheckInventory
-                {
-                    Id = Guid.NewGuid(),
-                    CheckValidationId = checkValidation[0].Id,
-                    CheckValidation = checkValidation[0],
-                    SeriesPatern = "ACT00000"
-                },
-                new CheckInventory
-                {
-                    Id = Guid.NewGuid(),
-                    CheckValidationId = checkValidation[1].Id,
-                    CheckValidation = checkValidation[1],
-                    SeriesPatern = "CWS000000"
-                }
+                //Need to seed
             };
 
             var productConfiguration = new List<ProductConfiguration>{ 

@@ -28,7 +28,6 @@ namespace Captive.Applications.CheckValidation.Command
                     throw new Exception($"Check ID: {request.Id} doesn't exist.");
                 
                 checkValidation.Name = request.Name;
-                checkValidation.ValidationType = validationType;
 
                 _writeUow.CheckValidations.Update(checkValidation);
 
@@ -38,7 +37,6 @@ namespace Captive.Applications.CheckValidation.Command
             await _writeUow.CheckValidations.AddAsync(new Data.Models.CheckValidation
             {
                 Name = request.Name,
-                ValidationType = validationType,
                 BankInfoId = request.BankId
             }, cancellationToken);
 

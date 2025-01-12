@@ -25,6 +25,9 @@
 	/*Clear check_inventory*/
 	DELETE check_inventory;
 
+	/*Clear check_inventory_detail*/
+	DELETE check_inventory_detail;
+
 	/*Clear check_validation*/
 	DELETE check_validation;
 	
@@ -819,23 +822,55 @@
 	(NEWID(), 'CWS Product', @bankId);
 
 	/*Seed form_checks*/
-	INSERT INTO form_checks  (Id, CheckType, FormType, Description, Quantity, FileInitial, ProductId) VALUES 
-	(NEWID(), 'B', '16', 'Test form checks', 10, 'cws', (select Id from products where ProductName = 'CWS Product'))
+	INSERT INTO form_checks  (Id, CheckType, FormType, Description, Quantity, FileInitial, ProductId, FormCheckType) VALUES 
+	(NEWID(), 'B', '16', 'Personal', 10, 'cws', (select Id from products where ProductName = 'CWS Product'), 'Personal'),
+	(NEWID(), 'C', '17', 'Commercial', 10, 'cws', (select Id from products where ProductName = 'CWS Product'), 'Commercial')
 	
 	/*Seed check_validation */
-	INSERT INTO check_validation (Id, Name, ValidationType, BankInfoId) VALUES 
-	(NEWID(), 'Check Validation By Products', 'Product', @bankID),
-	(NEWID(), 'Check Validation By Branch', 'Branch', @bankID)
+	INSERT INTO check_validation (Id, Name, BankInfoId) VALUES 
+	(NEWID(), 'CWS', @bankID),
+	(NEWID(), 'ACT', @bankID)
+
+	/*Seed tag*/
+	INSERT INTO tag (Id, TagName, isDefaultTag, CheckValidationId) VALUES 
+	(NEWID(), 'DefaultTag', 1, (SELECT TOP 1 Id from check_validation where Name = 'CWS')),
+	(NEWID(), 'CategoryA', 0, (SELECT TOP 1 Id from check_validation where Name = 'CWS'));
+
+	/*Seed tag_mapping*/
+	INSERT INTO tag_mapping(Id, BranchId, ProductId, FormCheckId, TagId)
+	VALUES
+	(
+		NEWID(), 
+		(select top 1 Id from bank_branchs where BRSTNCode = '040260046'), 
+		(select top 1 Id from products where ProductName = 'CWS Product'), 
+		(select top 1 Id from form_checks where FormType = '16' and CheckType = 'B'), 
+		(select top 1 id from tag where TagName ='CategoryA')
+	),
+	(
+		NEWID(), 
+		(select top 1 Id from bank_branchs where BRSTNCode = '190260035'), 
+		(select top 1 Id from products where ProductName = 'CWS Product'), 
+		(select top 1 Id from form_checks where FormType = '16' and CheckType = 'B'), 
+		(select top 1 id from tag where TagName ='CategoryA')
+	),
+	(
+	
+		NEWID(), 
+		(select top 1 Id from bank_branchs where BRSTNCode = '010260908'), 
+		(select top 1 Id from products where ProductName = 'CWS Product'), 
+		(select top 1 Id from form_checks where FormType = '17' and CheckType = 'C'), 
+		(select top 1 id from tag where TagName ='CategoryA')
+	)
 	
 	/*Seed product_configuration*/
 	INSERT INTO product_configuration (Id, FileName, ConfigurationData, ConfigurationType, isActive, ProductId, CheckValidationId) VALUES 
 	(NEWID(), 'ACT',N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
-	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product'), (select Id from check_validation where ValidationType = 'Product')),
+	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product'), (select Id from check_validation where Name = 'ACT')),
 	(NEWID(), 'CWS', N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
-	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'), (select Id from check_validation where ValidationType = 'Branch'));
+	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'), (select Id from check_validation where Name = 'CWS'));
 	
 	/*Seed check_inventory*/
-	INSERT INTO check_inventory (Id, CheckValidationId, SeriesPatern) VALUES
-	(NEWID(), (select top 1 Id from check_validation where ValidationType = 'Product'), 'ABCD00000'),
-	(NEWID(), (select top 1 Id from check_validation where ValidationType = 'Branch'), 'ABCDE00000')
+	INSERT INTO check_inventory (Id, TagId, SeriesPatern, WarningSeries, NumberOfPadding, StartingSeries, isRepeating) VALUES
+	(NEWID(), (select Id from tag where TagName ='DefaultTag'), 'ABCD', 500, 5, 1, 0),
+	(NEWID(), (select Id from tag where TagName ='CategoryA'), 'XYZ', 500, 5, 1, 0)
 	

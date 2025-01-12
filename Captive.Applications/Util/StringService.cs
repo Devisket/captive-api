@@ -37,8 +37,8 @@ namespace Captive.Applications.Util
 
         public Tuple<string, string> ConvertToSeries(string seriesPattern, int numberOfPadding, int startingNumber, int endingNumber)
         {
-            var startingSeries = Convert.ToString(startingNumber).PadLeft(numberOfPadding);
-            var endingSeries = Convert.ToString(endingNumber).PadLeft(numberOfPadding);
+            var startingSeries = Convert.ToString(startingNumber).PadLeft(numberOfPadding,'0');
+            var endingSeries = Convert.ToString(endingNumber).PadLeft(numberOfPadding,'0');
 
             startingSeries = String.Concat(seriesPattern, startingSeries);
             endingSeries = String.Concat(seriesPattern, endingSeries);

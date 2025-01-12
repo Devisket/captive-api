@@ -18,6 +18,9 @@ using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.FormsChecks.Services;
 using Captive.Applications.Util;
 using Captive.Applications.Batch.Services;
+using Captive.Applications.CheckValidation.Services;
+using Captive.Applications.CheckInventory.Services;
+using Captive.Applications.Orderfiles.Services;
 
 namespace Captive.Queries.Extensions
 {
@@ -49,10 +52,12 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IFormsChecksService, FormsChecksService>();
             services.AddScoped<ICheckOrderService, CheckOrderService>();
             services.AddScoped<IStringService, StringService>();
-
+            services.AddScoped<ICheckValidationService, CheckValidationService>();
+            services.AddScoped<ICheckInventoryService,CheckInventoryService>();
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
+            services.AddScoped<IOrderFileService, OrderFileService>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

@@ -7,6 +7,6 @@ namespace Captive.Applications.Util
         Tuple<string, string> GetNextSeries(string pattern, string lastSeries, int quantity);
 
         Tuple<int, int> ExtractNumber(string seriesPattern, string startingSeries, string endingSeries);
-        Tuple<string, string> ConvertToSeries(string seriesPattern, int numberOfPadding, int startingNumber, int endingNumber)
+        Tuple<string, string> ConvertToSeries(string seriesPattern, int numberOfPadding, int startingNumber, int endingNumber);
     }
 }

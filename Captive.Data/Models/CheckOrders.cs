@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Captive.Data.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Captive.Data.Models
 {

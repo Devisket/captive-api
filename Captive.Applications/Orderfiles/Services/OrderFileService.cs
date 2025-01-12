@@ -28,7 +28,7 @@ namespace Captive.Applications.Orderfiles.Services
 
         public async Task UpdateOrderFileStatus(Guid orderFileID, OrderFilesStatus orderFileStatus, CancellationToken cancellationToken)
         {
-            await ChangeOrderFileStatus(orderFileID, string.Empty, OrderFilesStatus.Error, cancellationToken);
+            await ChangeOrderFileStatus(orderFileID, string.Empty, orderFileStatus, cancellationToken);
         }
 
         private async Task ChangeOrderFileStatus(Guid orderFileId, string errorMessage, OrderFilesStatus status, CancellationToken cancellationToken)

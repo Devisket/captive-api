@@ -13,6 +13,8 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.TagName).IsRequired(true);
 
+            entity.HasOne(x => x.CheckInventory).WithOne(x => x.Tag).HasForeignKey<CheckInventory>(x => x.TagId);
+
             entity.HasMany(x => x.Mapping).WithOne(x => x.Tag).HasForeignKey(x => x.TagId);
 
             entity.ToTable("tag");

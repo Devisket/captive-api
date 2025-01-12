@@ -5,10 +5,7 @@ using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Model.Dto;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading;
 
 namespace Captive.Applications.CheckOrder.Services
 {
@@ -43,11 +40,11 @@ namespace Captive.Applications.CheckOrder.Services
                 }
               );
         }
-
         public async Task<FloatingCheckOrder[]> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
         {
             var orderFile = await _readUow.OrderFiles.GetAll()
                 .Include(x => x.Product)
+                .Include(x => x.BatchFile)
                 .Include(x =>x.Product)
                     .ThenInclude(x =>x.ProductConfiguration)
                 .Include(x => x.FloatingCheckOrders).FirstOrDefaultAsync(x => x.Id == orderFileId, cancellationToken);
@@ -66,16 +63,9 @@ namespace Captive.Applications.CheckOrder.Services
 
             var checkValidation = await _readUow.CheckValidations
                 .GetAll()
-                .Include(x=> x.CheckInventory)
+                .Include(x => x.Tags)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == orderFile.Product.ProductConfiguration.CheckValidationId);
-
-
-            var checkInventory = checkValidation.CheckInventory;
-
-            //var productConfiguration = await _readUow.ProductConfigurations.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == orderFile.ProductId, cancellationToken);
-
-            //var productFormChecks = await _readUow.FormChecks.GetAll().AsNoTracking().Where(x => x.ProductId == orderFile.ProductId).ToArrayAsync(cancellationToken);
 
             foreach (var checkOrder in floatingCheckOrders)
             {
@@ -140,20 +130,24 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
-                //Validate Check Inventory
-                /*
-                 * Only validate check inventory when the check order has predefine series
-                 * 1. Get the corresponding check validation thru ProductConfiguration
-                 * 2. Check the CheckValidation if it is Product, Mix, Account or Branch
-                 *  2a. If Mix get the TagMapping under check validation
-                 *  2b. Check the corresponding validation if validated by Branch, Product and FormCheck
-                 *  2c. Get the specific tag mapping according to the validation in the check validation table
-                 *  2d. Validate the series on check inventory details with specific tag
-                 */
-
                 if (!String.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
-                    if(await _checkValidationService.HasConflictedSeries(checkInventory.Id, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, cancellationToken))
+                    if (string.IsNullOrEmpty(checkOrder.PreStartingSeries) || string.IsNullOrEmpty(checkOrder.PreEndingSeries)) 
+                    {
+                        checkOrder.IsValid = false;
+                        checkOrder.ErrorMessage = $"One of the series is empty!";
+                        continue;
+                    }
+
+                    var tags = checkValidation.Tags.ToArray();
+
+                    var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
+
+                    var formCheck = formChecks.Where(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType).First();
+                    
+                    var tag = _checkValidationService.GetTag(tags, branch.Id, formCheck.Id, orderFile.ProductId);
+
+                    if (await _checkValidationService.HasConflictedSeries(tag.CheckInventoryId, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id,orderFile.ProductId, tag.Id, cancellationToken))
                     {
                         checkOrder.IsValid = false;
                         checkOrder.ErrorMessage = $"Has conflicted series number!";
@@ -167,10 +161,6 @@ namespace Captive.Applications.CheckOrder.Services
 
             return floatingCheckOrders;
         }
-
-
-        public async Task<bool> ValidateSeries()
-
         private async Task<bool> HasDuplicate(Guid batchId, Guid orderFileId, string accNo, CancellationToken cancellationToken)
         {
             var otherOrderFile = await _readUow.OrderFiles.GetAll()
@@ -182,16 +172,13 @@ namespace Captive.Applications.CheckOrder.Services
 
             return otherCheckOrder.Any(x => x.AccountNo == accNo);
         }
-
-        private async Task CreateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
+        public async Task CreateCheckOrder(OrderFile orderFile, CancellationToken cancellationToken)
         {
-            var orderFile = await _readUow.OrderFiles.GetAll().Include(x => x.BatchFile).Include(x => x.Product).FirstOrDefaultAsync(x => x.Id == orderFileId);
-
             var branchs = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankInfoId == orderFile.BatchFile.BankInfoId).ToListAsync(cancellationToken);
 
             if (orderFile == null)
             {
-                throw new Exception($"Order file ID: {orderFileId} doesn't exist");
+                throw new Exception($"Order file ID: {orderFile.Id} doesn't exist");
             }
 
             var floatingCheckOrders = orderFile.FloatingCheckOrders.ToArray();
@@ -218,7 +205,8 @@ namespace Captive.Applications.CheckOrder.Services
                     FormCheckId = formCheck?.Id ?? null,
                     DeliverTo = checkOrder.DeliverTo,
                     Concode = checkOrder.Concode,
-                    OrderFileId = orderFileId,
+                    OrderFileId = orderFile.Id,
+                    ProductId = orderFile.ProductId,
                     BranchCode = checkOrder.BranchCode ?? string.Empty,
                 });
             }
@@ -228,6 +216,5 @@ namespace Captive.Applications.CheckOrder.Services
 
             await _writeUow.CheckOrders.AddRange(newCheckOrders.ToArray(), cancellationToken);
         }
-
     }
 }

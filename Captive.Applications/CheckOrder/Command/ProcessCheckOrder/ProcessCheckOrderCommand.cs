@@ -9,6 +9,6 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
 {
     public class ProcessCheckOrderCommand : IRequest<Unit>
     {
-       Guid OrderFileId { get; set; }
+       public Guid OrderFileId { get; set; }
     }
 }

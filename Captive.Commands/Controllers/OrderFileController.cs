@@ -1,4 +1,5 @@
-﻿using Captive.Applications.Orderfiles.Command.DeleteOrderFile;
+﻿using Captive.Applications.CheckOrder.Command.ProcessCheckOrder;
+using Captive.Applications.Orderfiles.Command.DeleteOrderFile;
 using Captive.Applications.Orderfiles.Command.UpdateOrderFile;
 using Captive.Applications.Orderfiles.Command.ValidateOrderFile;
 using Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile;
@@ -63,6 +64,13 @@ namespace Captive.Commands.Controllers
         public async Task<IActionResult> DeleteOrderFile([FromRoute] Guid id)
         {
             await _mediator.Send(new DeleteOrderFileCommand { OrderFileId = id });
+            return NoContent();
+        }
+
+        [HttpPost("{orderFileId}/process")]
+        public async Task<IActionResult> ProcessOrderFile([FromRoute] Guid orderFileId)
+        {
+            await _mediator.Send(new ProcessCheckOrderCommand { OrderFileId = orderFileId });
             return NoContent();
         }
     }

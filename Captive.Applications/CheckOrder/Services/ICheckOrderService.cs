@@ -7,5 +7,6 @@ namespace Captive.Applications.CheckOrder.Services
     {
         void UpdateCheckOrder(CheckOrderDto checkOrderDto);
         Task<FloatingCheckOrder[]> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken);
+        Task CreateCheckOrder(OrderFile orderFile, CancellationToken cancellationToken);
     }
 }
