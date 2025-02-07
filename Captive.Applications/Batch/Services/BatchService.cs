@@ -1,23 +1,29 @@
 ﻿using Captive.Applications.Batch.Query.GetBatchById;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto;
 using Captive.Utility;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Mysqlx.Crud;
+using Newtonsoft.Json;
 
 namespace Captive.Applications.Batch.Services
 {
     public interface IBatchService
     {
         Task<GetBatchByIdQueryResponse> GetBatchDetailById(Guid batchId);
+        Task GenerateDbfFile(Guid orderFileId);
     }
     public class BatchService : IBatchService
     {
-
         private readonly IReadUnitOfWork _readUow;
+        private readonly IConfiguration _configuration;
 
-        public BatchService(IReadUnitOfWork readUow)
+        public BatchService(IReadUnitOfWork readUow, IConfiguration configuration)
         {
             _readUow = readUow;
+            _configuration = configuration;
         }
 
         public async Task<GetBatchByIdQueryResponse> GetBatchDetailById(Guid batchId)
@@ -57,6 +63,22 @@ namespace Captive.Applications.Batch.Services
                 throw new SystemException($"Batch ID {batchId} doesn't exist");
 
             return batch;
+        }
+
+        public async Task GenerateDbfFile(Guid orderFileId)
+        {
+            var reqBody = new
+            {
+                orderFileId
+            };
+
+            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/Mdb/GenerateDbf");
+
+            var client = new HttpClient();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
+
+            await client.PostAsync(baseUri, content);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Captive.Commands.Controllers
 
             return response;
         }
-        //api/bankId/batch/batchId
+
         [HttpDelete("{batchId}")]
         public async Task<IActionResult> DeleteBatch([FromRoute] Guid batchId)
         {

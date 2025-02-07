@@ -1,9 +1,9 @@
 ﻿using Captive.Data.UnitOfWork.Read;
-using Captive.Model;
+using Captive.MdbAPI.Request;
+using Captive.MdbProcessor.Processor.DbfGenerator;
 using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
 using Captive.Processing.Processor.MDBFileProcessor;
-using Captive.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -16,10 +16,13 @@ namespace Captive.MdbAPI.Controllers
     {
         private readonly IMDBFileProcessor _mdbProcessor;
         private readonly IReadUnitOfWork _readUow;
-        public MdbController(IMDBFileProcessor mdbProcessor, IReadUnitOfWork readUow)
+        private readonly IDbfGenerator _dbfGenerator;
+
+        public MdbController(IMDBFileProcessor mdbProcessor, IReadUnitOfWork readUow, IDbfGenerator dbfGenerator)
         {
             _mdbProcessor = mdbProcessor;
             _readUow = readUow;
+            _dbfGenerator = dbfGenerator;
         }
 
         [HttpPost]
@@ -43,6 +46,26 @@ namespace Captive.MdbAPI.Controllers
             var response = _mdbProcessor.Extractfile(request, extractedConfig);
 
             return Ok(response);
+        }
+
+        [HttpPost("GenerateDbf")]
+        public async Task<ActionResult<IEnumerable<CheckOrderDto>>> GenerateDbf([FromBody] GenerateDbfRequest request, CancellationToken cancellationToken)
+        {
+            var orderFiles = await _readUow.OrderFiles.GetAll()
+                    .Include(x => x.BatchFile)
+                    .Include(x => x.CheckOrders)
+                .AsNoTracking()
+                .Where(x => x.BatchFileId == request.batchId)
+                .ToListAsync();
+
+            if (orderFiles == null)
+            {
+                throw new SystemException($"Order file for batchID:{request.batchId} doens't exist");
+            }
+
+            await _dbfGenerator.GenerateDbf(orderFiles, cancellationToken);
+
+            return Ok();
         }
     }
 }

@@ -40,8 +40,11 @@ namespace Captive.Applications.CheckOrder.Services
                 }
               );
         }
-        public async Task<FloatingCheckOrder[]> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
+        public async Task<Tuple<FloatingCheckOrder[],int,int>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
         {
+
+            int personalQuantity = 0, commercialQuantity = 0;
+
             var orderFile = await _readUow.OrderFiles.GetAll()
                 .Include(x => x.Product)
                 .Include(x => x.BatchFile)
@@ -130,6 +133,12 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
+                var formCheck = formChecks.First(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType);
+
+                personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? personalQuantity += 1 : personalQuantity;
+                commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? commercialQuantity+= 1 : commercialQuantity;
+
+
                 if (!String.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
                     if (string.IsNullOrEmpty(checkOrder.PreStartingSeries) || string.IsNullOrEmpty(checkOrder.PreEndingSeries)) 
@@ -142,8 +151,6 @@ namespace Captive.Applications.CheckOrder.Services
                     var tags = checkValidation.Tags.ToArray();
 
                     var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
-
-                    var formCheck = formChecks.Where(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType).First();
                     
                     var tag = _checkValidationService.GetTag(tags, branch.Id, formCheck.Id, orderFile.ProductId);
 
@@ -159,7 +166,7 @@ namespace Captive.Applications.CheckOrder.Services
                 checkOrder.ErrorMessage = string.Empty;
             }
 
-            return floatingCheckOrders;
+            return new Tuple<FloatingCheckOrder[], int, int>(floatingCheckOrders, personalQuantity,commercialQuantity);
         }
         private async Task<bool> HasDuplicate(Guid batchId, Guid orderFileId, string accNo, CancellationToken cancellationToken)
         {

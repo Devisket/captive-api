@@ -56,8 +56,8 @@ namespace Captive.Commands.Controllers
         [HttpPost("{id}/validate")]
         public async Task<IActionResult> ValidateOrderFile([FromRoute] Guid id)
         {
-            await _mediator.Send(new ValidateOrderFileCommand { OrderFileId = id });
-            return NoContent();
+            var response = await _mediator.Send(new ValidateOrderFileCommand { OrderFileId = id });
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]

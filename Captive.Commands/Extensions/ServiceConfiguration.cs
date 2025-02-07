@@ -60,6 +60,7 @@ namespace Captive.Commands.Extensions
             services.AddScoped<ICheckValidationService, CheckValidationService>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
+            services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

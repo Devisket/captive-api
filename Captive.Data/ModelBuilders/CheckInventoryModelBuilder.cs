@@ -13,7 +13,8 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasMany(x => x.CheckInventoryDetails)
                 .WithOne(x => x.CheckInventory)
-                .HasForeignKey(x => x.CheckInventoryId);
+                .HasForeignKey(x => x.CheckInventoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.ToTable("check_inventory");
         }

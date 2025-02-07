@@ -2,11 +2,6 @@
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Captive.Applications.Orderfiles.Command.DeleteOrderFile
 {
@@ -28,8 +23,7 @@ namespace Captive.Applications.Orderfiles.Command.DeleteOrderFile
             if (orderFile == null) 
             {
                 throw new SystemException($"Order file ID: {request.OrderFileId} doesn't exist");
-            }
-
+            }          
             _writeUow.OrderFiles.Delete(orderFile);
 
             return Unit.Value;

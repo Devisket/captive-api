@@ -24,7 +24,8 @@ namespace Captive.Data.ModelBuilders
 
             entity.HasMany(x => x.OrderFiles)
                 .WithOne(x => x.BatchFile)
-                .HasForeignKey(x => x.BatchFileId);
+                .HasForeignKey(x => x.BatchFileId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.ToTable("batch_files");
         }

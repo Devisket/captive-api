@@ -56,6 +56,7 @@ namespace Captive.Queries.Extensions
             services.AddScoped<ICheckInventoryService,CheckInventoryService>();
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
+            services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
             services.AddScoped<IOrderFileService, OrderFileService>();
 

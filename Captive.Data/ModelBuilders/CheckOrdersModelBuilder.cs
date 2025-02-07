@@ -23,7 +23,8 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.OrderQuanity).IsRequired();
 
             entity.HasMany(x => x.CheckInventoryDetail)
-              .WithOne(x => x.CheckOrder);
+              .WithOne(x => x.CheckOrder)
+              .OnDelete(DeleteBehavior.Cascade);
               
             entity.ToTable("check_orders");
         }
