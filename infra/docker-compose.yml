@@ -35,9 +35,10 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
       ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
-      Processing__OutputDirectory: /output/bankShortName/currentDate/batchName/
+      Processing__OutputDirectory: app/output/bankShortName/currentDate/batchName/
       Processing__ArchiveDirectory: /app/archive
       Processing__FileProcessing: /app/processing/bankShortName/currentDate/batchName/
+      Endpoints__MdbApi: http://host.docker.internal:9010
     ports:
       - 7020:7020
     networks:
@@ -46,7 +47,7 @@ services:
       - C:/https:/https
       - C:/Captive/Reports/output:/app/output
       - C:/Captive/Reports/archive:/app/archive
-      - C:/processing:/app/processing
+      - C:/Catpive/Processing:/app/processing
     depends_on:
       - mssql-server
       - rabbitmq

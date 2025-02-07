@@ -3,14 +3,11 @@ using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.Orderfiles.Services;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Messaging.Interfaces;
+using Captive.Messaging.Models;
 using Captive.Reports;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
 {
@@ -22,8 +19,9 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
         private readonly ICheckInventoryService _checkInventoryService;
         private readonly IReportGenerator _reportGenerator;
         private readonly IOrderFileService _orderFileService;
+        private readonly IProducer<DbfGenerateMessage> _producer;
 
-        public ProcessCheckOrderCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckOrderService checkOrderService, ICheckInventoryService checkInventoryService, IReportGenerator reportGenerator, IOrderFileService orderFileService)
+        public ProcessCheckOrderCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckOrderService checkOrderService, ICheckInventoryService checkInventoryService, IReportGenerator reportGenerator, IOrderFileService orderFileService, IProducer<DbfGenerateMessage> producer)
         {
             _writeUow = writeUow;
             _readUow = readUow;
@@ -31,16 +29,11 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
             _checkInventoryService = checkInventoryService;
             _reportGenerator = reportGenerator;
             _orderFileService = orderFileService;
+            _producer = producer;
         }
 
         public async Task<Unit> Handle(ProcessCheckOrderCommand request, CancellationToken cancellationToken)
         {
-            /**
-             * STEP TO PROCESS
-             * 1. Apply check inventory into floating order files
-             * 2. Create record out of Check Order table
-             * 3. Generate Report
-             */
             var orderFile = await _readUow.OrderFiles
                 .GetAll()
                 .Include(x => x.BatchFile)
@@ -58,6 +51,11 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
             await _writeUow.Complete();
 
             await _reportGenerator.OnGenerateReport(orderFile.BatchFileId, cancellationToken);
+
+            _producer.ProduceMessage(new DbfGenerateMessage
+            {
+                BatchId = orderFile.BatchFileId
+            });
 
             return Unit.Value;
         }
