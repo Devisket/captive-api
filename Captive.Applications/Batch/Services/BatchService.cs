@@ -13,7 +13,6 @@ namespace Captive.Applications.Batch.Services
     public interface IBatchService
     {
         Task<GetBatchByIdQueryResponse> GetBatchDetailById(Guid batchId);
-        Task GenerateDbfFile(Guid orderFileId);
     }
     public class BatchService : IBatchService
     {
@@ -63,22 +62,6 @@ namespace Captive.Applications.Batch.Services
                 throw new SystemException($"Batch ID {batchId} doesn't exist");
 
             return batch;
-        }
-
-        public async Task GenerateDbfFile(Guid orderFileId)
-        {
-            var reqBody = new
-            {
-                orderFileId
-            };
-
-            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/Mdb/GenerateDbf");
-
-            var client = new HttpClient();
-
-            HttpContent content = new StringContent(JsonConvert.SerializeObject(reqBody), System.Text.Encoding.UTF8, "application/json");
-
-            await client.PostAsync(baseUri, content);
         }
     }
 }

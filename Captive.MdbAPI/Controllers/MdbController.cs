@@ -53,7 +53,10 @@ namespace Captive.MdbAPI.Controllers
         {
             var orderFiles = await _readUow.OrderFiles.GetAll()
                     .Include(x => x.BatchFile)
+                    .Include(x => x.CheckOrders)                        
                     .Include(x => x.CheckOrders)
+                        .ThenInclude(x => x.CheckInventoryDetail)
+                    .Include(x => x.Product)
                 .AsNoTracking()
                 .Where(x => x.BatchFileId == request.batchId)
                 .ToListAsync();

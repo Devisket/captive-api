@@ -42,7 +42,6 @@ namespace Captive.Applications.CheckOrder.Services
         }
         public async Task<Tuple<FloatingCheckOrder[],int,int>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
         {
-
             int personalQuantity = 0, commercialQuantity = 0;
 
             var orderFile = await _readUow.OrderFiles.GetAll()
@@ -166,7 +165,7 @@ namespace Captive.Applications.CheckOrder.Services
                 checkOrder.ErrorMessage = string.Empty;
             }
 
-            return new Tuple<FloatingCheckOrder[], int, int>(floatingCheckOrders, personalQuantity,commercialQuantity);
+            return new Tuple<FloatingCheckOrder[], int, int>(floatingCheckOrders, personalQuantity, commercialQuantity);
         }
         private async Task<bool> HasDuplicate(Guid batchId, Guid orderFileId, string accNo, CancellationToken cancellationToken)
         {

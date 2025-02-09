@@ -45,9 +45,9 @@ services:
       - captive_network
     volumes:
       - C:/https:/https
-      - C:/Captive/Reports/output:/app/output
-      - C:/Captive/Reports/archive:/app/archive
-      - C:/Catpive/Processing:/app/processing
+      - C:/Captive/output:/app/output
+      - C:/Captive/archive:/app/archive
+      - C:/Captive/processing:/app/processing
     depends_on:
       - mssql-server
       - rabbitmq
