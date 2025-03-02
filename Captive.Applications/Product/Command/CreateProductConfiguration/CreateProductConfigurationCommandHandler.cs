@@ -24,11 +24,6 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
             if (product == null)
                 throw new Exception($"Product with Id: {request.ProductId} doesnt exist");
 
-            var checkValidation = await _readUow.CheckValidations.GetAll().FirstOrDefaultAsync(x => x.Id == request.CheckValidationId);
-
-            if (checkValidation == null)
-                throw new Exception($"Check Validation Id: {request.CheckValidationId} doesn't exist");
-
             var isFilenameConfigurationExist = await _readUow.ProductConfigurations.GetAll().AsNoTracking().AnyAsync(x => x.ProductId == request.ProductId && x.FileName.ToLower() == request.FileName.ToLower(), cancellationToken);
 
             if (isFilenameConfigurationExist)
@@ -59,8 +54,6 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
                 FileName = request.FileName,
                 ConfigurationData = request.ConfigurationData,
                 ConfigurationType = request.ConfigurationType,
-                CheckValidationId = checkValidation.Id,
-                CheckValidation = checkValidation,
                 isActive = true,
                 ProductId = product.Id,
                 Product = product,

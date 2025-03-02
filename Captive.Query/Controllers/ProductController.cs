@@ -1,4 +1,4 @@
-﻿using Captive.Applications.Product.Query.GetAllProductConfiguration;
+﻿using Captive.Applications.Product.Query.GetProductConfiguration;
 using Captive.Applications.Product.Query.GetAllProductType;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,7 @@ namespace Captive.Queries.Controllers
         [HttpGet("{productId}/configuration")]
         public async Task<IActionResult> GetProductConfiguration([FromRoute] Guid productId)
         {
-            var response = await _mediator.Send(new GetAllProductConfigurationQuery() { ProductId = productId });
+            var response = await _mediator.Send(new GetProductConfigurationQuery() { ProductId = productId });
 
             return Ok(response);
         }
