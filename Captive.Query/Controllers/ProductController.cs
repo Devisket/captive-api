@@ -1,7 +1,8 @@
 ﻿using Captive.Applications.Product.Query.GetProductConfiguration;
-using Captive.Applications.Product.Query.GetAllProductType;
+using Captive.Applications.Product.Query.GetAllProduct;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Captive.Applications.Bank.Query.GetBankFormChecks;
 
 namespace Captive.Queries.Controllers
 {
@@ -28,6 +29,19 @@ namespace Captive.Queries.Controllers
         public async Task<IActionResult> GetProductConfiguration([FromRoute] Guid productId)
         {
             var response = await _mediator.Send(new GetProductConfigurationQuery() { ProductId = productId });
+
+            return Ok(response);
+        }
+
+
+        [HttpGet("{productId}/formChecks")]
+        public async Task<IActionResult> GetProductFormChecks([FromRoute] Guid productId)
+        {
+            var response = await _mediator.Send(
+                new GetProductFormCheckQuery
+                {
+                    ProductId = productId
+                });
 
             return Ok(response);
         }

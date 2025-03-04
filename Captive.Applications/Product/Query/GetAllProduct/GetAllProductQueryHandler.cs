@@ -1,15 +1,15 @@
-﻿using Captive.Applications.Product.Query.GetAllProductType.Model;
+﻿using Captive.Applications.Product.Query.GetAllProduct.Model;
 using Captive.Data.UnitOfWork.Read;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Captive.Applications.Product.Query.GetAllProductType
+namespace Captive.Applications.Product.Query.GetAllProduct
 {
-    public class GetAllProductTypeQueryHandler : IRequestHandler<GetAllProductTypeQuery, GetAllProductTypeQueryResponse>
+    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductTypeQuery, GetAllProductTypeQueryResponse>
     {
         private readonly IReadUnitOfWork _readUow;
 
-        public GetAllProductTypeQueryHandler(IReadUnitOfWork readUow)
+        public GetAllProductQueryHandler(IReadUnitOfWork readUow)
         {
             _readUow = readUow;
         }
@@ -17,7 +17,7 @@ namespace Captive.Applications.Product.Query.GetAllProductType
         public async Task<GetAllProductTypeQueryResponse> Handle(GetAllProductTypeQuery request, CancellationToken cancellationToken)
         {
             var products = await _readUow.ProductTypes.GetAll().Where(x => x.BankInfoId == request.BankId)
-                .Select(x => new ProductTypeResponse
+                .Select(x => new ProductResponse
                 {
                     ProductTypeId = x.Id,
                     ProductTypeName = x.ProductName

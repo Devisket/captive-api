@@ -25,7 +25,6 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<BankBranches> BankBranches => GetStandardRepository<BankBranches>();
         public IWriteRepository<Tag> Tags => GetStandardRepository<Tag>();
         public IWriteRepository<TagMapping> TagMappings => GetStandardRepository<TagMapping>();
-        public IWriteRepository<CheckValidation> CheckValidations => GetStandardRepository<CheckValidation>();
         public IWriteRepository<T> GetStandardRepository<T>() where T : class => new WriteRepository<T>(_dbContext);
 
         public async Task Complete(CancellationToken cancellationToken = default)

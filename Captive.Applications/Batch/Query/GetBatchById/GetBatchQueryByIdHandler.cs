@@ -1,4 +1,5 @@
-﻿using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Applications.Util;
+using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto;
 using Captive.Utility;
 using MediatR;
@@ -9,10 +10,12 @@ namespace Captive.Applications.Batch.Query.GetBatchById
     public class GetBatchQueryByIdHandler : IRequestHandler<GetBatchByIdQuery, GetBatchByIdQueryResponse>
     {
         public IReadUnitOfWork _readUow;
+        public IBranchService _branchService;
 
-        public GetBatchQueryByIdHandler(IReadUnitOfWork readUow)
+        public GetBatchQueryByIdHandler(IReadUnitOfWork readUow, IBranchService branchService)
         {
             _readUow = readUow;
+            _branchService = branchService;
         }
 
         public async Task<GetBatchByIdQueryResponse> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
@@ -52,6 +55,22 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     }).ToList() : null
                 }).ToList() : null
             }).FirstOrDefaultAsync();
+
+            if (batch!.OrderFiles == null || !batch.OrderFiles.Any())
+                return batch;
+
+            foreach (var orderFile in batch!.OrderFiles)
+            {
+                if (orderFile.CheckOrders == null)
+                    continue;
+                var checkOrders = orderFile.CheckOrders!.Where(x => string.IsNullOrEmpty(x.DeliverTo));
+
+                foreach (var checkOrder in orderFile.CheckOrders!)
+                {
+                    if(!String.IsNullOrEmpty(checkOrder.DeliverTo))
+                        checkOrder.DeliverTo = await _branchService.GetBranchName(request.BankId, checkOrder.DeliverTo, cancellationToken);
+                }
+            }
 
             return batch;
         }

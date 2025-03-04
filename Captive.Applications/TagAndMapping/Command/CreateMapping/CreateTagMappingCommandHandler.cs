@@ -7,19 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.TagAndMapping.Command.CreateMapping
 {
-    public class CreateMappingCommandHandler : IRequestHandler<CreateMappingCommand, Unit>
+    public class CreateTagMappingCommandHandler : IRequestHandler<CreateTagMappingCommand, Unit>
     {
 
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
 
-        public CreateMappingCommandHandler(IReadUnitOfWork readUow, IWriteUnitOfWork writeUow)
+        public CreateTagMappingCommandHandler(IReadUnitOfWork readUow, IWriteUnitOfWork writeUow)
         {
             _readUow = readUow;
             _writeUow = writeUow;
         }
 
-        public async Task<Unit> Handle(CreateMappingCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateTagMappingCommand request, CancellationToken cancellationToken)
         {
             var tag = await _readUow.Tags.GetAll().FirstOrDefaultAsync(x => x.Id == request.TagId, cancellationToken);
 

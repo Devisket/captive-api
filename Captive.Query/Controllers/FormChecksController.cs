@@ -1,10 +1,11 @@
 ﻿using Captive.Applications.Bank.Query.GetBankFormChecks;
+using Captive.Applications.FormsChecks.Queries.GetAllFormChecks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Queries.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/{bankInfoId}/[controller]")]
     [ApiController]
     public class FormChecksController : ControllerBase
     {
@@ -16,12 +17,12 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductFormChecks([FromQuery] Guid productId)
+        public async Task<IActionResult> GetAllFormChecks([FromRoute]Guid bankInfoId)
         {
             var response = await _mediator.Send(
-                new GetProductFormCheckQuery
+                new GetAllFormChecksQuery
                 { 
-                    ProductId = productId
+                    BankId = bankInfoId
                 });
 
             return Ok(response);

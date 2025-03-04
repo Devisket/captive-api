@@ -19,9 +19,5 @@ namespace Captive.Data.UnitOfWork.Read
         public IReadRepository<ProductConfiguration> ProductConfigurations{ get; }
         public IReadRepository<Tag> Tags { get; }
         public IReadRepository<TagMapping> TagsMapping { get; }
-        public IReadRepository<CheckValidation> CheckValidations { get; }
-
-
-        
     }
 }

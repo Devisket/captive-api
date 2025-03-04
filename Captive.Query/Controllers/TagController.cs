@@ -1,10 +1,11 @@
 ﻿using Captive.Applications.TagAndMapping.Query.GetTagAndMapping;
+using Captive.Applications.TagAndMapping.Query.GetTagAndMappingByTagId;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Queries.Controllers
 {
-    [Route("api/{bankId}/[controller]{tagId}")]
+    [Route("api/{bankId}/[controller]")]
     [ApiController]
     public class TagController : ControllerBase
     {
@@ -15,14 +16,26 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTagAndMapping([FromRoute] Guid tagId) 
+        public async Task<IActionResult> GetTagAndMapping([FromRoute] Guid bankId) 
         {
-            var response = await _mediator.Send(new GetTagAndMappingQuery
+            var response = await _mediator.Send(new GetAllTagAndMappingQuery
             {
-                Id = tagId
+                BankId = bankId
             });
         
             return Ok(response);
         }
+
+        [HttpGet("{tagId}")]
+        public async Task<IActionResult> GetTagAndMappingByTagId([FromRoute] Guid tagId)
+        {
+            var response = await _mediator.Send(new GetTagAndMappingByTagIdQuery
+            {
+                Id = tagId
+            });
+
+            return Ok(response);
+        }
     }
 }
+    

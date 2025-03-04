@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
 {
-    public class ProcessCheckOrderCommandHandler : IRequestHandler<ProcessCheckOrderCommand, Unit>
+    public class ProcessCheckOrderCommandHandler : IRequestHandler<ProcessCheckOrderCommand, ProcessCheckOrderCommandResponse>
     {
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IReadUnitOfWork _readUow;
@@ -32,8 +32,9 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
             _producer = producer;
         }
 
-        public async Task<Unit> Handle(ProcessCheckOrderCommand request, CancellationToken cancellationToken)
+        public async Task<ProcessCheckOrderCommandResponse> Handle(ProcessCheckOrderCommand request, CancellationToken cancellationToken)
         {
+            var returnObj = new ProcessCheckOrderCommandResponse { };
             var orderFile = await _readUow.OrderFiles
                 .GetAll()
                 .Include(x => x.BatchFile)
@@ -45,7 +46,14 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
                 throw new SystemException($"Order file ID {request.OrderFileId} doesn't exist");
 
             await _checkOrderService.CreateCheckOrder(orderFile, cancellationToken);
-            await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
+            var logDto = await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
+
+            if (!String.IsNullOrEmpty(logDto.LogMessage))
+            {
+                returnObj.LogMessage = logDto.LogMessage;
+                returnObj.LogType = logDto.LogType;
+            }
+
             await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.Completed, cancellationToken);
 
             await _writeUow.Complete();
@@ -57,7 +65,7 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
                 BatchId = orderFile.BatchFileId
             });
 
-            return Unit.Value;
+            return returnObj;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Captive.Applications.Product.Query.GetAllProductType.Model;
+﻿using Captive.Applications.Product.Query.GetAllProduct.Model;
 using MediatR;
 
-namespace Captive.Applications.Product.Query.GetAllProductType
+namespace Captive.Applications.Product.Query.GetAllProduct
 {
     public class GetAllProductTypeQuery :IRequest<GetAllProductTypeQueryResponse>
     {
@@ -10,6 +10,6 @@ namespace Captive.Applications.Product.Query.GetAllProductType
     public class GetAllProductTypeQueryResponse
     {
         public Guid BankId { get; set; }
-        public ICollection<ProductTypeResponse>? ProductTypes { get; set; }
+        public ICollection<ProductResponse>? ProductTypes { get; set; }
     }
 }

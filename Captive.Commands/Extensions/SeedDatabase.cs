@@ -1,6 +1,5 @@
 ﻿using Captive.Data.Models;
 using Captive.Data;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Captive.Data.Enums;
 
@@ -107,25 +106,31 @@ namespace Captive.Commands.Extensions
                 }
             };
 
-            var checkValidation = new List<CheckValidation>()
+            var tag = new List<Tag>()
             {
-                new CheckValidation
+                new Tag
                 {
-                    Id = Guid.Empty,
-                    Name = "Check validation by Product",
-                    BankInfoId = bankInfos[0].Id,
-                },
-                new CheckValidation
-                {
-                    Id = Guid.Empty,
-                    Name = "Check validation by BRSTN",
-                    BankInfoId = bankInfos[0].Id,
+                    Id = Guid.NewGuid(),
+                    isDefaultTag = true,
+                    SearchByBranch = true,
+                    SearchByProduct = true,
+                    SearchByFormCheck = true
                 }
             };
-
             var checkInventory = new List<CheckInventory>()
             {
-                //Need to seed
+                new CheckInventory
+                {
+                    Id = Guid.NewGuid(),
+                    NumberOfPadding = 5,
+                    StartingSeries = 1,
+                    SeriesPatern = "ABCD",
+                    WarningSeries = 500,
+                    isRepeating = false,
+                    TagId = tag.First().Id,
+                    Tag = tag.First(),
+                    IsEnable = true,
+                }
             };
 
             var productConfiguration = new List<ProductConfiguration>{ 
@@ -137,8 +142,6 @@ namespace Captive.Commands.Extensions
                     ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"Acctno\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
                     ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[0],
-                    CheckValidationId = checkValidation[0].Id,
-                    CheckValidation = checkValidation[0],
                     FileName = "ACT"
                 },
                 new ProductConfiguration
@@ -149,8 +152,6 @@ namespace Captive.Commands.Extensions
                     ConfigurationData = "{\"hasPassword\":1,\"hasBarcode\":1,\"tableName\":\"ChkBook\",\"columnDefinition\":[{\"fieldName\":\"checkType\",\"columnName\":\"ChkType\"},{\"fieldName\":\"brstn\",\"columnName\":\"RTNO\"},{\"fieldName\":\"accountNumber\",\"columnName\":\"Acctno\"},{\"fieldName\":\"Account\",\"columnName\":\"ChkType\"},{\"fieldName\":\"accountName1\",\"columnName\":\"AcctNm1\"},{\"fieldName\":\"accountName2\",\"columnName\":\"AcctNm2\"},{\"fieldName\":\"concode\",\"columnName\":\"ContCode\"},{\"fieldName\":\"quantity\",\"columnName\":\"OrderQty\"},{\"fieldName\":\"formType\",\"columnName\":\"FormType\"},{\"fieldName\":\"batch\",\"columnName\":\"batch\"}]}",
                     ConfigurationType = ConfigurationType.MdbConfiguration,
                     Product = product[1],
-                    CheckValidationId = checkValidation[1].Id,
-                    CheckValidation = checkValidation[1],
                     FileName = "CWS"
                 }
             };
@@ -183,7 +184,6 @@ namespace Captive.Commands.Extensions
 
             context.AddRange(bankInfos);
             context.AddRange(bankBranch);
-            context.AddRange(checkValidation);
             context.AddRange(checkInventory);
             context.AddRange(product);
             context.AddRange(productConfiguration);           

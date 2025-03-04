@@ -5,33 +5,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.TagAndMapping.Command.CreateTag
 {
-    public class CreateTagMappingCommandHandler : IRequestHandler<CreateTagMappingCommand, Unit>
+    public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, Unit>
     {
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
 
-        public CreateTagMappingCommandHandler(IReadUnitOfWork readUow, IWriteUnitOfWork writeUow)
+        public CreateTagCommandHandler(IReadUnitOfWork readUow, IWriteUnitOfWork writeUow)
         {
             _readUow = readUow;
             _writeUow = writeUow;
         }
 
-        public async Task<Unit> Handle(CreateTagMappingCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateTagCommand request, CancellationToken cancellationToken)
         {
-            var checkValidation = await _readUow.CheckValidations.GetAll().FirstOrDefaultAsync(x => x.Id == request.CheckValidationId, cancellationToken);
-
-            if (checkValidation == null)
-            {
-                throw new Exception($"Check validation ID {request.CheckValidationId} is not existing");
-            }
-
             if (!request.Id.HasValue)
             {
                 await _writeUow.Tags.AddAsync(new Data.Models.Tag()
                 {
                     Id = Guid.NewGuid(),
-                    CheckValidationId = checkValidation.Id,
+                    BankId = request.BankId,
                     TagName = request.TagName,
+                    SearchByAccount = request.SearchByAccount,
+                    SearchByBranch = request.SearchByBranch,
+                    SearchByFormCheck = request.SearchByFormCheck,
+                    SearchByProduct = request.SearchByProduct,
+                    isDefaultTag = request.isDefaultTag,
                 }, cancellationToken);
             }
             else
@@ -44,7 +42,11 @@ namespace Captive.Applications.TagAndMapping.Command.CreateTag
                 }
 
                 tag.TagName = request.TagName;
-
+                tag.SearchByProduct = request.SearchByProduct;
+                tag.SearchByBranch = request.SearchByBranch;
+                tag.SearchByFormCheck = request.SearchByFormCheck;
+                tag.SearchByAccount = request.SearchByAccount;
+                tag.isDefaultTag = request.isDefaultTag;
             }
 
             return Unit.Value;
