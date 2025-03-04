@@ -27,7 +27,6 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
         IReadRepository<Tag> IReadUnitOfWork.Tags => GetStandardRepository<Tag>();
         IReadRepository<TagMapping> IReadUnitOfWork.TagsMapping => GetStandardRepository<TagMapping>();
-        IReadRepository<CheckValidation> IReadUnitOfWork.CheckValidations=> GetStandardRepository<CheckValidation>();
 
         public IReadRepository<T> GetStandardRepository<T>() where T : class => new ReadRepository<T>(_dbContext);
 

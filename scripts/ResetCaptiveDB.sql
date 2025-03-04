@@ -27,12 +27,6 @@
 
 	/*Clear check_inventory_detail*/
 	DELETE check_inventory_detail;
-
-	/*Clear check_validation*/
-	DELETE check_validation;
-	
-	/*Clear check_inventory_detail*/
-	DELETE check_inventory_detail;
 	
 	/*Clear batch*/
 	DELETE batch_files;
@@ -826,15 +820,11 @@
 	(NEWID(), 'B', '16', 'Personal', 10, 'cws', (select Id from products where ProductName = 'CWS Product'), 'Personal'),
 	(NEWID(), 'C', '17', 'Commercial', 10, 'cws', (select Id from products where ProductName = 'CWS Product'), 'Commercial')
 	
-	/*Seed check_validation */
-	INSERT INTO check_validation (Id, Name, BankInfoId) VALUES 
-	(NEWID(), 'CWS', @bankID),
-	(NEWID(), 'ACT', @bankID)
 
 	/*Seed tag*/
-	INSERT INTO tag (Id, TagName, isDefaultTag, CheckValidationId) VALUES 
-	(NEWID(), 'DefaultTag', 1, (SELECT TOP 1 Id from check_validation where Name = 'CWS')),
-	(NEWID(), 'CategoryA', 0, (SELECT TOP 1 Id from check_validation where Name = 'CWS'));
+	INSERT INTO tag (Id, BankId, TagName, SearchByBranch, SearchByFormCheck, SearchByProduct,  isDefaultTag) VALUES 
+	(NEWID(), @bankId, 'DefaultTag',1, 1, 1, 1),
+	(NEWID(), @bankId, 'CategoryA', 1, 1, 1, 0);
 
 	/*Seed tag_mapping*/
 	INSERT INTO tag_mapping(Id, BranchId, ProductId, FormCheckId, TagId)
@@ -863,14 +853,14 @@
 	)
 	
 	/*Seed product_configuration*/
-	INSERT INTO product_configuration (Id, FileName, ConfigurationData, ConfigurationType, isActive, ProductId, CheckValidationId) VALUES 
+	INSERT INTO product_configuration (Id, FileName, ConfigurationData, ConfigurationType, isActive, ProductId) VALUES 
 	(NEWID(), 'ACT',N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
-	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product'), (select Id from check_validation where Name = 'ACT')),
+	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product')),
 	(NEWID(), 'CWS', N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
-	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'), (select Id from check_validation where Name = 'CWS'));
+	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'));
 	
 	/*Seed check_inventory*/
-	INSERT INTO check_inventory (Id, TagId, SeriesPatern, WarningSeries, NumberOfPadding, StartingSeries, isRepeating) VALUES
-	(NEWID(), (select Id from tag where TagName ='DefaultTag'), 'ABCD', 500, 5, 1, 0),
-	(NEWID(), (select Id from tag where TagName ='CategoryA'), 'XYZ', 500, 5, 1, 0)
+	INSERT INTO check_inventory (Id, TagId, SeriesPatern, WarningSeries, NumberOfPadding, StartingSeries, isRepeating, IsEnable, CurrentSeries, EndingSeries) VALUES
+	(NEWID(), (select Id from tag where TagName ='DefaultTag'), 'ABCD', 100, 5, 1, 0, 1, 0, 150),
+	(NEWID(), (select Id from tag where TagName ='CategoryA'), 'XYZ', 100, 5, 1, 0, 1, 0, 150)
 	

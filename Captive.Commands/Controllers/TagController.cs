@@ -19,20 +19,16 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTag([FromBody] CreateTagRequest request)
+        public async Task<IActionResult> CreateTag([FromBody] CreateTagCommand request)
         {
-            await _mediator.Send(new CreateTagMappingCommand
-            {
-                CheckValidationId = request.CheckValidationId,
-                TagName = request.TagName,
-            });
+            await _mediator.Send(request);
             return NoContent();
         }
 
         [HttpPost("{tagId}/mapping")]
         public async Task<IActionResult> AddTagMapping([FromRoute] Guid tagId, [FromBody] CreateTagMappingRequest request)
         {
-            await _mediator.Send(new CreateMappingCommand
+            await _mediator.Send(new CreateTagMappingCommand
             {
                 TagId = tagId,
                 Mappings = request.mappings.Select(x => new Model.Dto.TagMappingDto
@@ -69,15 +65,9 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPut("{tagId}")]
-        public async Task<IActionResult> UpdateTag([FromRoute] Guid tagId, [FromBody] CreateTagRequest request)
+        public async Task<IActionResult> UpdateTag([FromRoute] Guid tagId, [FromBody] CreateTagCommand request)
         {
-            await _mediator.Send(new CreateTagMappingCommand
-            {
-                Id = tagId, 
-                CheckValidationId = request.CheckValidationId,
-                TagName = request.TagName,
-            });
-
+            await _mediator.Send(request);
             return NoContent();
         }
     }

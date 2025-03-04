@@ -3,13 +3,14 @@ using Captive.Applications.Util;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.CheckInventory.Services
 {
     public interface ICheckInventoryService
     {
-        Task ApplyCheckInventory(OrderFile orderFile, CancellationToken cancellationToken);
+        Task<LogDto> ApplyCheckInventory(OrderFile orderFile, CancellationToken cancellationToken);
     }
     public class CheckInventoryService : ICheckInventoryService
     {
@@ -25,24 +26,24 @@ namespace Captive.Applications.CheckInventory.Services
             _stringService = stringService;
         }
 
-        public async Task ApplyCheckInventory(OrderFile orderFile, CancellationToken cancellationToken)
+        public async Task<LogDto> ApplyCheckInventory(OrderFile orderFile, CancellationToken cancellationToken)
         {
-            var productConfiguration = await _readUow.ProductConfigurations.GetAll()
-                .Include(x => x.CheckValidation)
-                .ThenInclude(x => x.Tags)
-                .ThenInclude(x => x.Mapping)
-                .AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == orderFile.ProductId, cancellationToken);
+            var logDto = new LogDto { };
 
-            var tags = productConfiguration.CheckValidation.Tags.ToArray();
+            var productConfiguration = await _readUow.ProductConfigurations.GetAll()
+                .AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == orderFile.ProductId, cancellationToken);
 
             var checkOrders = _readUow.CheckOrders.GetAllLocal().Where(x => x.OrderFileId == orderFile.Id).ToArray();
 
             foreach (var checkOrder in checkOrders)
             {
                 var formCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
-                var tag = _checkValidationService.GetTag(tags, checkOrder.BranchId, checkOrder.FormCheckId.Value, checkOrder.ProductId);
 
-                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id);
+                var bankId = orderFile.BatchFile!.BankInfoId;
+
+                var tag = _checkValidationService.GetTag(bankId, checkOrder.BranchId, checkOrder.FormCheckId!.Value, checkOrder.ProductId);
+
+                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsEnable, cancellationToken);
 
                 if (!string.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
@@ -53,8 +54,8 @@ namespace Captive.Applications.CheckInventory.Services
                         CheckOrderId = checkOrder.Id,
                         StartingSeries = checkOrder.PreStartingSeries,
                         EndingSeries = checkOrder.PreEndingSeries,
-                        CheckInventoryId = checkInventory.Id,
-                        Quantity = formCheck.Quantity,
+                        CheckInventoryId = checkInventory!.Id,
+                        Quantity = formCheck!.Quantity,
                         BranchId = checkOrder.BranchId,
                         AccountNumber = checkOrder.AccountNo,
                         FormCheckId = formCheck.Id,
@@ -76,7 +77,21 @@ namespace Captive.Applications.CheckInventory.Services
 
                 for (int i = 1; i <= checkOrder.Quantity; i++)
                 {
-                    var series = _stringService.ConvertToSeries(checkInventory.SeriesPatern, checkInventory.NumberOfPadding, startingSeriesNumber, endingSeriesNumber);
+                    var series = _stringService.ConvertToSeries(checkInventory!.SeriesPatern, checkInventory.NumberOfPadding, startingSeriesNumber, endingSeriesNumber);
+
+                    var warningMsg = _checkValidationService.HitWarningSeries(checkInventory, series.Item1, series.Item2);
+
+                    if(!string.IsNullOrEmpty(warningMsg))
+                    {
+                        logDto.LogType = Model.Enums.LogType.Warning;
+                        logDto.LogMessage = warningMsg;
+                    }
+
+                    if (await _checkValidationService.HasConflictedSeries(series.Item1, series.Item2, checkOrder.BranchId, formCheck.Id, orderFile.ProductId, tag.Id, cancellationToken))
+                        throw new Exception($"Account No: ${checkOrder.AccountNo} has conflicted series");
+
+                    if (_checkValidationService.HitEndingSeries(checkInventory, series.Item1, series.Item2))
+                        throw new Exception($"Account No: ${checkOrder.AccountNo} hit the ending series!");
 
                     await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
                     {
@@ -99,8 +114,12 @@ namespace Captive.Applications.CheckInventory.Services
                     startingSeriesNumber = endingSeriesNumber + 1;
 
                     endingSeriesNumber = (startingSeriesNumber + formCheck.Quantity) - 1;
+
+                    checkInventory.CurrentSeries = startingSeriesNumber;
                 }
             }
+
+            return logDto;
         }
     }
 }

@@ -18,8 +18,6 @@ namespace Captive.Data.ModelBuilders
                 v => v.ToString(),
                 v => (ConfigurationType)Enum.Parse(typeof(ConfigurationType), v.ToString()));
 
-            entity.Property(x => x.CheckValidationId).IsRequired();
-
             entity.ToTable("product_configuration");
         }
     }

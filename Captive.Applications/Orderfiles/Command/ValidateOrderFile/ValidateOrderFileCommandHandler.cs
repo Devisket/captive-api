@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Captive.Applications.Orderfiles.Command.ValidateOrderFile
 {
-    public class ValidateOrderFileCommandHandler : IRequestHandler<ValidateOrderFileCommand, Unit>
+    public class ValidateOrderFileCommandHandler : IRequestHandler<ValidateOrderFileCommand, ValidateOrderFileCommandResponse>
     {
         private readonly ICheckOrderService _checkOrderService;
         private readonly IReadUnitOfWork _readUow;
@@ -17,13 +17,23 @@ namespace Captive.Applications.Orderfiles.Command.ValidateOrderFile
             _readUow = readUow;
         }
 
-        public async Task<Unit> Handle(ValidateOrderFileCommand request, CancellationToken cancellationToken)
+        public async Task<ValidateOrderFileCommandResponse> Handle(ValidateOrderFileCommand request, CancellationToken cancellationToken)
         {
-            var returnObj = await _checkOrderService.ValidateCheckOrder(request.OrderFileId, cancellationToken);
+            var returnObj = new ValidateOrderFileCommandResponse { };
+
+            var tupleObj = await _checkOrderService.ValidateCheckOrder(request.OrderFileId, cancellationToken);
+
+            var logDto = tupleObj.Item4;
+
+            if(!String.IsNullOrEmpty(logDto.LogMessage))
+            {
+                returnObj.LogType = logDto.LogType;
+                returnObj.Message = logDto.LogMessage;
+            }
 
             var orderFile = _readUow.OrderFiles.GetAll().First(x => x.Id == request.OrderFileId);
 
-            var floatingChecks = returnObj.Item1;
+            var floatingChecks = tupleObj.Item1;
 
             _writeUow.FloatingCheckOrders.UpdateRange(floatingChecks);
 
@@ -32,12 +42,12 @@ namespace Captive.Applications.Orderfiles.Command.ValidateOrderFile
                 orderFile.IsValidated = true;              
             }
 
-            orderFile.PersonalQuantity = returnObj.Item2;
-            orderFile.CommercialQuantity = returnObj.Item3;
+            orderFile.PersonalQuantity = tupleObj.Item2;
+            orderFile.CommercialQuantity = tupleObj.Item3;
 
             _writeUow.OrderFiles.Update(orderFile);
 
-            return Unit.Value;
+            return returnObj;
         }
     }
 }
