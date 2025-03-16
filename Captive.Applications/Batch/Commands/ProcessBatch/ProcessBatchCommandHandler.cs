@@ -3,13 +3,14 @@ using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.Orderfiles.Services;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Model.Dto;
 using Captive.Reports;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.Batch.Commands.ProcessBatch
 {
-    public class ProcessBatchCommandHandler : IRequestHandler<ProcessBatchCommand, Unit>
+    public class ProcessBatchCommandHandler : IRequestHandler<ProcessBatchCommand, ProcessBatchCommandResponse>
     {
 
         private readonly IWriteUnitOfWork _writeUow;
@@ -29,9 +30,9 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
             _orderFileService = orderFileService;
         }
 
-        public async Task<Unit> Handle(ProcessBatchCommand request, CancellationToken cancellationToken)
+        public async Task<ProcessBatchCommandResponse> Handle(ProcessBatchCommand request, CancellationToken cancellationToken)
         {
-
+            var returningObj = new ProcessBatchCommandResponse { };
             var orderFiles = await _readUow.OrderFiles
                 .GetAll()
                 .Include(x => x.BatchFile)
@@ -41,21 +42,27 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
 
             if (orderFiles == null || orderFiles.Count <= 0) 
             {
-                return Unit.Value;
+                return returningObj;
             }
 
             foreach (var orderFile in orderFiles) 
             {
                 await _checkOrderService.CreateCheckOrder(orderFile, cancellationToken);
-                await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
+                var logDto = await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
                 await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.Completed, cancellationToken);
 
+                if (!string.IsNullOrEmpty(logDto.LogMessage))
+                {
+                    returningObj.LogMessage = logDto.LogMessage;
+                    returningObj.LogType = logDto.LogType;
+                }
+                
                 await _writeUow.Complete();
             }
 
             await _reportGenerator.OnGenerateReport(request.BatchId, cancellationToken);
 
-            return Unit.Value;
+            return returningObj;
         }
     }
 }

@@ -19,13 +19,6 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
 
         public async Task<Unit> Handle(AddCheckInventoryCommand request, CancellationToken cancellationToken)
         {
-            var checkValidation = await _readUow.CheckValidations.GetAll().FirstOrDefaultAsync(x => x.Id == request.CheckValidationId);
-
-            if(checkValidation == null)
-            {
-                throw new Exception($"Check Validation ID : {request.CheckValidationId} doesn't exist");
-            }
-
             if (request.Id.HasValue)
             {
                 var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(cancellationToken);

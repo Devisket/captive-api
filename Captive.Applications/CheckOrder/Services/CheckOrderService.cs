@@ -40,7 +40,7 @@ namespace Captive.Applications.CheckOrder.Services
                 }
               );
         }
-        public async Task<Tuple<FloatingCheckOrder[],int,int>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
+        public async Task<Tuple<FloatingCheckOrder[],int,int, LogDto>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
         {
             int personalQuantity = 0, commercialQuantity = 0;
 
@@ -50,6 +50,9 @@ namespace Captive.Applications.CheckOrder.Services
                 .Include(x =>x.Product)
                     .ThenInclude(x =>x.ProductConfiguration)
                 .Include(x => x.FloatingCheckOrders).FirstOrDefaultAsync(x => x.Id == orderFileId, cancellationToken);
+
+            var validationResponse = new LogDto{};
+
 
             if (orderFile == null)
                 throw new SystemException($"Order file ID {orderFileId} doesn't exist");
@@ -63,15 +66,22 @@ namespace Captive.Applications.CheckOrder.Services
 
             var brstns = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankInfoId == orderFile.Product.BankInfoId).Select(x => x.BRSTNCode).ToArrayAsync(cancellationToken);
 
-            var checkValidation = await _readUow.CheckValidations
-                .GetAll()
-                .Include(x => x.Tags)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == orderFile.Product.ProductConfiguration.CheckValidationId);
-
             foreach (var checkOrder in floatingCheckOrders)
             {
+                //Validate FormCheck
+                if (!formChecks.Any(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType))
+                {
+                    checkOrder.IsValid = false;
+                    checkOrder.ErrorMessage = $"Check Type: {checkOrder.CheckType} and Form type: {checkOrder.FormType} doesn't exist";
+                    continue;
+                }
 
+                var formCheck = formChecks.First(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType);
+
+                personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? personalQuantity += 1 : personalQuantity;
+                commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? commercialQuantity += 1 : commercialQuantity;
+
+                //Check for duplication
                 if (await HasDuplicate(orderFile.BatchFileId, orderFileId, checkOrder.AccountNo, cancellationToken))
                 {
                     checkOrder.IsValid = false;
@@ -124,20 +134,6 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
-                //Validate FormCheck
-                if (!formChecks.Any(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType))
-                {
-                    checkOrder.IsValid = false;
-                    checkOrder.ErrorMessage = $"Check Type: {checkOrder.CheckType} and Form type: {checkOrder.FormType} doesn't exist";
-                    continue;
-                }
-
-                var formCheck = formChecks.First(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType);
-
-                personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? personalQuantity += 1 : personalQuantity;
-                commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? commercialQuantity+= 1 : commercialQuantity;
-
-
                 if (!String.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
                     if (string.IsNullOrEmpty(checkOrder.PreStartingSeries) || string.IsNullOrEmpty(checkOrder.PreEndingSeries)) 
@@ -147,25 +143,55 @@ namespace Captive.Applications.CheckOrder.Services
                         continue;
                     }
 
-                    var tags = checkValidation.Tags.ToArray();
-
                     var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
                     
-                    var tag = _checkValidationService.GetTag(tags, branch.Id, formCheck.Id, orderFile.ProductId);
+                    var tag = _checkValidationService.GetTag(orderFile.BatchFile!.BankInfoId, branch.Id, formCheck.Id, orderFile.ProductId);
 
-                    if (await _checkValidationService.HasConflictedSeries(tag.CheckInventoryId, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id,orderFile.ProductId, tag.Id, cancellationToken))
+                    if(tag == null)
+                    {
+                        validationResponse.LogType = Model.Enums.LogType.Error;
+                        validationResponse.LogMessage = $"Can't find Tag";
+                    }
+
+                    var checkInventory = await _readUow.CheckInventory.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.TagId == tag!.Id && x.IsEnable, cancellationToken);
+
+                    if(checkInventory == null)
+                    {
+                        validationResponse.LogType = Model.Enums.LogType.Error;
+                        validationResponse.LogMessage = $"Can't find check inventory";
+                    }
+
+                    if (await _checkValidationService.HasConflictedSeries(checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id,orderFile.ProductId, tag.Id, cancellationToken))
                     {
                         checkOrder.IsValid = false;
                         checkOrder.ErrorMessage = $"Has conflicted series number!";
                         continue;
                     }
+
+                    if(_checkValidationService.HitEndingSeries(checkInventory!, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries))
+                    {
+                        checkOrder.IsValid = false;
+                        checkOrder.ErrorMessage = $"Out of series.";
+                        continue;
+                    }
+
+                    var warningMessage = _checkValidationService.HitWarningSeries(checkInventory!, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries);
+
+                    if (String.IsNullOrEmpty(warningMessage)) 
+                    {
+                        validationResponse.LogType = Model.Enums.LogType.Warning;
+                        validationResponse.LogMessage = warningMessage;
+                    }
+
+                    validationResponse.LogType = Model.Enums.LogType.Error;
+                    validationResponse.LogMessage = $"Starting series: {checkOrder.PreStartingSeries} and ending series: {checkOrder.PreEndingSeries} has conflicted series.";
                 }
 
                 checkOrder.IsValid = true;
                 checkOrder.ErrorMessage = string.Empty;
             }
 
-            return new Tuple<FloatingCheckOrder[], int, int>(floatingCheckOrders, personalQuantity, commercialQuantity);
+            return new Tuple<FloatingCheckOrder[], int, int, LogDto>(floatingCheckOrders, personalQuantity, commercialQuantity, validationResponse);
         }
         private async Task<bool> HasDuplicate(Guid batchId, Guid orderFileId, string accNo, CancellationToken cancellationToken)
         {

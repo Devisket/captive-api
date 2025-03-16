@@ -19,7 +19,6 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<ProductConfiguration> ProductConfigurations { get; }
         public IWriteRepository<Tag> Tags{ get; }
         public IWriteRepository<TagMapping> TagMappings { get; }
-        public IWriteRepository<CheckValidation> CheckValidations { get; }
 
         Task Complete(CancellationToken cancellationToken = default);
     }

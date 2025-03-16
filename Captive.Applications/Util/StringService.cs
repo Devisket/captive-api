@@ -2,6 +2,13 @@
 
 namespace Captive.Applications.Util
 {
+    public interface IStringService
+    {
+        string GetInitialSeries(string pattern);
+        Tuple<string, string> GetNextSeries(string pattern, string lastSeries, int quantity);
+        Tuple<int, int> ExtractNumber(string seriesPattern, string startingSeries, string endingSeries);
+        Tuple<string, string> ConvertToSeries(string seriesPattern, int numberOfPadding, int startingNumber, int endingNumber);
+    }
     public class StringService : IStringService
     {
         public string GetInitialSeries(string pattern)
@@ -26,8 +33,8 @@ namespace Captive.Applications.Util
 
         public Tuple<int, int> ExtractNumber(string seriesPattern, string startingSeries, string endingSeries)
         {
-            var startingNumber = startingSeries.Replace(string.Empty, seriesPattern);
-            var endingNumber = endingSeries.Replace(string.Empty, seriesPattern);
+            var startingNumber = startingSeries.Replace(seriesPattern, string.Empty);
+            var endingNumber = endingSeries.Replace(seriesPattern, string.Empty);
 
             var a = int.Parse(startingNumber);
             var b = int.Parse(endingNumber);

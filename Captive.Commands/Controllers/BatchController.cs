@@ -1,5 +1,6 @@
 ﻿using Captive.Applications.Batch.Commands.CreateBatchFile;
 using Captive.Applications.Batch.Commands.DeleteBatchFile;
+using Captive.Applications.Batch.Commands.ValidateBatch;
 using Captive.Applications.Batch.Hubs;
 using Captive.Applications.Batch.Services;
 using MediatR;
@@ -35,6 +36,19 @@ namespace Captive.Commands.Controllers
         {
             await _mediator.Send(new DeleteBatchFileCommand{ Id = batchId});
 
+            return NoContent();
+        }
+
+        [HttpPost("{batchId}/validate")]
+        public async Task<IActionResult> ValidateBatch([FromRoute]Guid batchId)
+        {
+            var response = await _mediator.Send(new ValidateBatchCommand { BatchId = batchId });
+            return Ok(response);
+        }
+
+        [HttpPost("{batchId}/process")]
+        public async Task<IActionResult> ProcessBatch([FromRoute] Guid batchId)
+        {
             return NoContent();
         }
 
