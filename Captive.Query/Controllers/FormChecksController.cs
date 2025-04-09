@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Captive.Queries.Controllers
 {
-    [Route("api/{bankInfoId}/[controller]")]
+    [Route("api/{productId}/[controller]")]
     [ApiController]
     public class FormChecksController : ControllerBase
     {
@@ -17,12 +17,12 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFormChecks([FromRoute]Guid bankInfoId)
+        public async Task<IActionResult> GetAllFormChecks([FromRoute] Guid productId)
         {
             var response = await _mediator.Send(
                 new GetAllFormChecksQuery
                 { 
-                    BankId = bankInfoId
+                    ProductId = productId
                 });
 
             return Ok(response);

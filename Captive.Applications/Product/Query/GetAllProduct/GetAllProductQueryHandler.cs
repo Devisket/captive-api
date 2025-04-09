@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.Product.Query.GetAllProduct
 {
-    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductTypeQuery, GetAllProductTypeQueryResponse>
+    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductTypeQuery, ICollection<ProductResponse>>
     {
         private readonly IReadUnitOfWork _readUow;
 
@@ -14,20 +14,16 @@ namespace Captive.Applications.Product.Query.GetAllProduct
             _readUow = readUow;
         }
 
-        public async Task<GetAllProductTypeQueryResponse> Handle(GetAllProductTypeQuery request, CancellationToken cancellationToken)
+        public async Task<ICollection<ProductResponse>> Handle(GetAllProductTypeQuery request, CancellationToken cancellationToken)
         {
             var products = await _readUow.ProductTypes.GetAll().Where(x => x.BankInfoId == request.BankId)
                 .Select(x => new ProductResponse
                 {
-                    ProductTypeId = x.Id,
-                    ProductTypeName = x.ProductName
+                    ProductId = x.Id,
+                    ProductName= x.ProductName
                 }).ToListAsync();
 
-            return new GetAllProductTypeQueryResponse
-            {
-                BankId = request.BankId,
-                ProductTypes = products
-            };
+            return products;
         }
     }
 }

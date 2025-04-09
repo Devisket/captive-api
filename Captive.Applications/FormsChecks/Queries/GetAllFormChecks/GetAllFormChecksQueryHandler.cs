@@ -16,7 +16,7 @@ namespace Captive.Applications.FormsChecks.Queries.GetAllFormChecks
 
         public async Task<IEnumerable<FormCheckDto>> Handle(GetAllFormChecksQuery request, CancellationToken cancellationToken)
         {
-            var formChecks = await _readUow.FormChecks.GetAll().Include(x => x.Product).Where(x => x.Product.BankInfoId == request.BankId).Select(x => new FormCheckDto
+            var formChecks = await _readUow.FormChecks.GetAll().Include(x => x.Product).Where(x => x.ProductId == request.ProductId).Select(x => new FormCheckDto
             {
                 Id = x.Id,
                 CheckType = x.CheckType,

@@ -33,13 +33,13 @@ namespace Captive.Applications.Product.Command.CreateProductType
             if (isNameExist)
                 throw new Exception($"Product name:{request.ProductName} is conflicting");
 
-            if(request.ProductTypeId.HasValue)
+            if(request.ProductId.HasValue)
             {
-                var productType = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductTypeId);
+                var productType = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
 
                 if (productType == null)
                 {
-                    throw new Exception($"Product type ID:{request.ProductTypeId}  doesn't exist.");
+                    throw new Exception($"Product type ID:{request.ProductId}  doesn't exist.");
                 }
 
                 productType.ProductName = request.ProductName;

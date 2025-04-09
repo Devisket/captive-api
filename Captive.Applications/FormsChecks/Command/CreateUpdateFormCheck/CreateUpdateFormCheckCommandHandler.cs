@@ -1,11 +1,12 @@
 ﻿using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Model.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
 {
-    public class CreateUpdateFormCheckCommandHandler : IRequestHandler<CreateUpdateFormCheckCommand, Unit>
+    public class CreateUpdateFormCheckCommandHandler : IRequestHandler<CreateUpdateFormCheckCommand, FormCheckDto>
     {
         IReadUnitOfWork _readUow;
         IWriteUnitOfWork _writeUow;
@@ -16,7 +17,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
             _writeUow = writeUow;
         }
 
-        public async Task<Unit> Handle(CreateUpdateFormCheckCommand request, CancellationToken cancellationToken)
+        public async Task<FormCheckDto> Handle(CreateUpdateFormCheckCommand request, CancellationToken cancellationToken)
         {
             var productTypeExist = await _readUow.ProductTypes.GetAll().AnyAsync(x => x.Id == request.ProductId, cancellationToken);
             
@@ -42,6 +43,9 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                 formCheck.FileInitial = request.Detail.FileInitial ?? string.Empty;
 
                 _writeUow.FormChecks.Update(formCheck);
+
+
+                return FormCheckDto.ToDto(formCheck);
             }
             else
             {
@@ -49,6 +53,16 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                 {
                     throw new Exception($"Check Type: {request.Detail.CheckType} and Form type: {request.Detail.FormType} has already exist for ProductID: {request.ProductId}");
                 }
+
+                var newlyCreatedFormCheck = new Captive.Data.Models.FormChecks
+                {
+                    ProductId = request.ProductId,
+                    CheckType = request.Detail.CheckType,
+                    FormType = request.Detail.FormType,
+                    Description = request.Detail.Description,
+                    FileInitial = request.Detail.FileInitial ?? string.Empty,
+                    Quantity = request.Detail.Quantity
+                };
 
                 await _writeUow.FormChecks.AddAsync(new Captive.Data.Models.FormChecks
                 {
@@ -59,9 +73,9 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                     FileInitial = request.Detail.FileInitial ?? string.Empty,
                     Quantity = request.Detail.Quantity
                 }, cancellationToken);
-            }
 
-            return Unit.Value;
+                return FormCheckDto.ToDto(newlyCreatedFormCheck);
+            }
         }
     }
 }
