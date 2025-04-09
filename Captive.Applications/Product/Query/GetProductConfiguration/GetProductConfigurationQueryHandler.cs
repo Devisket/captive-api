@@ -24,7 +24,7 @@ namespace Captive.Applications.Product.Query.GetProductConfiguration
             var productConfig = await productConfigurations.FirstOrDefaultAsync(cancellationToken);
 
             if (productConfig == null)
-                throw new Exception("Product Config doesn't exist");
+                return null;
 
             var returnObj = ProductConfigurationDto.ToDto(productConfig);
 
