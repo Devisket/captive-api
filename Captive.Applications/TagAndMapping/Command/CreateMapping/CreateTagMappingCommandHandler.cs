@@ -26,18 +26,37 @@ namespace Captive.Applications.TagAndMapping.Command.CreateMapping
             if (tag == null)
                 throw new Exception($"The Tag ID: {request.TagId} doesn't exist");
 
-            if (request.Mappings.Any() )
+            if (request.Mappings != null && request.Mappings.Any())
             {
-                var mapping = request.Mappings.Select(x => new TagMapping
-                {
-                    TagId = tag.Id,
-                    BranchId = x.BranchId,
-                    FormCheckId = x.FormCheckId,
-                    ProductId = x.ProductId,
-                }).ToArray();
+                foreach (var mapping in request.Mappings) {
 
-                if (mapping.Any())
-                    await _writeUow.TagMappings.AddRange(mapping, cancellationToken);
+                    if (mapping.Id.HasValue) {
+
+                        var existingTagMapping = await _readUow.TagsMapping.GetAll().FirstOrDefaultAsync(x => x.Id == mapping.Id, cancellationToken);
+
+                        if (existingTagMapping == null)
+                            throw new Exception($"Tag Mapping ID: {mapping.Id} doesn't exist.");
+
+                        existingTagMapping.BranchId = mapping.BranchId;
+                        existingTagMapping.ProductId = mapping.ProductId;
+                        existingTagMapping.FormCheckId = mapping.FormCheckId;
+
+                        _writeUow.TagMappings.Update(existingTagMapping);
+                    }
+                    else
+                    {
+                        var tagMapping = new TagMapping
+                        {
+                            Id = Guid.NewGuid(),
+                            TagId = request.TagId,
+                            BranchId = mapping.BranchId,
+                            FormCheckId = mapping.FormCheckId,
+                            ProductId = mapping.ProductId,
+                        };
+
+                        await _writeUow.TagMappings.AddAsync(tagMapping, cancellationToken);
+                    }
+                }
             }
 
             return Unit.Value;

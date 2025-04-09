@@ -13,7 +13,6 @@ namespace Captive.Model.Dto
         public required string FileInitial { get; set; }
         public string FormCheckType { get; set; } = string.Empty;
 
-
         public static FormCheckDto ToDto(FormChecks input)
         {
             return new FormCheckDto

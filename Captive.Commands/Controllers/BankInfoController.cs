@@ -2,6 +2,8 @@
 using Captive.Applications.Bank.Command.CreateBankInfo;
 using Captive.Applications.Bank.Command.DeleteBankBranch;
 using Captive.Applications.Bank.Command.DeleteBankInfo;
+using Captive.Applications.Bank.Query.GetBankBranches.Model;
+using Captive.Data.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,19 +47,44 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("{id}/branch")]
-        public async Task<IActionResult> CreateBranch([FromBody] CreateBankBranchCommand request, [FromRoute] Guid id)
+        public async Task<IActionResult> CreateBranch([FromBody] BankBranchDto request, [FromRoute] Guid id)
         {
-            request.BankId = id;
-
-            await _mediator.Send(request);
+            await _mediator.Send(new CreateBankBranchCommand
+            {
+                BankId = id,
+                BranchId = null,
+                BranchName = request.BranchName,
+                BranchStatus = request.BranchStatus,
+                BrstnCode = request.BrstnCode,
+                BranchCode = request.BranchCode,
+                MergingBranchId = request.MergingBranchId,
+                BranchAddress1 = request.BranchAddress1,
+                BranchAddress2 = request.BranchAddress2,
+                BranchAddress3 = request.BranchAddress3,
+                BranchAddress4 = request.BranchAddress4,
+                BranchAddress5 = request.BranchAddress5,
+            });
             return NoContent();
         }
 
         [HttpPut("{bankId}/branch/{branchId}")]
-        public async Task<IActionResult> UpdateBranch([FromBody] CreateBankBranchCommand request, [FromRoute] Guid bankId, [FromRoute] Guid branchId)
+        public async Task<IActionResult> UpdateBranch([FromBody] BankBranchDto request, [FromRoute] Guid bankId, [FromRoute] Guid branchId)
         {
-            request.BankId = bankId;
-            request.BranchId = branchId;
+            await _mediator.Send(new CreateBankBranchCommand
+            {
+                BankId = bankId,
+                BranchId = branchId,
+                BranchName = request.BranchName,
+                BranchStatus = request.BranchStatus,
+                BrstnCode = request.BrstnCode,
+                BranchCode = request.BranchCode,
+                MergingBranchId = request.MergingBranchId,
+                BranchAddress1 = request.BranchAddress1,
+                BranchAddress2 = request.BranchAddress2,
+                BranchAddress3 = request.BranchAddress3,
+                BranchAddress4 = request.BranchAddress4,
+                BranchAddress5 = request.BranchAddress5,
+            });
 
             await _mediator.Send(request);
             return NoContent();

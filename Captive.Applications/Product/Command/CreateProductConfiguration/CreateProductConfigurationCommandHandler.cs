@@ -19,7 +19,7 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
         }   
         public async Task<Unit> Handle(CreateProductConfigurationCommand request, CancellationToken cancellationToken)
         {
-            var product = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
+            var product = await _readUow.Products.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
 
             if (product == null)
                 throw new Exception($"Product with Id: {request.ProductId} doesnt exist");

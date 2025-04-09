@@ -3,8 +3,8 @@ using MediatR;
 
 namespace Captive.Applications.TagAndMapping.Query.GetTagAndMappingByTagId
 {
-    public class GetTagAndMappingByTagIdQuery :IRequest<TagDto>
+    public class GetTagMappingByTagIdQuery :IRequest<IEnumerable<TagMappingDto>>
     {
-        public Guid Id { get; set; }
+        public Guid TagId { get; set; }
     }
 }

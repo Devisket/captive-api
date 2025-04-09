@@ -16,7 +16,7 @@ namespace Captive.Applications.Product.Query.GetAllProduct
 
         public async Task<ICollection<ProductResponse>> Handle(GetAllProductTypeQuery request, CancellationToken cancellationToken)
         {
-            var products = await _readUow.ProductTypes.GetAll().Where(x => x.BankInfoId == request.BankId)
+            var products = await _readUow.Products.GetAll().Where(x => x.BankInfoId == request.BankId)
                 .Select(x => new ProductResponse
                 {
                     ProductId = x.Id,

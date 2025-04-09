@@ -153,7 +153,7 @@ namespace Captive.Applications.CheckOrder.Services
                         validationResponse.LogMessage = $"Can't find Tag";
                     }
 
-                    var checkInventory = await _readUow.CheckInventory.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.TagId == tag!.Id && x.IsEnable, cancellationToken);
+                    var checkInventory = await _readUow.CheckInventory.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.TagId == tag!.Id && x.IsActive, cancellationToken);
 
                     if(checkInventory == null)
                     {

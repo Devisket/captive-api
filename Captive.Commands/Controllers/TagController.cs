@@ -2,6 +2,7 @@
 using Captive.Applications.TagAndMapping.Command.CreateTag;
 using Captive.Applications.TagAndMapping.Command.DeleteMapping;
 using Captive.Applications.TagAndMapping.Command.DeleteTag;
+using Captive.Model.Dto;
 using Captive.Model.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,24 +20,29 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTag([FromBody] CreateTagCommand request)
+        public async Task<IActionResult> CreateTag([FromRoute] Guid bankId, [FromBody] TagDto request)
         {
-            await _mediator.Send(request);
+            await _mediator.Send(new CreateTagCommand
+            {
+                Id = null,
+                BankId = bankId,
+                SearchByAccount = request.SearchByAccount,
+                TagName = request.TagName,
+                isDefaultTag = request.isDefaultTag,
+                SearchByBranch = request.SearchByBranch,
+                SearchByFormCheck = request.SearchByFormCheck,
+                SearchByProduct = request.SearchByProduct
+            });
             return NoContent();
         }
 
         [HttpPost("{tagId}/mapping")]
-        public async Task<IActionResult> AddTagMapping([FromRoute] Guid tagId, [FromBody] CreateTagMappingRequest request)
+        public async Task<IActionResult> AddTagMapping([FromRoute] Guid tagId, [FromBody] IList<TagMappingDto> request)
         {
             await _mediator.Send(new CreateTagMappingCommand
             {
                 TagId = tagId,
-                Mappings = request.mappings.Select(x => new Model.Dto.TagMappingDto
-                {
-                    BranchId = x.BranchId,
-                    FormCheckId = x.FormCheckId,
-                    ProductId = x.ProductId,
-                }).ToList()
+                Mappings = request
             });
 
             return NoContent();
@@ -65,9 +71,19 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPut("{tagId}")]
-        public async Task<IActionResult> UpdateTag([FromRoute] Guid tagId, [FromBody] CreateTagCommand request)
+        public async Task<IActionResult> UpdateTag([FromRoute] Guid tagId, [FromRoute] Guid bankId, [FromBody] TagDto request)
         {
-            await _mediator.Send(request);
+            await _mediator.Send(new CreateTagCommand
+            {
+                Id = tagId,
+                BankId = bankId,
+                SearchByAccount = request.SearchByAccount,
+                TagName = request.TagName,
+                isDefaultTag = request.isDefaultTag,
+                SearchByBranch = request.SearchByBranch,
+                SearchByFormCheck = request.SearchByFormCheck,
+                SearchByProduct = request.SearchByProduct
+            });
             return NoContent();
         }
     }

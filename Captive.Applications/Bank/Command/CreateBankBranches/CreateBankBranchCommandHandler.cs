@@ -29,26 +29,32 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
                throw new Exception($"Bank Id: {request.BankId} doesn't exist.");
             }
 
-            if(request.BranchId != Guid.Empty)
+            if(request.BranchId.HasValue)
             {
-               var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId, cancellationToken);
-
-               if(branch == null)
-                   throw new Exception($"Branch Id: {request.BranchId} doesnt exist.");
+                var branch = await _readUow.BankBranches.GetAll().FirstOrDefaultAsync(x => x.Id == request.BranchId, cancellationToken);
+                
+                if(branch == null)
+                    throw new Exception($"Branch Id: {request.BranchId} doesnt exist.");
 
                if (await _readUow.BankBranches.GetAll().AsNoTracking().AnyAsync(x => x.BankInfoId == request.BankId && 
                        x.BRSTNCode == request.BrstnCode && x.Id != request.BranchId, cancellationToken))
-                   throw new Exception($"BRSTN Code: {request.BrstnCode} for bank ${bank.BankName} is conflicting.");
+                {
+                    throw new Exception($"BRSTN Code: {request.BrstnCode} for bank ${bank.BankName} is conflicting.");
+                }
+                   
+                branch.BranchName = request.BranchName;
+                branch.BRSTNCode = request.BrstnCode;
+                branch.BranchAddress1 = request.BranchAddress1;
+                branch.BranchAddress2 = request.BranchAddress2;
+                branch.BranchAddress3 = request.BranchAddress3;
+                branch.BranchAddress4 = request.BranchAddress4;
+                branch.BranchAddress5 = request.BranchAddress5;
+                branch.BranchStatus = (BranchStatus)Enum.Parse(typeof(BranchStatus), request.BranchStatus);
 
-               branch.BranchName = request.BranchName;
-               branch.BRSTNCode = request.BrstnCode;
-               branch.BranchAddress1 = request.BranchAddress1;
-               branch.BranchAddress2 = request.BranchAddress2;
-               branch.BranchAddress3 = request.BranchAddress3;
-               branch.BranchAddress4 = request.BranchAddress4;
-               branch.BranchAddress5 = request.BranchAddress5;
+                if(request.MergingBranchId.HasValue)
+                    branch.MergingBranchId = request.MergingBranchId;
 
-               _writeUow.BankBranches.Update(branch);
+                _writeUow.BankBranches.Update(branch);
             }
             else
             {

@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CheckInventory\Query\GetCheckInventory\Model\**" />
     <Compile Remove="CheckOrder\Query\**" />
+    <EmbeddedResource Remove="CheckInventory\Query\GetCheckInventory\Model\**" />
     <EmbeddedResource Remove="CheckOrder\Query\**" />
+    <None Remove="CheckInventory\Query\GetCheckInventory\Model\**" />
     <None Remove="CheckOrder\Query\**" />
   </ItemGroup>
 
@@ -27,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
     <Folder Include="CheckValidation\Command\" />
     <Folder Include="CheckValidation\Query\" />
     <Folder Include="Orderfiles\Query\" />

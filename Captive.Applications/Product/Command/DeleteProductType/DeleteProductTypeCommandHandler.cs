@@ -17,7 +17,7 @@ namespace Captive.Applications.Product.Command.DeleteProductType
         }
         public async Task<Unit> Handle(DeleteProductTypeCommand request, CancellationToken cancellationToken)
         {
-            var product = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
+            var product = await _readUow.Products.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
             
             if(product == null)
                 throw new Exception($"ProductTypeId:{request.ProductId} doesn't exist");

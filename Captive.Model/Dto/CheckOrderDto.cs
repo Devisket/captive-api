@@ -1,4 +1,5 @@
-﻿namespace Captive.Model.Dto
+﻿
+namespace Captive.Model.Dto
 {
     public class CheckOrderDto
     {

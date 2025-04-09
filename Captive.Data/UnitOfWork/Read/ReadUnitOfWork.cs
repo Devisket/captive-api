@@ -23,7 +23,7 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<OrderFile> IReadUnitOfWork.OrderFiles => GetStandardRepository<OrderFile>();
         IReadRepository<OrderFileLog> IReadUnitOfWork.OrderFileLogs => GetStandardRepository<OrderFileLog>();
         IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();
-        IReadRepository<Product> IReadUnitOfWork.ProductTypes => GetStandardRepository<Product>();
+        IReadRepository<Product> IReadUnitOfWork.Products => GetStandardRepository<Product>();
         IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
         IReadRepository<Tag> IReadUnitOfWork.Tags => GetStandardRepository<Tag>();
         IReadRepository<TagMapping> IReadUnitOfWork.TagsMapping => GetStandardRepository<TagMapping>();

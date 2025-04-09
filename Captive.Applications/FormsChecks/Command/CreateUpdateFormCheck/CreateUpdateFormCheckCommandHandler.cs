@@ -19,7 +19,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
 
         public async Task<FormCheckDto> Handle(CreateUpdateFormCheckCommand request, CancellationToken cancellationToken)
         {
-            var productTypeExist = await _readUow.ProductTypes.GetAll().AnyAsync(x => x.Id == request.ProductId, cancellationToken);
+            var productTypeExist = await _readUow.Products.GetAll().AnyAsync(x => x.Id == request.ProductId, cancellationToken);
             
             if (!productTypeExist)
                 throw new Exception($"ProductTypeId{request.ProductId} doesn't exist");

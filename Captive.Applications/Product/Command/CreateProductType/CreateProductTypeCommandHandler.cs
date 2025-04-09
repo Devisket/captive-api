@@ -25,7 +25,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
 
             var isBankExist = await _readUow.Banks.GetAll().AsNoTracking().AnyAsync(x => x.Id == request.BankId, cancellationToken);
 
-            var isNameExist = await _readUow.ProductTypes.GetAll().AsNoTracking().AnyAsync(x=> x.BankInfoId == request.BankId && x.ProductName.ToLower() == request.ProductName.ToLower(), cancellationToken);
+            var isNameExist = await _readUow.Products.GetAll().AsNoTracking().AnyAsync(x=> x.BankInfoId == request.BankId && x.ProductName.ToLower() == request.ProductName.ToLower(), cancellationToken);
 
             if (!isBankExist)
                 throw new Exception($"BankID:{request.BankId} doesn't exist");
@@ -35,7 +35,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
 
             if(request.ProductId.HasValue)
             {
-                var productType = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
+                var productType = await _readUow.Products.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
 
                 if (productType == null)
                 {

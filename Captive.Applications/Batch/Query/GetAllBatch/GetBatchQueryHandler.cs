@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.Batch.Query.GetAllBatch
 {
-    public class GetBatchQueryHandler : IRequestHandler<GetBatchQuery, GetBatchQueryResponse>
+    public class GetBatchQueryHandler : IRequestHandler<GetBatchQuery, ICollection<BatchFilesDto>>
     {
         public IReadUnitOfWork _readUow;
 
@@ -14,25 +14,25 @@ namespace Captive.Applications.Batch.Query.GetAllBatch
             _readUow = readUow;
         }
 
-        public async Task<GetBatchQueryResponse> Handle(GetBatchQuery request, CancellationToken cancellationToken)
+        public async Task<ICollection<BatchFilesDto>> Handle(GetBatchQuery request, CancellationToken cancellationToken)
         {
             var query = _readUow.BatchFiles.GetAll();
 
             var batches = await _readUow.BatchFiles.GetAll()
+                .Include(x => x.OrderFiles)
                 .Where(x => x.BankInfoId == request.BankId)
                 .Select(x => new BatchFilesDto()
             {
                 Id = x.Id,
-                BatchFileStatus = x.BatchFileStatus,
+                BatchFileStatus = x.BatchFileStatus.ToString(),
                 BatchName = x.BatchName,
-                CreatedDate = x.CreatedDate,
-                OrderNumber = x.OrderNumber
+                CreatedDate = x.CreatedDate.ToString("MM-dd-yyyy"),
+                NoOfFiles = x.OrderFiles.Count(),
+                OrderNumber = x.OrderNumber,
+                ErrorMessage = x.ErrorMessage,
             }).ToListAsync();
 
-            return new GetBatchQueryResponse
-            {
-                BatchFiles = batches,
-            };
+            return batches;
         }
     }
 }
