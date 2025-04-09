@@ -7,10 +7,8 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
     {
         public Guid? Id { get; set; } 
         public Guid ProductId { get; set; }
-        public Guid CheckValidationId { get; set; }
-
-        public string FileName {  get; set; }
-        public string ConfigurationData { get; set; }
+        public string FileName {  get; set; } = string.Empty;
+        public string ConfigurationData { get; set; } = string.Empty;
         public ConfigurationType ConfigurationType { get; set; }
     }
 }

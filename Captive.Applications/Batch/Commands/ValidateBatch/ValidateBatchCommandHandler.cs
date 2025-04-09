@@ -1,5 +1,5 @@
 ﻿using Captive.Applications.CheckOrder.Services;
-using Captive.Data.Models;
+using Captive.Data.Enums;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Model.Dto;
@@ -63,8 +63,10 @@ namespace Captive.Applications.Batch.Commands.ValidateBatch
                 if (!floatingChecks.Any(x => !x.IsValid))
                 {
                     orderFile.IsValidated = true;
-                }
-
+                    orderFile.Status = OrderFilesStatus.Valid;
+                } else
+                    orderFile.Status = OrderFilesStatus.Invalid;
+                
                 orderFile.PersonalQuantity = tupleObj.Item2;
                 orderFile.CommercialQuantity = tupleObj.Item3;
 

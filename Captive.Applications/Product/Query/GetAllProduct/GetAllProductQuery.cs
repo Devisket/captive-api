@@ -3,13 +3,8 @@ using MediatR;
 
 namespace Captive.Applications.Product.Query.GetAllProduct
 {
-    public class GetAllProductTypeQuery :IRequest<GetAllProductTypeQueryResponse>
+    public class GetAllProductTypeQuery :IRequest<ICollection<ProductResponse>>
     {
         public Guid BankId { get; set; }
-    }
-    public class GetAllProductTypeQueryResponse
-    {
-        public Guid BankId { get; set; }
-        public ICollection<ProductResponse>? ProductTypes { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace Captive.Applications.CheckValidation.Services
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
                     x => x.TagId == tagId 
-                    && x.IsEnable, cancellationToken
+                    && x.IsActive, cancellationToken
                 );
 
             if (checkInventory!.CheckInventoryDetails == null || !checkInventory.CheckInventoryDetails.Any())

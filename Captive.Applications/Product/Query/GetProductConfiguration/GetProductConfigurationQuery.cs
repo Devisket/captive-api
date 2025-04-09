@@ -1,15 +1,10 @@
-﻿
-using Captive.Applications.Product.Query.GetProductConfiguration.Model;
+﻿using Captive.Model.Dto;
 using MediatR;
 
 namespace Captive.Applications.Product.Query.GetProductConfiguration
 {
-    public class GetProductConfigurationQuery:IRequest<GetAllProductConfigurationQueryResponse>
+    public class GetProductConfigurationQuery:IRequest<ProductConfigurationDto>
     {
         public Guid ProductId { get; set; }
-    }
-    public class GetAllProductConfigurationQueryResponse
-    {
-        public ProductConfigurationResponse ProductConfiguration { get; set; }
     }
 }

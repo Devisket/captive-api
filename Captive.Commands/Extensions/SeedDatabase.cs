@@ -129,7 +129,7 @@ namespace Captive.Commands.Extensions
                     isRepeating = false,
                     TagId = tag.First().Id,
                     Tag = tag.First(),
-                    IsEnable = true,
+                    IsActive = true,
                 }
             };
 

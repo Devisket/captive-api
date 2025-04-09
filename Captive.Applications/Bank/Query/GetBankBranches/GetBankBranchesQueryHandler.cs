@@ -28,14 +28,14 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
                 {
                     Id = x.Id,
                     BranchName = x.BranchName,
-                    BRSTN = x.BRSTNCode,
+                    BrstnCode = x.BRSTNCode,
                     BranchAddress1 = x.BranchAddress1,
                     BranchAddress2 = x.BranchAddress2,
                     BranchAddress3 = x.BranchAddress3,
                     BranchAddress4 = x.BranchAddress4,
                     BranchAddress5 = x.BranchAddress5,
-                    BranchStatus = x.BranchStatus,
-                    MerginBranchId = x.MergingBranchId,
+                    BranchStatus = x.BranchStatus.ToString(),
+                    MergingBranchId = x.MergingBranchId,
                 }).ToListAsync(cancellationToken)
             };
         }

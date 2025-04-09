@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Captive.Model.Dto;
+using MediatR;
 
 namespace Captive.Applications.CheckInventory.Query.GetCheckInventory
 {
-    internal class GetCheckInventoryQuery
+    public class GetCheckInventoryQuery : IRequest<IEnumerable<CheckInventoryDto>>
     {
+        public Guid TagId { get; set; }
     }
 }

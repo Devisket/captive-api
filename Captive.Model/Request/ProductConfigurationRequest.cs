@@ -1,11 +1,10 @@
-﻿using Captive.Data.Enums;
-
-namespace Captive.Model.Request
+﻿namespace Captive.Model.Request
 {
     public class ProductConfigurationRequest
     {     
-        public string FileName {  get; set; }
-        public string ConfigurationData { get; set; }
-        public ConfigurationType ConfigurationType { get; set; }
+        public Guid? Id { get; set; }
+        public required string FileName {  get; set; } = string.Empty;
+        public required string ConfigurationData { get; set; } = string.Empty ;
+        public required string ConfigurationType { get; set; }
     }
 }

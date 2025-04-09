@@ -11,7 +11,7 @@ namespace Captive.Data.Models
         public int CurrentSeries { get; set; }
         public int NumberOfPadding {  get; set; }
         public bool isRepeating {  get; set; }
-        public bool IsEnable { get; set; }
+        public bool IsActive { get; set; }
         public Guid TagId { get; set; }
         public Tag Tag { get; set; }
         public ICollection<CheckInventoryDetail>? CheckInventoryDetails { get; set; }

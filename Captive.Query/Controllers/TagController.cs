@@ -16,9 +16,9 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTagAndMapping([FromRoute] Guid bankId) 
+        public async Task<IActionResult> GetAllTag([FromRoute] Guid bankId) 
         {
-            var response = await _mediator.Send(new GetAllTagAndMappingQuery
+            var response = await _mediator.Send(new GetAllTagQuery
             {
                 BankId = bankId
             });
@@ -27,11 +27,11 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet("{tagId}")]
-        public async Task<IActionResult> GetTagAndMappingByTagId([FromRoute] Guid tagId)
+        public async Task<IActionResult> GetTagMapping([FromRoute] Guid tagId)
         {
-            var response = await _mediator.Send(new GetTagAndMappingByTagIdQuery
+            var response = await _mediator.Send(new GetTagMappingByTagIdQuery
             {
-                Id = tagId
+                TagId = tagId
             });
 
             return Ok(response);

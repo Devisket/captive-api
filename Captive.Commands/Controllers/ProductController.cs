@@ -1,12 +1,7 @@
-﻿using Captive.Applications.Product.Command.CreateProductConfiguration;
-using Captive.Applications.Product.Command.CreateProductConfiguration;
-using Captive.Applications.Product.Command.CreateProductType;
+﻿using Captive.Applications.Product.Command.CreateProductType;
 using Captive.Applications.Product.Command.DeleteProductType;
-using Captive.Data.Models;
-using Captive.Model.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace Captive.Commands.Controllers
 {
@@ -33,12 +28,12 @@ namespace Captive.Commands.Controllers
             
         }
 
-        [HttpPut("{productTypeId}")]
-        public async Task<IActionResult> UpdateProductType([FromRoute] Guid bankId, [FromRoute] Guid productTypeId,[FromBody] CreateProductTypeCommandRequest request)
+        [HttpPut("{productId}")]
+        public async Task<IActionResult> UpdateProductType([FromRoute] Guid bankId, [FromRoute] Guid productId,[FromBody] CreateProductTypeCommandRequest request)
         {
             await _mediator.Send(new CreateProductTypeCommand
             {
-                ProductTypeId = productTypeId,
+                ProductId = productId,
                 BankId = bankId,
                 ProductName = request.ProductName,
             });
@@ -46,44 +41,15 @@ namespace Captive.Commands.Controllers
             return Ok();
         }
 
-        [HttpDelete("{productTypeId}")]
-        public async Task<IActionResult> DeleteProductType([FromRoute] Guid bankId, [FromRoute] Guid productTypeId)
+        [HttpDelete("{productId}")]
+        public async Task<IActionResult> DeleteProductType([FromRoute] Guid productId)
         {
             await _mediator.Send(new DeleteProductTypeCommand
             {
-                ProductTypeId = productTypeId,
-                BankId = bankId,
+                ProductId = productId,
             });
 
             return Ok();
-        }
-
-        [HttpPost("{productId}/configuration")]
-        public async Task<IActionResult> AddProductConfiguration([FromRoute] Guid productId, [FromBody] ProductConfigurationRequest request)
-        {
-            await _mediator.Send(new CreateProductConfigurationCommand
-            {
-                ProductId = productId,
-                FileName = request.FileName,
-                ConfigurationData = request.ConfigurationData,
-                ConfigurationType = request.ConfigurationType
-            });
-
-            return NoContent();
-        }
-        [HttpPut("{productId}/configuration/{productConfigurationId}")]
-        public async Task<IActionResult> AddProductConfiguration([FromRoute] Guid productId, [FromRoute] Guid productConfigurationId, [FromBody] ProductConfigurationRequest requestBody)
-        {
-            await _mediator.Send(new CreateProductConfigurationCommand
-            {
-                Id = productConfigurationId,
-                ProductId = productId,
-                FileName = requestBody.FileName,
-                ConfigurationData = requestBody.ConfigurationData,
-                ConfigurationType = requestBody.ConfigurationType,                               
-            });
-
-            return NoContent();
         }
     }
 }

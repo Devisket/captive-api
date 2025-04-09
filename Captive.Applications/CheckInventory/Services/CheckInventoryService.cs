@@ -43,7 +43,7 @@ namespace Captive.Applications.CheckInventory.Services
 
                 var tag = _checkValidationService.GetTag(bankId, checkOrder.BranchId, checkOrder.FormCheckId!.Value, checkOrder.ProductId);
 
-                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsEnable, cancellationToken);
+                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsActive, cancellationToken);
 
                 if (!string.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {

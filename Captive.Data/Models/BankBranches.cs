@@ -7,6 +7,7 @@ namespace Captive.Data.Models
         public Guid Id { get; set; }
         public required string BranchName { get; set; }
         public required string BRSTNCode { get; set; }
+        public string BranchCode { get; set; }
         public string? BranchAddress1 { get; set; }
         public string? BranchAddress2 { get; set; }
         public string? BranchAddress3 { get; set; }
