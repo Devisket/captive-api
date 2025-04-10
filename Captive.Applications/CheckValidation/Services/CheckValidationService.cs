@@ -1,6 +1,7 @@
 ﻿using Captive.Applications.Util;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
+using Captive.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 
@@ -19,7 +20,7 @@ namespace Captive.Applications.CheckValidation.Services
             CancellationToken cancellationToken);
         string HitWarningSeries(Captive.Data.Models.CheckInventory checkInventory, string startingSeries, string endingSeries);
         bool HitEndingSeries(Captive.Data.Models.CheckInventory checkInventory, string startingSeries, string endingSeries);
-        Tag? GetTag(Guid bankId, Guid branchId, Guid formCheckId, Guid productId);
+        Task<Tag> GetTag(Guid bankId, Guid branchId, Guid formCheckId, Guid productId, CancellationToken cancellationToken);
     }
     public class CheckValidationService : ICheckValidationService
     {
@@ -32,7 +33,7 @@ namespace Captive.Applications.CheckValidation.Services
             _stringService = stringService;
         }
 
-        public async Task<bool>HasConflictedSeries(string startingSeries, string endingSeries, Guid branchId, Guid formcheckId, Guid productId, Guid tagId , CancellationToken cancellationToken)
+        public async Task<bool> HasConflictedSeries(string startingSeries, string endingSeries, Guid branchId, Guid formcheckId, Guid productId, Guid tagId, CancellationToken cancellationToken)
         {
             var checkInventory = await _readUow.CheckInventory
                 .GetAll()
@@ -44,20 +45,87 @@ namespace Captive.Applications.CheckValidation.Services
                     && x.IsActive, cancellationToken
                 );
 
+            if (checkInventory == null)
+                throw new CaptiveException("Can't find the check inventory");
+
+            var tag = checkInventory.Tag;
+
             if (checkInventory!.CheckInventoryDetails == null || !checkInventory.CheckInventoryDetails.Any())
                 return false;
 
-            var checkInventoryDetails = checkInventory.CheckInventoryDetails
-                .Where(x => x.BranchId == branchId && x.FormCheckId == formcheckId && productId == x.ProductId && x.TagId == tagId)
+            // Get both local and database records
+            var localQuery = checkInventory.CheckInventoryDetails.AsQueryable();
+            var dbQuery = _readUow.CheckInventoryDetails.GetAll();
+
+            // Apply filters to both queries based on tag mapping
+            localQuery = ApplyFilters(localQuery, tag, branchId, formcheckId, productId);
+            dbQuery = ApplyFilters(dbQuery, tag, branchId, formcheckId, productId);
+
+            // Get records from both sources
+            var localDetails = localQuery.ToList();
+            var dbDetails = await dbQuery.ToListAsync(cancellationToken);
+
+            // Combine and deduplicate records
+            var allDetails = localDetails
+                .Concat(dbDetails)
+                .DistinctBy(x => x.Id)
                 .ToList();
 
-            if(!checkInventoryDetails.Any())
-                return false; 
+            if (!allDetails.Any())
+                return false;
+
             var numberSeries = _stringService.ExtractNumber(checkInventory.SeriesPatern, startingSeries, endingSeries);
 
-            return checkInventoryDetails.Any(x =>
-            (x.EndingNumber >= numberSeries.Item1 && x.StartingNumber <= numberSeries.Item1) ||
-            (x.EndingNumber >= numberSeries.Item2 && x.StartingNumber <= numberSeries.Item2));
+            return allDetails.Any(x =>
+                (x.EndingNumber >= numberSeries.Item1 && x.StartingNumber <= numberSeries.Item1) ||
+                (x.EndingNumber >= numberSeries.Item2 && x.StartingNumber <= numberSeries.Item2));
+        }
+
+        private IQueryable<CheckInventoryDetail> ApplyFilters(IQueryable<CheckInventoryDetail> query, Tag tag, Guid branchId, Guid formcheckId, Guid productId)
+        {
+            // Branch + Product + FormCheck combination
+            if (tag.SearchByBranch && tag.SearchByProduct && tag.SearchByFormCheck)
+            {
+                return query.Where(x => 
+                    x.BranchId == branchId && 
+                    x.ProductId == productId && 
+                    x.FormCheckId == formcheckId);
+            }
+            // Branch + Product combination
+            else if (tag.SearchByBranch && tag.SearchByProduct)
+            {
+                return query.Where(x => 
+                    x.BranchId == branchId && 
+                    x.ProductId == productId);
+            }
+            // Branch + FormCheck combination
+            else if (tag.SearchByBranch && tag.SearchByFormCheck)
+            {
+                return query.Where(x => 
+                    x.BranchId == branchId && 
+                    x.FormCheckId == formcheckId);
+            }
+            // Product + FormCheck combination
+            else if (tag.SearchByProduct && tag.SearchByFormCheck)
+            {
+                return query.Where(x => 
+                    x.ProductId == productId && 
+                    x.FormCheckId == formcheckId);
+            }
+            // Single criteria
+            else
+            {
+                if (tag.SearchByBranch)
+                    query = query.Where(x => x.BranchId == branchId);
+
+                if (tag.SearchByProduct)
+                    query = query.Where(x => x.ProductId == productId);
+
+                if (tag.SearchByFormCheck)
+                    query = query.Where(x => x.FormCheckId == formcheckId);
+            }
+
+            return query;
         }
 
         /*
@@ -94,29 +162,55 @@ namespace Captive.Applications.CheckValidation.Services
             return false;
         }
 
-        public Tag? GetTag(Guid bankId, Guid branchId, Guid formCheckId, Guid productId)
+        public async Task<Tag> GetTag(Guid bankId, Guid branchId, Guid formCheckId, Guid productId, CancellationToken cancellationToken)
         {
-            var tags = _readUow.Tags.GetAll().Include(x => x.Mapping).Where(x => x.BankId == bankId).ToList();
+            var tags = await _readUow.Tags.GetAll().Include(x => x.Mapping).Where(x => x.BankId == bankId).ToListAsync(cancellationToken);
 
             if (tags == null || !tags.Any())
                 return null;
 
-            if (!tags.Any(x => !x.isDefaultTag))
+            // Get all non-default tags
+            var nonDefaultTags = tags.Where(x => !x.isDefaultTag).ToList();
+            if (!nonDefaultTags.Any())
                 return tags.First();
 
-            var flatTagMapping = tags.SelectMany(x => x.Mapping, (parent, child) => new {
+            var flatTagMapping = nonDefaultTags.SelectMany(x => x.Mapping, (parent, child) => new {
                 tag = parent,
                 child.BranchId,
                 child.FormCheckId,
                 child.ProductId,
             });
 
-            var searchtag = flatTagMapping.FirstOrDefault(x => x.BranchId == branchId && x.FormCheckId == formCheckId && x.ProductId == productId);
+            // Priority 1: Exact match with all three IDs
+            var exactMatch = flatTagMapping.FirstOrDefault(x => 
+                x.BranchId == branchId && 
+                x.FormCheckId == formCheckId && 
+                x.ProductId == productId);
+            if (exactMatch != null)
+                return exactMatch.tag;
 
-            if (searchtag == null)
-                return tags.Where(x => x.isDefaultTag).First();
+            // Priority 2: Matches with two IDs
+            var twoIdMatches = flatTagMapping.Where(x => 
+                (x.BranchId == branchId && x.FormCheckId == formCheckId && x.ProductId == null) ||
+                (x.BranchId == branchId && x.ProductId == productId && x.FormCheckId == null) ||
+                (x.FormCheckId == formCheckId && x.ProductId == productId && x.BranchId == null))
+                .ToList();
 
-            return searchtag.tag;
+            if (twoIdMatches.Any())
+                return twoIdMatches.First().tag;
+
+            // Priority 3: Matches with single ID (other IDs must be null)
+            var singleIdMatches = flatTagMapping.Where(x => 
+                (x.BranchId == branchId && x.FormCheckId == null && x.ProductId == null) ||
+                (x.FormCheckId == formCheckId && x.BranchId == null && x.ProductId == null) ||
+                (x.ProductId == productId && x.BranchId == null && x.FormCheckId == null))
+                .ToList();
+
+            if (singleIdMatches.Any())
+                return singleIdMatches.First().tag;
+
+            // Priority 4: Default tag
+            return tags.Where(x => x.isDefaultTag).First();
         }
     }
 }
