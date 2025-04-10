@@ -21,7 +21,7 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
         {
             if (request.Id.HasValue)
             {
-                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(cancellationToken);
+                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id.Value, cancellationToken);
 
                 if (checkInventory == null) {
                     throw new Exception($"Check Inventory ID: {request.Id} doesn't exist");

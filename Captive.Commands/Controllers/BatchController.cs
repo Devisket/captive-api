@@ -1,5 +1,6 @@
 ﻿using Captive.Applications.Batch.Commands.CreateBatchFile;
 using Captive.Applications.Batch.Commands.DeleteBatchFile;
+using Captive.Applications.Batch.Commands.ProcessBatch;
 using Captive.Applications.Batch.Commands.ValidateBatch;
 using Captive.Applications.Batch.Hubs;
 using Captive.Applications.Batch.Services;
@@ -49,7 +50,8 @@ namespace Captive.Commands.Controllers
         [HttpPost("{batchId}/process")]
         public async Task<IActionResult> ProcessBatch([FromRoute] Guid batchId)
         {
-            return NoContent();
+            var response = await _mediator.Send(new ProcessBatchCommand { BatchId = batchId });
+            return Ok(response);
         }
 
     }
