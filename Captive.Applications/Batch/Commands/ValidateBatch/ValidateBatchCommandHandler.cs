@@ -35,7 +35,7 @@ namespace Captive.Applications.Batch.Commands.ValidateBatch
             if (batch.OrderFiles == null || !batch.OrderFiles.Any())
                 return null;
 
-            var orderFileIds = batch.OrderFiles!.Select(x => x.Id).ToArray();
+            var orderFileIds = batch.OrderFiles!.Where(x => x.Status != OrderFilesStatus.Completed).Select(x => x.Id).ToArray();
 
             foreach(var orderFileId in orderFileIds)
             {
