@@ -1,15 +1,11 @@
 ﻿using Captive.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Captive.Model.Dto
 {
     public class CheckInventoryDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
+        public Guid TagId { get; set; }
         public string SeriesPattern { get; set; }
         public int WarningSeries { get; set; }
         public int NumberOfPadding {  get; set; }
@@ -24,6 +20,7 @@ namespace Captive.Model.Dto
             return new CheckInventoryDto
             {
                 Id = input.Id,
+                TagId = input.TagId,
                 WarningSeries = input.WarningSeries,
                 NumberOfPadding = input.NumberOfPadding,
                 StartingSeries = input.StartingSeries,

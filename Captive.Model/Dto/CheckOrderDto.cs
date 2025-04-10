@@ -3,7 +3,7 @@ namespace Captive.Model.Dto
 {
     public class CheckOrderDto
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public required string CheckType {  get; set; }
         public required string FormType {  get; set; }
         public required string AccountNumber {  get; set; }
@@ -18,6 +18,7 @@ namespace Captive.Model.Dto
         public string? AccountName1 { get; set; }
         public string? AccountName2 { get; set; }
         public bool IsValid {  get; set; }
+        public bool IsOnHold { get; set; }
         public string? ErrorMessage { get; set; }
     }
 }

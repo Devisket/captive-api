@@ -26,7 +26,13 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
                 if (checkInventory == null) {
                     throw new Exception($"Check Inventory ID: {request.Id} doesn't exist");
                 }
+
+                checkInventory.WarningSeries = request.WarningSeries;
                 checkInventory.SeriesPatern = request.SeriesPattern;
+                checkInventory.StartingSeries = request.StartingSeries;
+                checkInventory.EndingSeries = request.EndingSeries;
+                checkInventory.NumberOfPadding = request.NumberOfPadding;
+                checkInventory.isRepeating = request.IsRepeating;
 
                 _writeUow.CheckInventory.Update(checkInventory);
             }
@@ -34,7 +40,14 @@ namespace Captive.Applications.CheckInventory.Commands.AddCheckInventory
             {
                 var newCheckInventory = new Captive.Data.Models.CheckInventory()
                 {
+                    Id = Guid.NewGuid(),
+                    TagId = request.TagId,
                     SeriesPatern = request.SeriesPattern,
+                    WarningSeries = request.WarningSeries,
+                    StartingSeries = request.StartingSeries,
+                    EndingSeries = request.EndingSeries,
+                    NumberOfPadding = request.NumberOfPadding,
+                    isRepeating = request.IsRepeating
                 };
 
                 await _writeUow.CheckInventory.AddAsync(newCheckInventory,cancellationToken);

@@ -5,33 +5,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.Values
 {
-    public class ValuesQueryHandler : IRequestHandler<ValuesQuery, ValuesDto>
+    public class ValuesQueryHandler : IRequestHandler<ValuesQuery, ValuesQueryResponse>
     {
         private readonly IReadUnitOfWork _readUow;
 
         public ValuesQueryHandler(IReadUnitOfWork readUow) {
             _readUow = readUow;
         }
-        public async Task<ValuesDto> Handle(ValuesQuery request, CancellationToken cancellationToken)
+        public async Task<ValuesQueryResponse> Handle(ValuesQuery request, CancellationToken cancellationToken)
         {
             var branchList = await _readUow.BankBranches.GetAll()
                 .AsNoTracking()
                 .Where(x => x.BankInfoId == request.BankId)
-                .ToDictionaryAsync(x=> x.Id, x => x.BranchName, cancellationToken);
+                .Select(x => new ValuesDto
+                {
+                    Id = x.Id,
+                    Value = x.BranchName,
+                })
+                .ToListAsync();
 
             var productList = await _readUow.Products.GetAll()
                 .AsNoTracking()
                 .Where(x => x.BankInfoId == request.BankId)
-                .ToDictionaryAsync(x => x.Id, x => x.ProductName, cancellationToken);
-
+                .Select(x => new ValuesDto
+                {
+                    Id = x.Id,
+                    Value = x.ProductName,
+                })
+                .ToListAsync(cancellationToken);
 
             var formChecks = await _readUow.FormChecks.GetAll().AsNoTracking()
                 .Include(x => x.Product)
                 .Where(x => x.Product.BankInfoId == request.BankId)
-                .Select(x => new { x.Id, FormCheckType = x.FormCheckType, x.FormType, x.CheckType })
-                .ToDictionaryAsync(x => x.Id, x => string.Format("{0} {1}-{2}", x.FormCheckType.ToString(), x.FormType, x.CheckType));
+                .Select(x => new ValuesDto
+                {
+                    Id = x.Id,
+                    Value = String.Format("{0} {1}-{2}", x.FormCheckType.ToString(), x.FormType, x.CheckType),
+                })
+                .ToListAsync(cancellationToken);
 
-            return new ValuesDto
+            return new ValuesQueryResponse
             {
                 BranchValues = branchList!,
                 FormCheckValues = formChecks,
