@@ -1,5 +1,7 @@
 ﻿using Captive.Applications.CheckInventory.Commands.AddCheckInventory;
 using Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails;
+using Captive.Applications.CheckInventory.Commands.DeleteCheckInventory;
+using Captive.Applications.CheckInventory.Commands.SetCheckInventoryActive;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +29,20 @@ namespace Captive.Commands.Controllers
         {
             request.Id = checkInventoryId;
             await _mediator.Send(request);
+            return Ok();
+        }
+
+        [HttpDelete("{checkInventoryId}")]
+        public async Task<IActionResult> DeleteCheckInventory([FromRoute] Guid checkInventoryId)
+        {
+            await _mediator.Send(new DeleteCheckInventoryCommand() { Id = checkInventoryId });
+            return Ok();
+        }
+
+        [HttpPost("active/{checkInventoryId}")]
+        public async Task<IActionResult> SetCheckInventoryAsActive([FromRoute] Guid checkInventoryId)
+        {
+            await _mediator.Send(new SetCheckInventoryActiveCommand() { CheckInventoryId = checkInventoryId });
             return Ok();
         }
 

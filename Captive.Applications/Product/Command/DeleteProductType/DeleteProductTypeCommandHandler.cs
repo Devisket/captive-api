@@ -17,17 +17,12 @@ namespace Captive.Applications.Product.Command.DeleteProductType
         }
         public async Task<Unit> Handle(DeleteProductTypeCommand request, CancellationToken cancellationToken)
         {
-            var isBankExist = await _readUow.Banks.GetAll().AsNoTracking().AnyAsync(x => x.Id == request.BankId);
-
-            if(!isBankExist)
-                throw new Exception($"BankId:{request.BankId} doesn't exist");
-
-            var productType = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.BankInfoId == request.BankId && x.Id == request.ProductTypeId);
+            var product = await _readUow.Products.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
             
-            if(productType == null)
-                throw new Exception($"ProductTypeId:{request.ProductTypeId} doesn't exist");
+            if(product == null)
+                throw new Exception($"ProductTypeId:{request.ProductId} doesn't exist");
 
-            _writeUow.ProductTypes.Delete(productType);
+            _writeUow.ProductTypes.Delete(product);
 
             await _writeUow.Complete();
 

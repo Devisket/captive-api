@@ -51,6 +51,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                         CheckType = c.CheckType,
                         Quantity = c.Quantity,
                         ErrorMessage = c.ErrorMessage,
+                        IsOnHold = c.IsOnHold,
                         IsValid = c.IsValid
                     }).ToList() : null
                 }).ToList() : null

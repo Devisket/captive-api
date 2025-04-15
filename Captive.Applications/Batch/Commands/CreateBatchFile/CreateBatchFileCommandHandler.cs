@@ -51,12 +51,12 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
 
         public int GetNewOrderNumber(BankInfo bankInfo)
         {
-            int orderNumber = 0;
+            int orderNumber = 1;
 
-            var lastBatch = bankInfo.BatchFiles?.Where(x => x.CreatedDate > DateTime.UtcNow.Date).OrderByDescending(x => x.OrderNumber).FirstOrDefault();
+            var lastBatch = bankInfo.BatchFiles?.Where(x => x.CreatedDate < DateTime.UtcNow).OrderByDescending(x => x.OrderNumber).FirstOrDefault();
 
             if (lastBatch != null) 
-                orderNumber = lastBatch.OrderNumber;
+                orderNumber = lastBatch.OrderNumber + 1;
             
             return orderNumber;
         }

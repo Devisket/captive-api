@@ -1,3 +1,4 @@
+using Captive.Applications.Middleware;
 using Captive.Queries.Extensions;
 
 namespace Captive.Query
@@ -25,7 +26,7 @@ namespace Captive.Query
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

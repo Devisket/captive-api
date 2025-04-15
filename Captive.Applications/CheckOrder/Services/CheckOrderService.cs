@@ -60,7 +60,7 @@ namespace Captive.Applications.CheckOrder.Services
             if (orderFile.FloatingCheckOrders == null || !orderFile.FloatingCheckOrders.Any())
                 return null;
 
-            var floatingCheckOrders = orderFile.FloatingCheckOrders.ToArray();
+            var floatingCheckOrders = orderFile.FloatingCheckOrders.Where(x => !x.IsOnHold).ToArray();
 
             var formChecks = await _readUow.FormChecks.GetAll().AsNoTracking().Where(x => x.ProductId == orderFile.ProductId).ToArrayAsync(cancellationToken);
 
@@ -78,8 +78,8 @@ namespace Captive.Applications.CheckOrder.Services
 
                 var formCheck = formChecks.First(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType);
 
-                personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? personalQuantity += 1 : personalQuantity;
-                commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? commercialQuantity += 1 : commercialQuantity;
+                personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? ((checkOrder.Quantity * formCheck.Quantity) + personalQuantity) : personalQuantity;
+                commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? ((checkOrder.Quantity * formCheck.Quantity) + commercialQuantity): commercialQuantity;
 
                 //Check for duplication
                 if (await HasDuplicate(orderFile.BatchFileId, orderFileId, checkOrder.AccountNo, cancellationToken))
@@ -145,7 +145,7 @@ namespace Captive.Applications.CheckOrder.Services
 
                     var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
                     
-                    var tag = _checkValidationService.GetTag(orderFile.BatchFile!.BankInfoId, branch.Id, formCheck.Id, orderFile.ProductId);
+                    var tag = await _checkValidationService.GetTag(orderFile.BatchFile!.BankInfoId, branch.Id, formCheck.Id, orderFile.ProductId, cancellationToken);
 
                     if(tag == null)
                     {
@@ -153,7 +153,7 @@ namespace Captive.Applications.CheckOrder.Services
                         validationResponse.LogMessage = $"Can't find Tag";
                     }
 
-                    var checkInventory = await _readUow.CheckInventory.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.TagId == tag!.Id && x.IsEnable, cancellationToken);
+                    var checkInventory = await _readUow.CheckInventory.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsActive, cancellationToken);
 
                     if(checkInventory == null)
                     {
@@ -200,9 +200,9 @@ namespace Captive.Applications.CheckOrder.Services
                 .AsNoTracking()
                 .Where(x => x.BatchFileId == batchId && x.Id != orderFileId).ToListAsync(cancellationToken);
 
-            var otherCheckOrder = otherOrderFile.SelectMany(p => p.FloatingCheckOrders, (parent, child) => new { OrderFileId = parent.Id, child.AccountNo });
+            var otherCheckOrder = otherOrderFile.SelectMany(p => p.FloatingCheckOrders, (parent, child) => new { OrderFileId = parent.Id, child.AccountNo, child.IsOnHold});
 
-            return otherCheckOrder.Any(x => x.AccountNo == accNo);
+            return otherCheckOrder.Any(x => x.AccountNo == accNo && !x.IsOnHold);
         }
         public async Task CreateCheckOrder(OrderFile orderFile, CancellationToken cancellationToken)
         {
@@ -213,7 +213,7 @@ namespace Captive.Applications.CheckOrder.Services
                 throw new Exception($"Order file ID: {orderFile.Id} doesn't exist");
             }
 
-            var floatingCheckOrders = orderFile.FloatingCheckOrders.ToArray();
+            var floatingCheckOrders = orderFile.FloatingCheckOrders.Where(x => !x.IsOnHold).ToArray();
 
             List<Captive.Data.Models.CheckOrders> newCheckOrders = new List<CheckOrders>();
 

@@ -5,6 +5,7 @@ using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
 {
@@ -30,28 +31,82 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                 throw new Exception("Orderfile ID doesn't exist");
             }
 
-            var newFloatingCheckOrder = request.CheckOrders.Select(x => new FloatingCheckOrder
+            foreach(var floatingCheckOrder in request.CheckOrders)
             {
-                Id = Guid.NewGuid(),
-                AccountName = x.MainAccountName ?? string.Empty,
-                AccountName1 = x.AccountName1 ?? string.Empty,
-                AccountName2 = x.AccountName2 ?? string.Empty,
-                IsValid = false,
-                ErrorMessage = string.Empty,
-                BRSTN = x.BRSTN,
-                FormType = x.FormType,
-                CheckType = x.CheckType,
-                Concode = x.Concode,
-                BranchCode = x.BranchCode,
-                AccountNo = x.AccountNumber,
-                OrderFileId = request.OrderFileId,
-                PreEndingSeries = x.StartingSeries,
-                PreStartingSeries = x.EndingSeries,
-                Quantity = x.Quantity,
-                DeliverTo = x.DeliverTo,
-            }).ToArray();
+                if (floatingCheckOrder.Id.HasValue)
+                {
+                    var existingFloatingCheckOrder = await _readUow.FloatingCheckOrders.GetAll().FirstOrDefaultAsync(x => x.Id == floatingCheckOrder.Id.Value, cancellationToken);
 
-            await _writeUow.FloatingCheckOrders.AddRange(newFloatingCheckOrder, cancellationToken);
+                    if (existingFloatingCheckOrder == null)
+                        throw new Exception($"Floating Check Order ID:{floatingCheckOrder.Id} doesn't exist.");
+
+                    existingFloatingCheckOrder.AccountName = floatingCheckOrder.MainAccountName ?? string.Empty;
+                    existingFloatingCheckOrder.AccountName1 = floatingCheckOrder.AccountName1 ?? string.Empty;
+                    existingFloatingCheckOrder.AccountName2 = floatingCheckOrder.AccountName2 ?? string.Empty;
+                    existingFloatingCheckOrder.ErrorMessage = string.Empty;
+                    existingFloatingCheckOrder.BRSTN = floatingCheckOrder.BRSTN;
+                    existingFloatingCheckOrder.FormType = floatingCheckOrder.FormType;
+                    existingFloatingCheckOrder.CheckType = floatingCheckOrder.CheckType;
+                    existingFloatingCheckOrder.Concode = floatingCheckOrder.Concode;
+                    existingFloatingCheckOrder.BranchCode = floatingCheckOrder.BranchCode;
+                    existingFloatingCheckOrder.AccountNo = floatingCheckOrder.AccountNumber;
+                    existingFloatingCheckOrder.PreEndingSeries = floatingCheckOrder.StartingSeries;
+                    existingFloatingCheckOrder.PreStartingSeries = floatingCheckOrder.EndingSeries;
+                    existingFloatingCheckOrder.Quantity = floatingCheckOrder.Quantity;
+                    existingFloatingCheckOrder.DeliverTo = floatingCheckOrder.DeliverTo;
+                    existingFloatingCheckOrder.IsValid = false;
+
+
+                    _writeUow.FloatingCheckOrders.Update(existingFloatingCheckOrder);
+                }
+                else {
+                    var newFloatingCheckOrder = new FloatingCheckOrder
+                    {
+                        Id = Guid.NewGuid(),
+                        AccountName = floatingCheckOrder.MainAccountName ?? string.Empty,
+                        AccountName1 = floatingCheckOrder.AccountName1 ?? string.Empty,
+                        AccountName2 = floatingCheckOrder.AccountName2 ?? string.Empty,
+                        IsValid = false,
+                        ErrorMessage = string.Empty,
+                        BRSTN = floatingCheckOrder.BRSTN,
+                        FormType = floatingCheckOrder.FormType,
+                        CheckType = floatingCheckOrder.CheckType,
+                        Concode = floatingCheckOrder.Concode,
+                        BranchCode = floatingCheckOrder.BranchCode,
+                        AccountNo = floatingCheckOrder.AccountNumber,
+                        OrderFileId = request.OrderFileId,
+                        PreEndingSeries = floatingCheckOrder.StartingSeries,
+                        PreStartingSeries = floatingCheckOrder.EndingSeries,
+                        Quantity = floatingCheckOrder.Quantity,
+                        DeliverTo = floatingCheckOrder.DeliverTo,
+                    };
+
+                    await _writeUow.FloatingCheckOrders.AddAsync(newFloatingCheckOrder, cancellationToken);
+                }
+            }
+
+            //var newFloatingCheckOrder = request.CheckOrders.Select(x => new FloatingCheckOrder
+            //{
+            //    Id = Guid.NewGuid(),
+            //    AccountName = x.MainAccountName ?? string.Empty,
+            //    AccountName1 = x.AccountName1 ?? string.Empty,
+            //    AccountName2 = x.AccountName2 ?? string.Empty,
+            //    IsValid = false,
+            //    ErrorMessage = string.Empty,
+            //    BRSTN = x.BRSTN,
+            //    FormType = x.FormType,
+            //    CheckType = x.CheckType,
+            //    Concode = x.Concode,
+            //    BranchCode = x.BranchCode,
+            //    AccountNo = x.AccountNumber,
+            //    OrderFileId = request.OrderFileId,
+            //    PreEndingSeries = x.StartingSeries,
+            //    PreStartingSeries = x.EndingSeries,
+            //    Quantity = x.Quantity,
+            //    DeliverTo = x.DeliverTo,
+            //}).ToArray();
+
+            //await _writeUow.FloatingCheckOrders.AddRange(newFloatingCheckOrder, cancellationToken);
 
             return Unit.Value;
         }

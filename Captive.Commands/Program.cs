@@ -1,5 +1,6 @@
 
 using Captive.Applications.Batch.Hubs;
+using Captive.Applications.Middleware;
 using Captive.Applications.Orderfiles.Hubs;
 using Captive.Commands.Extensions;
 
@@ -30,6 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

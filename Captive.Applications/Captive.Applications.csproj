@@ -7,13 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CheckInventory\Query\GetCheckInventory\Model\**" />
     <Compile Remove="CheckOrder\Query\**" />
+    <EmbeddedResource Remove="CheckInventory\Query\GetCheckInventory\Model\**" />
     <EmbeddedResource Remove="CheckOrder\Query\**" />
+    <None Remove="CheckInventory\Query\GetCheckInventory\Model\**" />
     <None Remove="CheckOrder\Query\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
   </ItemGroup>
@@ -27,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CheckInventory\Query\GetCheckInventory\Model\" />
     <Folder Include="CheckValidation\Command\" />
     <Folder Include="CheckValidation\Query\" />
     <Folder Include="Orderfiles\Query\" />

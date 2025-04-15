@@ -41,9 +41,9 @@ namespace Captive.Applications.CheckInventory.Services
 
                 var bankId = orderFile.BatchFile!.BankInfoId;
 
-                var tag = _checkValidationService.GetTag(bankId, checkOrder.BranchId, checkOrder.FormCheckId!.Value, checkOrder.ProductId);
+                var tag = await _checkValidationService.GetTag(bankId, checkOrder.BranchId, checkOrder.FormCheckId!.Value, checkOrder.ProductId, cancellationToken);
 
-                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsEnable, cancellationToken);
+                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsActive, cancellationToken);
 
                 if (!string.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
@@ -68,7 +68,7 @@ namespace Captive.Applications.CheckInventory.Services
 
                 var startingSeriesNumber = 1;
 
-                var lastCheck = _readUow.CheckInventoryDetails.GetAllLocal().OrderByDescending(x =>x.EndingNumber).FirstOrDefault(x => x.CheckInventoryId == checkInventory.Id);
+                var lastCheck = GetLastCheckDetail(tag, checkOrder, checkInventory.Id);
 
                 if (lastCheck != null)
                     startingSeriesNumber = lastCheck.EndingNumber + 1;
@@ -88,11 +88,19 @@ namespace Captive.Applications.CheckInventory.Services
                     }
 
                     if (await _checkValidationService.HasConflictedSeries(series.Item1, series.Item2, checkOrder.BranchId, formCheck.Id, orderFile.ProductId, tag.Id, cancellationToken))
-                        throw new Exception($"Account No: ${checkOrder.AccountNo} has conflicted series");
+                        throw new CaptiveException($"Account No: {checkOrder.AccountNo} has conflicted series");
 
                     if (_checkValidationService.HitEndingSeries(checkInventory, series.Item1, series.Item2))
-                        throw new Exception($"Account No: ${checkOrder.AccountNo} hit the ending series!");
+                    {
+                        if(!checkInventory.isRepeating)
+                            throw new CaptiveException($"Account No: {checkOrder.AccountNo} hit the ending series!");
 
+                        startingSeriesNumber = 1;
+                        endingSeriesNumber = (startingSeriesNumber + formCheck.Quantity) - 1;
+                        series = _stringService.ConvertToSeries(checkInventory!.SeriesPatern, checkInventory.NumberOfPadding, startingSeriesNumber, endingSeriesNumber);
+                        warningMsg = _checkValidationService.HitWarningSeries(checkInventory, series.Item1, series.Item2);
+                    }
+                        
                     await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
                     {
                         Id = Guid.Empty,
@@ -120,6 +128,82 @@ namespace Captive.Applications.CheckInventory.Services
             }
 
             return logDto;
+        }
+
+
+        private CheckInventoryDetail? GetLastCheckDetail(Tag tag, CheckOrders checkOrder, Guid checkInventoryId)
+        {
+            // Get both local and database records
+            var localQuery = _readUow.CheckInventoryDetails.GetAllLocal();
+            var dbQuery = _readUow.CheckInventoryDetails.GetAll();
+
+            // Apply filters to both queries
+            localQuery = ApplyFilters(localQuery, tag, checkOrder);
+            dbQuery = ApplyFilters(dbQuery, tag, checkOrder);
+
+            // Get the last record from both sources
+            var lastLocal = localQuery
+                .Where(x => x.CheckInventoryId == checkInventoryId)
+                .OrderByDescending(x => x.EndingNumber)
+                .FirstOrDefault();
+
+            var lastDb = dbQuery
+                .Where(x => x.CheckInventoryId == checkInventoryId)
+                .OrderByDescending(x => x.EndingNumber)
+                .FirstOrDefault();
+
+            // Return the record with the highest EndingNumber
+            if (lastLocal == null) return lastDb;
+            if (lastDb == null) return lastLocal;
+            
+            return lastLocal.EndingNumber > lastDb.EndingNumber ? lastLocal : lastDb;
+        }
+
+        private IQueryable<CheckInventoryDetail> ApplyFilters(IQueryable<CheckInventoryDetail> query, Tag tag, CheckOrders checkOrder)
+        {
+            // Branch + Product + FormCheck combination
+            if (tag.SearchByBranch && tag.SearchByProduct && tag.SearchByFormCheck)
+            {
+                return query.Where(x => 
+                    x.BranchId == checkOrder.BranchId && 
+                    x.ProductId == checkOrder.ProductId && 
+                    x.FormCheckId == checkOrder.FormCheckId);
+            }
+            // Branch + Product combination
+            else if (tag.SearchByBranch && tag.SearchByProduct)
+            {
+                return query.Where(x => 
+                    x.BranchId == checkOrder.BranchId && 
+                    x.ProductId == checkOrder.ProductId);
+            }
+            // Branch + FormCheck combination
+            else if (tag.SearchByBranch && tag.SearchByFormCheck)
+            {
+                return query.Where(x => 
+                    x.BranchId == checkOrder.BranchId && 
+                    x.FormCheckId == checkOrder.FormCheckId);
+            }
+            // Product + FormCheck combination
+            else if (tag.SearchByProduct && tag.SearchByFormCheck)
+            {
+                return query.Where(x => 
+                    x.ProductId == checkOrder.ProductId && 
+                    x.FormCheckId == checkOrder.FormCheckId);
+            }
+            // Single criteria
+            else
+            {
+                if (tag.SearchByBranch)
+                    query = query.Where(x => x.BranchId == checkOrder.BranchId);
+
+                if (tag.SearchByProduct)
+                    query = query.Where(x => x.ProductId == checkOrder.ProductId);
+
+                if (tag.SearchByFormCheck)
+                    query = query.Where(x => x.FormCheckId == checkOrder.FormCheckId);
+            }
+
+            return query;
         }
     }
 }

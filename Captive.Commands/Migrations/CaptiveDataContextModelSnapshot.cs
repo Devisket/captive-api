@@ -50,6 +50,10 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("BranchAddress5")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BranchCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BranchName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -140,7 +144,7 @@ namespace Captive.Commands.Migrations
                     b.Property<int>("EndingSeries")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsEnable")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("NumberOfPadding")
@@ -328,6 +332,9 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("FormType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOnHold")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsValid")
                         .HasColumnType("bit");

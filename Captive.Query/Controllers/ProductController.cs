@@ -25,15 +25,6 @@ namespace Captive.Queries.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{productId}/configuration")]
-        public async Task<IActionResult> GetProductConfiguration([FromRoute] Guid productId)
-        {
-            var response = await _mediator.Send(new GetProductConfigurationQuery() { ProductId = productId });
-
-            return Ok(response);
-        }
-
-
         [HttpGet("{productId}/formChecks")]
         public async Task<IActionResult> GetProductFormChecks([FromRoute] Guid productId)
         {

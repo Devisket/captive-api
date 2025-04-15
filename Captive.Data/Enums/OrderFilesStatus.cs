@@ -4,7 +4,8 @@ namespace Captive.Data.Enums
     public enum OrderFilesStatus
     {        
         Processing,
-        Validating,
+        Valid,
+        Invalid,
         Pending,
         Error,
         Completed

@@ -19,16 +19,20 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
         }   
         public async Task<Unit> Handle(CreateProductConfigurationCommand request, CancellationToken cancellationToken)
         {
-            var product = await _readUow.ProductTypes.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
+            var product = await _readUow.Products.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
 
             if (product == null)
                 throw new Exception($"Product with Id: {request.ProductId} doesnt exist");
 
-            var isFilenameConfigurationExist = await _readUow.ProductConfigurations.GetAll().AsNoTracking().AnyAsync(x => x.ProductId == request.ProductId && x.FileName.ToLower() == request.FileName.ToLower(), cancellationToken);
+            var isFilenameConfigurationExist = await _readUow.ProductConfigurations.GetAll()
+                .AsNoTracking()
+                .AnyAsync(x => x.ProductId == request.ProductId 
+                && x.FileName.ToLower() == request.FileName.ToLower() 
+                && (!request.Id.HasValue || request.Id.Value != x.Id), 
+                cancellationToken);
 
             if (isFilenameConfigurationExist)
                 throw new Exception($"Product configuration file name:{request.FileName} is conflicting");
-
 
             if (request.Id.HasValue)
             {
@@ -45,8 +49,6 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
 
                 return Unit.Value;
             }
-
-
 
             var productConfiguration = new ProductConfiguration()
             {

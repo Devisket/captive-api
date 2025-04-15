@@ -5,6 +5,6 @@ namespace Captive.Applications.FormsChecks.Queries.GetAllFormChecks
 {
     public class GetAllFormChecksQuery : IRequest<IEnumerable<FormCheckDto>>
     {
-        public Guid BankId { get; set; }
+        public Guid ProductId { get; set; }
     }
 }
