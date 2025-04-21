@@ -23,6 +23,7 @@ namespace Captive.Commands.Controllers
             {
                 BankId = bankId,
                 ProductName = request.ProductName,
+                ProductSequence = request.ProductSequence,
             });
             return Ok();
             
@@ -36,6 +37,7 @@ namespace Captive.Commands.Controllers
                 ProductId = productId,
                 BankId = bankId,
                 ProductName = request.ProductName,
+                ProductSequence = request.ProductSequence,
             });
 
             return Ok();

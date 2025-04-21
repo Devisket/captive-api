@@ -94,6 +94,7 @@ namespace Captive.Commands.Extensions
                 {
                     Id = Guid.Empty,
                     ProductName = "ACT Product",
+                    ProductSequence = 1,
                     BankInfoId = bankInfos[0].Id,
                     BankInfo = bankInfos[0]
                 },
@@ -101,6 +102,7 @@ namespace Captive.Commands.Extensions
                 {
                     Id = Guid.Empty,
                     ProductName = "CWS Product",
+                    ProductSequence = 2,
                     BankInfoId = bankInfos[0].Id,
                     BankInfo = bankInfos[0]
                 }
