@@ -22,19 +22,18 @@ namespace Captive.Applications.Product.Command.CreateProductType
 
         public async Task<Unit> Handle(CreateProductTypeCommand request, CancellationToken cancellationToken)
         {
-
             var isBankExist = await _readUow.Banks.GetAll().AsNoTracking().AnyAsync(x => x.Id == request.BankId, cancellationToken);
-
-            var isNameExist = await _readUow.Products.GetAll().AsNoTracking().AnyAsync(x=> x.BankInfoId == request.BankId && x.ProductName.ToLower() == request.ProductName.ToLower(), cancellationToken);
 
             if (!isBankExist)
                 throw new Exception($"BankID:{request.BankId} doesn't exist");
 
-            if (isNameExist)
-                throw new Exception($"Product name:{request.ProductName} is conflicting");
-
             if(request.ProductId.HasValue)
             {
+                var isNameExist = await _readUow.Products.GetAll().AsNoTracking().AnyAsync(x => x.BankInfoId == request.BankId && x.ProductName.ToLower() == request.ProductName.ToLower() && x.Id != request.ProductId.Value, cancellationToken);
+
+                if (isNameExist)
+                    throw new Exception($"Product name:{request.ProductName} is conflicting");
+
                 var productType = await _readUow.Products.GetAll().FirstOrDefaultAsync(x => x.Id == request.ProductId);
 
                 if (productType == null)
@@ -49,6 +48,12 @@ namespace Captive.Applications.Product.Command.CreateProductType
             }
             else
             {
+                var isNameExist = await _readUow.Products.GetAll().AsNoTracking().AnyAsync(x => x.BankInfoId == request.BankId && x.ProductName.ToLower() == request.ProductName.ToLower(), cancellationToken);
+
+                if (isNameExist)
+                    throw new Exception($"Product name:{request.ProductName} is conflicting");
+
+
                 await _writeUow.ProductTypes.AddAsync(new Data.Models.Product
                 {
                     BankInfoId = request.BankId,
