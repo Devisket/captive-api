@@ -14,6 +14,9 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.ProductName)
                 .IsRequired();
 
+            entity.Property(x => x.ProductSequence)
+                .IsRequired();
+
             entity.HasMany(x => x.FormChecks)
                 .WithOne(x => x.Product)
                 .HasForeignKey(x => x.ProductId)

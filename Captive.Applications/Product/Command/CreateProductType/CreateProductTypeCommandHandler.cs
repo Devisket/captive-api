@@ -43,6 +43,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
                 }
 
                 productType.ProductName = request.ProductName;
+                productType.ProductSequence = request.ProductSequence;
 
                 _writeUow.ProductTypes.Update(productType);
             }
@@ -51,7 +52,8 @@ namespace Captive.Applications.Product.Command.CreateProductType
                 await _writeUow.ProductTypes.AddAsync(new Data.Models.Product
                 {
                     BankInfoId = request.BankId,
-                    ProductName = request.ProductName
+                    ProductName = request.ProductName,
+                    ProductSequence = request.ProductSequence
                 }, cancellationToken);
             }
 

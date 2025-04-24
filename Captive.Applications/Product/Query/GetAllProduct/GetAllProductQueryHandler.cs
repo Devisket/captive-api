@@ -20,7 +20,8 @@ namespace Captive.Applications.Product.Query.GetAllProduct
                 .Select(x => new ProductResponse
                 {
                     ProductId = x.Id,
-                    ProductName= x.ProductName
+                    ProductName = x.ProductName,
+                    ProductSequence = x.ProductSequence
                 }).ToListAsync();
 
             return products;
