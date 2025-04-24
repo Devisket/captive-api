@@ -38,6 +38,7 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
                 .Include(x => x.BatchFile)
                 .Include(x => x.FloatingCheckOrders)
                 .Include(x => x.Product)
+                .OrderBy(x => x.Product.ProductSequence)
                 .Where(x => x.BatchFileId == request.BatchId).ToListAsync(cancellationToken);
 
             if (orderFiles == null || orderFiles.Count <= 0) 

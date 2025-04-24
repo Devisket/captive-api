@@ -24,6 +24,7 @@ namespace Captive.Data.Models
         public Guid? FormCheckId { get; set; }
 
         public Guid ProductId { get; set; }
+        public Product Product { get; set; }
 
         public Guid BranchId { get; set; }
         public ICollection<CheckInventoryDetail>? CheckInventoryDetail { get; set; } 
