@@ -22,6 +22,7 @@ namespace Captive.Applications.Values
                     Id = x.Id,
                     Value = x.BranchName,
                 })
+                .OrderBy(x => x.Value)
                 .ToListAsync();
 
             var productList = await _readUow.Products.GetAll()
