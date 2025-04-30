@@ -1,4 +1,5 @@
-﻿using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Data.Enums;
+using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Model.Dto;
 using MediatR;
@@ -38,6 +39,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
 
                 formCheck.CheckType = request.Detail.CheckType;
                 formCheck.FormType = request.Detail.FormType;
+                formCheck.FormCheckType = (FormCheckType) Enum.Parse(typeof(FormCheckType),request.Detail.FormCheckType);
                 formCheck.Description = request.Detail.Description;
                 formCheck.Quantity = request.Detail.Quantity;
                 formCheck.FileInitial = request.Detail.FileInitial ?? string.Empty;
@@ -54,6 +56,7 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                     throw new Exception($"Check Type: {request.Detail.CheckType} and Form type: {request.Detail.FormType} has already exist for ProductID: {request.ProductId}");
                 }
 
+                
                 var newlyCreatedFormCheck = new Captive.Data.Models.FormChecks
                 {
                     ProductId = request.ProductId,
@@ -61,18 +64,11 @@ namespace Captive.Applications.FormChecks.Command.CreateUpdateFormCheck
                     FormType = request.Detail.FormType,
                     Description = request.Detail.Description,
                     FileInitial = request.Detail.FileInitial ?? string.Empty,
+                    FormCheckType = (FormCheckType)Enum.Parse(typeof(FormCheckType), request.Detail.FormCheckType),
                     Quantity = request.Detail.Quantity
                 };
 
-                await _writeUow.FormChecks.AddAsync(new Captive.Data.Models.FormChecks
-                {
-                    ProductId = request.ProductId,
-                    CheckType = request.Detail.CheckType,
-                    FormType = request.Detail.FormType,
-                    Description = request.Detail.Description,
-                    FileInitial = request.Detail.FileInitial ?? string.Empty,
-                    Quantity = request.Detail.Quantity
-                }, cancellationToken);
+                await _writeUow.FormChecks.AddAsync(newlyCreatedFormCheck, cancellationToken);
 
                 return FormCheckDto.ToDto(newlyCreatedFormCheck);
             }

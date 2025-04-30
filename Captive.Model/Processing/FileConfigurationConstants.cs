@@ -19,5 +19,6 @@
         public static readonly string PASSWORD = "password";
         public static readonly string ENABLE_BARCODE = "enable_barcode";
         public static readonly string Batch = "batch";
+        public static readonly string IsEncrypted = "isEncrypted";
     }
 }

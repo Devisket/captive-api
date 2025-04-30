@@ -15,15 +15,21 @@ namespace Captive.Model.Processing.Configurations
         [JsonPropertyName("tableName")]
         public string TableName {  get; set; }
 
-        [JsonPropertyName("columnDefinition")]
-        public List<MdbColumnDefinition> ColumnDefinition { get; set; }
+        [JsonPropertyName("IsEncrypted")]
+        public bool IsEncrypted { get; set; }
+
+        [JsonPropertyName("Password")]
+        public string? Password {  get; set; }
+
+        [JsonPropertyName("columnDefinitions")]
+        public List<MdbColumnDefinition> ColumnDefinitions { get; set; }
 
 
         public Dictionary<string,string> ToDictionary()
         {
             var dictionary = new Dictionary<string, string>();
 
-            foreach (var columnDefinition in ColumnDefinition)
+            foreach (var columnDefinition in ColumnDefinitions)
                 dictionary.Add(columnDefinition.FieldName, columnDefinition.ColumnName);
             
             return dictionary;

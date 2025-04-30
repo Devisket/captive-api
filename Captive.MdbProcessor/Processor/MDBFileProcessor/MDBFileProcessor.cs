@@ -16,9 +16,14 @@ namespace Captive.Processing.Processor.MDBFileProcessor
             _configuration = configuration;
         }
 
+
+        //TODO
+        /*
+         * - Do another route when dealing with encrypted dbf
+         */
         public IEnumerable<CheckOrderDto> Extractfile(OrderfileDto orderFile, MdbConfiguration config)
         {
-            List<CheckOrderDto> checkOrders = new List<CheckOrderDto>();
+            List<CheckOrderDto> checkOrders = new List<CheckOrderDto>(); 
 
             this.columnFields = config.ToDictionary();
 
@@ -30,9 +35,11 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
             var fileDirectory = String.Concat(rootPath, orderFile.FilePath);
 
+            var password = config.HasPassword ? $";Jet OLEDB:Database Password={config.Password}" : string.Empty;
+
             string strConnectionString =
-                $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory}" +
-                ";Jet OLEDB:Database Password=captain" +
+                $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory}" 
+                + password +
                 ";Mode=Share Exclusive;Persist Security Info=True;";
 
             // Important part - using mdw file
@@ -110,7 +117,6 @@ namespace Captive.Processing.Processor.MDBFileProcessor
             {
                 throw new Exception($"Field name: {fieldName} doesn't exist");
             };
-        }
-                
+        }                
     }
 }
