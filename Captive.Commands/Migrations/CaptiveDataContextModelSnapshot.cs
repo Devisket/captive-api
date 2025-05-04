@@ -285,6 +285,8 @@ namespace Captive.Commands.Migrations
 
                     b.HasIndex("OrderFileId");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("check_orders", (string)null);
                 });
 
@@ -382,6 +384,9 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("FormType")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("HasBranchCodeInSeries")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -493,6 +498,9 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ProductSequence")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BankInfoId");
@@ -517,6 +525,13 @@ namespace Captive.Commands.Migrations
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsChangeFileType")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -669,7 +684,15 @@ namespace Captive.Commands.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Captive.Data.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OrderFile");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.FloatingCheckOrder", b =>

@@ -1,4 +1,5 @@
-﻿using Captive.Model;
+﻿using Captive.MdbProcessor.Processor.Interfaces;
+using Captive.Model;
 using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +7,7 @@ using System.Data.OleDb;
 
 namespace Captive.Processing.Processor.MDBFileProcessor
 {
-    public class MDBFileProcessor : IMDBFileProcessor
+    public class MDBFileProcessor : IProcessor<MdbConfiguration>
     {
         private Dictionary<string, string> columnFields;
         private readonly IConfiguration _configuration;
@@ -16,9 +17,13 @@ namespace Captive.Processing.Processor.MDBFileProcessor
             _configuration = configuration;
         }
 
+        //TODO
+        /*
+         * - Do another route when dealing with encrypted dbf'
+         */
         public IEnumerable<CheckOrderDto> Extractfile(OrderfileDto orderFile, MdbConfiguration config)
         {
-            List<CheckOrderDto> checkOrders = new List<CheckOrderDto>();
+            List<CheckOrderDto> checkOrders = new List<CheckOrderDto>(); 
 
             this.columnFields = config.ToDictionary();
 
@@ -30,9 +35,11 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
             var fileDirectory = String.Concat(rootPath, orderFile.FilePath);
 
+            var password = config.HasPassword ? $";Jet OLEDB:Database Password={config.Password}" : string.Empty;
+
             string strConnectionString =
-                $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory}" +
-                ";Jet OLEDB:Database Password=captain" +
+                $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory}" 
+                + password +
                 ";Mode=Share Exclusive;Persist Security Info=True;";
 
             // Important part - using mdw file
@@ -56,7 +63,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
                     while (reader.Read())
                     {
-                        var fieldValues = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
+                        var fieldValues = Enumerable.Range(0, reader.FieldCount).ToDictionary(key => reader.GetName(key).ToLower(), reader.GetValue);
 
                         if (fieldValues == null)
                             continue;
@@ -68,8 +75,8 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                             BRSTN = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRSTN)) ?? string.Empty,
                             BranchCode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRANCH_CODE)) ?? string.Empty,
                             AccountNumber = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NUMBER)) ?? string.Empty,
-                            AccountName1 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_1)),
-                            AccountName2 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_2)),
+                            AccountName1 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_1)) ?? string.Empty,
+                            AccountName2 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_2)) ?? string.Empty,
                             Quantity = Convert.ToInt32(GetValue(fieldValues, GetColumnName(FileConfigurationConstants.QUANTITY)) ?? "0"),
                             Concode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CONCODE)),
                             DeliverTo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.DELIVER_TO)),
@@ -77,7 +84,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                             EndingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ENDING_SERIAL_NO)),                          
                         };
 
-                        checkOrder.MainAccountName = checkOrder.AccountName1 + (!string.IsNullOrEmpty(checkOrder.AccountName2) ? (" " + checkOrder.AccountName2) :  string.Empty);
+                        checkOrder.MainAccountName = String.Format("{0} {1}", checkOrder.AccountName1, checkOrder.AccountName2);
 
                         checkOrders.Add(checkOrder);
                     }
@@ -97,11 +104,10 @@ namespace Captive.Processing.Processor.MDBFileProcessor
 
         public string? GetValue(Dictionary<string, object> fieldValues, string fieldName)
         {
-
             if (String.IsNullOrEmpty(fieldName))
                 return string.Empty;
 
-            if(fieldValues.TryGetValue(fieldName, out object value))
+            if(fieldValues.TryGetValue(fieldName.ToLower(), out object value))
             {
                 var valueString = Convert.ToString(value) ?? string.Empty;
                 return valueString;
@@ -110,7 +116,6 @@ namespace Captive.Processing.Processor.MDBFileProcessor
             {
                 throw new Exception($"Field name: {fieldName} doesn't exist");
             };
-        }
-                
+        }                
     }
 }

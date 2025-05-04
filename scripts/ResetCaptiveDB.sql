@@ -854,13 +854,13 @@
 	
 	/*Seed product_configuration*/
 	INSERT INTO product_configuration (Id, FileName, ConfigurationData, ConfigurationType, isActive, ProductId) VALUES 
-	(NEWID(), 'ACT',N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
+	(NEWID(), 'ACT',N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinitions":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
 	'MdbConfiguration',1, (select Id from products where ProductName = 'ACT Product')),
-	(NEWID(), 'CWS', N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinition":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
+	(NEWID(), 'CWS', N'{"hasPassword":1,"hasBarcode":1,"tableName":"ChkBook","columnDefinitions":[{"fieldName":"checkType","columnName":"ChkType"},{"fieldName":"brstn","columnName":"RTNO"},{"fieldName":"accountNumber","columnName":"Acctno"},{"fieldName":"Account","columnName":"ChkType"},{"fieldName":"accountName1","columnName":"AcctNm1"},{"fieldName":"accountName2","columnName":"AcctNm2"},{"fieldName":"concode","columnName":"ContCode"},{"fieldName":"quantity","columnName":"OrderQty"},{"fieldName":"formType","columnName":"FormType"},{"fieldName":"batch","columnName":"batch"}]}',
 	'MdbConfiguration',1,(select Id from products where ProductName = 'CWS Product'));
 	
 	/*Seed check_inventory*/
-	INSERT INTO check_inventory (Id, TagId, SeriesPatern, WarningSeries, NumberOfPadding, StartingSeries, isRepeating, IsEnable, CurrentSeries, EndingSeries) VALUES
+	INSERT INTO check_inventory (Id, TagId, SeriesPatern, WarningSeries, NumberOfPadding, StartingSeries, isRepeating, IsActive, CurrentSeries, EndingSeries) VALUES
 	(NEWID(), (select Id from tag where TagName ='DefaultTag'), 'ABCD', 100, 5, 1, 0, 1, 0, 150),
 	(NEWID(), (select Id from tag where TagName ='CategoryA'), 'XYZ', 100, 5, 1, 0, 1, 0, 150)
 	

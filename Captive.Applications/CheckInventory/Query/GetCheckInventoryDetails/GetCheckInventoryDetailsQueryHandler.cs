@@ -9,4 +9,6 @@ namespace Captive.Applications.CheckInventory.Query.GetCheckInventoryDetails
     internal class GetCheckInventoryDetailsQueryHandler
     {
     }
+
+    
 }

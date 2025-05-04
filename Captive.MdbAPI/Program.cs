@@ -2,6 +2,9 @@
 using Captive.Data;
 using Captive.Data.UnitOfWork.Read;
 using Captive.MdbProcessor.Processor.DbfGenerator;
+using Captive.MdbProcessor.Processor.DbfProcessor;
+using Captive.MdbProcessor.Processor.Interfaces;
+using Captive.Model.Processing.Configurations;
 using Captive.Processing.Processor.MDBFileProcessor;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +25,8 @@ namespace Captive.MdbAPI
 
             builder.Services.AddDbContext<CaptiveDataContext>(options => options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]));
             builder.Services.AddScoped<IReadUnitOfWork, ReadUnitOfWork>();
-            builder.Services.AddScoped<IMDBFileProcessor, MDBFileProcessor>();
+            builder.Services.AddScoped<IProcessor<MdbConfiguration>, MDBFileProcessor>();
+            builder.Services.AddScoped<IProcessor<DbfConfiguration>, DbfProcessor>();
             builder.Services.AddScoped<IDbfGenerator, DbfGenerator>();
 
             var app = builder.Build();

@@ -1,0 +1,40 @@
+        Page No. 1
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         METRO CCWS CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260021/GRACE PARK CENTER
+
+
+        * Batch #-->CWS307
+        007004555178 5                               
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261402/KAMUNING BRANCH
+
+
+        * Batch #-->CWS307
+        007229802093 3 ASIATRADERS CORP              
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262948/G ARANETA AVE-QUEZON AVENUE BR
+
+
+        * Batch #-->CWS307
+        007611068570 20 TOYOTA VALENZUELA INC.        
+
+
+        ** Sub Total **20
+
+

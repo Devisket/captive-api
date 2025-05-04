@@ -1,6 +1,5 @@
 ﻿using Captive.Applications.Product.Command.CreateProductConfiguration;
 using Captive.Data.Enums;
-using Captive.Model.Dto;
 using Captive.Model.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +26,9 @@ namespace Captive.Commands.Controllers
                 ProductId = productId,
                 FileName = request.FileName,
                 ConfigurationType = (ConfigurationType) Enum.Parse(typeof(ConfigurationType), request.ConfigurationType),
-                ConfigurationData = request.ConfigurationData
+                ConfigurationData = request.ConfigurationData,
+                FileType = request.FileType,
+                IsChangeFileType = request.IsChangeFileType,
             });
 
             return Ok();
@@ -42,7 +43,9 @@ namespace Captive.Commands.Controllers
                 Id = request.Id,        
                 ConfigurationData = request.ConfigurationData,
                 ConfigurationType = (ConfigurationType) Enum.Parse(typeof(ConfigurationType), request.ConfigurationType),
-                FileName = request.FileName  
+                FileName = request.FileName,
+                FileType = request.FileType,
+                IsChangeFileType = request.IsChangeFileType,
             });
 
             return Ok();

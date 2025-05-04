@@ -34,6 +34,9 @@ namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
                             break;
                         case ".xlsx":
                             break;
+                        case ".dbf":
+                            checkOrders = await _checkOrderService.ExtractDbf(file);
+                            break;
                         case ".mdb":
                             checkOrders = await _checkOrderService.ExtractMdb(file);
                             break;

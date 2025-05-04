@@ -1,0 +1,1167 @@
+        Page No. 1
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010260076/PASAY-LIBERTAD BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007019519550 2                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010260186/RETIRO-MAYON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007061509662 2                               
+        007061513325 1                               
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261305/RAON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007219804250 1                               
+        007219804918 6                               
+
+
+        ** Sub Total **7
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261402/KAMUNING BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007229812749 1 LEA L ESPALLARDO              
+        007229814156 2 ISABELLE ANNE C PIMENTEL      
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261473/168 MALL BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007256201115 2                               
+
+
+        ** Sub Total **2
+
+
+        Page No. 2
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261473/168 MALL BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007256202014 5                               
+        007256204262 4                               
+        007256510274 10                               
+
+
+        ** Sub Total **19
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261648/PASAY-ROTONDA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007271514260 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261716/DAPITAN-BANAUE BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007278808285 1                               
+        007278822270 2                               
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261884/QUIRINO AVE.-LEON GUINTO
+
+
+        * Batch #-->ACT999_ACT001
+        007293510055 2 CARMENCITA DELA LUNA UY       
+        007293510861 1                               
+
+
+        ** Sub Total **3
+
+
+        Page No. 3
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261981/CALUMPANG-MARIKINA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007315515641 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262375/HONORIO LOPEZ BLVD-BALUT BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007444507426 2                               
+        007444510370 2 EUGENE CHENG                  
+
+
+        ** Sub Total **4
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262634/ZABARTE ROAD-NOVALICHES BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007445017295 2 ANA MARIE C. MANGAHAS         
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262757/EASTWOOD CITY BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007504512408 1                               
+        007504515245 1                               
+        007504515695 5                               
+        007504527936 5                               
+
+
+        ** Sub Total **12
+
+
+        Page No. 4
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262773/EL GRANDE-BF HOMES BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007465003193 1 KEDAR NEUPANE OR              
+                         ARLENE NEUPANE                
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010263015/STO.CRISTO-SAN NICOLAS ST. BR
+
+
+        * Batch #-->ACT999_ACT001
+        007645023834 1                               
+        007645025195 5                               
+        007645026272 1                               
+        007645026388 1                               
+        007645027910 2                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010263183/GREENHILLS-EISENHOWER BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007614021590 1                               
+        007614030891 2                               
+        007614035052 1                               
+
+
+        ** Sub Total **4
+
+
+        Page No. 5
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010263183/GREENHILLS-EISENHOWER BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007614036709 1                               
+        007614036970 2                               
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010264263/LEGASPI VILLAGE-MIDORI TOWER BR
+
+
+        * Batch #-->ACT999_ACT001
+        007886001114 2                               
+        007886001335 1 DINA D. LUCENARIO             
+        007886001912 2 JIT SHYAN LIM OR              
+                         CHOR BOON JASLIN CHUA         
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/030260221/DAVAO - DAMOSA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007558003690 5                               
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/050260120/DAGUPAN-TAPUAC BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007569006038 2                               
+
+
+        ** Sub Total **2
+
+
+        Page No. 6
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260042/GUAGUA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007133511268 1 ENCARNACION C CAPATI          
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260097/SN FERNANDO DOLORES-MCARTHUR BR
+
+
+        * Batch #-->ACT999_ACT001
+        007372530088 1                               
+        007372530096 1                               
+        007372530100 1                               
+        007372530118 1                               
+        007372530126 1                               
+        007372530134 1                               
+        007372530142 1                               
+        007372530150 1                               
+        007372530169 1                               
+
+
+        ** Sub Total **9
+
+
+        Page No. 7
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260097/SN FERNANDO DOLORES-MCARTHUR BR
+
+
+        * Batch #-->ACT999_ACT001
+        007372530177 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260110/CLARK BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007377014193 1 SUYONG KIM                    
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260123/SAN FERNANDO-SINDALAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007466515970 5 ALEXANDER A. SARDIDO OR       
+                         MARILYN G. SARDIDO            
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260178/BALANGA CITY HIGHWAY BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007566003984 2 JENNA KATHLEEN D. ZABALA      
+        007566024477 3 ABIGAIL HABAGAT REYES OR      
+                         RAMCIS YAMILAO REYES          
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/110260099/LEYTE - PALOMPON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007594001075 1 GILBERT LIM SY OR             
+                         SHERYL TORILLAS SY            
+
+
+        ** Sub Total **1
+
+
+        Page No. 8
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/110260099/LEYTE - PALOMPON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007594001075 1 GILBERT L SY OR               
+                         SHERYL T SY                   
+        007594001083 20 GEORGE LIOK SR OR SYLVIA LIOK 
+                         OR AMANDA LIOK OR NEHLBY OLDEN
+        007594001180 1 MARCELINO Y DYSAM OR JOSEPHINE
+                         DYSAM OR KLAUS VINCENT DYSAM  
+        007594001326 3 SERGIO YU OR SEAN ELVIN YU OR 
+                         MARINA YU                     
+        007594002632 1 LEO R. CORTES OR              
+                         FAITH CORTES AYA-AY           
+        007594002870 21 RODULFO LAGUTOM SANICO JR     
+        007594004309 7 JOSEPHINE TEE PINAR OR        
+                         ADOLFO ASTILLERO PINAR        
+        007594005062 1 CRISPIN L BADILLA III OR      
+                         CECILE P BADILLA              
+        007594005097 3 NOONLACE ORANGE ALVAREZ LIOK  
+
+
+        ** Sub Total **58
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/120260076/BAGUIO-LUCBAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007573004546 10 JULIA O PINGKIYEN             
+
+
+        ** Sub Total **10
+
+
+        Page No. 9
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/120260076/BAGUIO-LUCBAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007573017710 1 INDERJEET                     
+        007573017877 1                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/130260105/MALOLOS-PASEO DEL CONGRESO BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007305519045 1 MARCIANO CAMITAN OR           
+                         LOURDES CAMITAN               
+        007305524065 1                               
+        007305538015 2                               
+
+
+        ** Sub Total **4
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/130260231/STA. MARIA-BAGBAGUIN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007541007683 1 FIDENCIO LAMEREZ LOJA         
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/200260064/BAYAWAN CITY, NEGROS OR. BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007497902688 12 FELISA P ABRASALDO OR         
+                         JONNY C ABRASALDO             
+
+
+        ** Sub Total **12
+
+
+        Page No. 10
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/210260025/SURIGAO LUNA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007457002501 10 THELMA C. PELAEZ              
+        007457016642 5 JAIMENITO C. GO OR            
+                         ROTCHILLE S. GO               
+
+
+        ** Sub Total **15
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/230260018/TUGUEGARAO-MAIN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007103507843 4 CHRISTIAN EDWARD C. TAN OR    
+                         JEROME C. UI                  
+        007103511085 5 HUAWAN CHUA CAI OR HUAMIN CAI 
+                         OR HUADONG CAI                
+        007103515862 2 MAE M PANALIGAN               
+        007103516052 2 REX F. PUA                    
+        007103520785 2 TAJ HOTEL                     
+        007103530594 2 JOGINDER SINGH OR             
+                         HARWINDER SINGH               
+
+
+        ** Sub Total **17
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/310260019/CALAMBA-CROSSING BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007146514592 1 CHERRISH LIGPITAN CAPACIO AND 
+                         LYDIA BUENAOBRA LIGPITAN      
+
+
+        ** Sub Total **1
+
+
+        Page No. 11
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/310260019/CALAMBA-CROSSING BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007146515149 2 MIA RAQUEL D. NATIVIDAD OR    
+                         ANTONINO L. NATIVIDAD         
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260076/PASAY-LIBERTAD BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007019518333 1                               
+        007019519259 10 LIMSON MARKETING INC          
+        007019519739 5                               
+
+
+        ** Sub Total **16
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260940/BAGBAGUIN-VALENZUELA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007165522180 25                               
+        007165555240 2                               
+
+
+        ** Sub Total **27
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261059/TOMAS MORATO BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007180522073 2 SAFEHOUSE SECURITY AGENCY     
+                         CORP.                         
+        007180526281 1 XTREME CLEAN HUB CORP.        
+
+
+        ** Sub Total **3
+
+
+        Page No. 1
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261059/TOMAS MORATO BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007180526664 6 LAMINAR AVIATION INC.         
+        007180558574 1                               
+        007180558876 3                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261392/TUGATOG-MALABON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007228512261 10                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261402/KAMUNING BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007229815179 2                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261431/EDSA-CORINTHIAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007243805372 3 KUA'S ENTERPRISE              
+        007243805933 2 PHIL. PLUMBING CO. INC.       
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261716/DAPITAN-BANAUE BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007278806380 3 GLOBIS INC.                   
+
+
+        ** Sub Total **3
+
+
+        Page No. 2
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261716/DAPITAN-BANAUE BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007278806800 3                               
+        007278808099 1                               
+        007278808099 1                               
+        007278810646 4                               
+        007278811200 1                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261884/QUIRINO AVE.-LEON GUINTO
+
+
+        * Batch #-->ACT999_ACT001
+        007293510586 5 ALFONSO C OBSUM               
+                         JOCELYN C OBSUM               
+        007293515049 1 LEO HOLDINGS CO. INC.         
+        007293521669 1 MALATE CATHOLIC SCHOOL INC    
+        007293521782 2 TECHPICONSTRUCTION INC        
+
+
+        ** Sub Total **9
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262045/CONGRESSIONAL AVE. BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007339518129 1 MGLM SALON                    
+
+
+        ** Sub Total **1
+
+
+        Page No. 3
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262045/CONGRESSIONAL AVE. BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007339535368 10 RHEJ TRENDY AUTO SUPPLY       
+        007339535457 4                               
+
+
+        ** Sub Total **14
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262375/HONORIO LOPEZ BLVD-BALUT BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007444510214 1 BUILD-IT BRO'S CONSTRUCTION   
+                         SERVICES                      
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262757/EASTWOOD CITY BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007504514699 6                               
+
+
+        ** Sub Total **6
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010263015/STO.CRISTO-SAN NICOLAS ST. BR
+
+
+        * Batch #-->ACT999_ACT001
+        007645022889 3                               
+        007645023737 6                               
+        007645024628 1                               
+        007645024792 10                               
+
+
+        ** Sub Total **20
+
+
+        Page No. 4
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010263015/STO.CRISTO-SAN NICOLAS ST. BR
+
+
+        * Batch #-->ACT999_ACT001
+        007645025055 3                               
+        007645026795 3                               
+        007645027406 2                               
+
+
+        ** Sub Total **8
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010263183/GREENHILLS-EISENHOWER BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007614030140 2                               
+        007614035168 2 007-614-03516-8               
+        007614036016 1                               
+        007614068430 5                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010263895/MANDALUYONG-PIONEER BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007248841768 1                               
+        007248841776 1                               
+
+
+        ** Sub Total **2
+
+
+        Page No. 5
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010263895/MANDALUYONG-PIONEER BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007248841784 1                               
+        007248841792 1                               
+        007248841806 1                               
+        007248841814 1                               
+        007248841822 1                               
+        007248841830 1                               
+        007248841849 1                               
+        007248841857 1                               
+
+
+        ** Sub Total **8
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010264344/JP LAUREL-SAN MIGUEL MANILA BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007774001685 10 TRITON MOBILE REFFER CORP     
+        007774014221 1                               
+
+
+        ** Sub Total **11
+
+
+        Page No. 6
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/020260435/CEBU-PARKMALL BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007533041481 1                               
+        007533041490 1                               
+        007533041503 1                               
+        007533041511 1                               
+        007533041520 1                               
+        007533041538 1                               
+        007533041546 1                               
+        007533041554 1                               
+        007533041562 1                               
+        007533041570 1                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/030260221/DAVAO - DAMOSA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007558010688 1                               
+
+
+        ** Sub Total **1
+
+
+        Page No. 7
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/030260263/DAVAO-BANGOY CHINATOWN BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007589003485 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/060260097/SN FERNANDO DOLORES-MCARTHUR BR
+
+
+        * Batch #-->ACT999_ACT001
+        007372519645 5 NOVIGRAD INGREDIENTS CORP.    
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/060260123/SAN FERNANDO-SINDALAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007466536462 1 SUNDAY PROJECT INC. DBA       
+                         THE NEW CAFE NOELLE RESTAURANT
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/060260178/BALANGA CITY HIGHWAY BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007566018175 1 JCHUA ENTERPRISE              
+        007566018256 1 MTAN GREEN OIL GAS STATION    
+        007566046403 3 JAZZLOVE SUPERMART            
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/110260099/LEYTE - PALOMPON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007594003906 1 ANDALES ENTERPRISES           
+
+
+        ** Sub Total **1
+
+
+        Page No. 8
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/110260099/LEYTE - PALOMPON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007594004139 1 ABRAHAM B ACORDA DBA          
+                         ABRAHAM B ACORDA STORE        
+        007594005305 5 NAVLINK TECHNOLOGY            
+        007594005356 1 IMMA APPLIANCES TRADING       
+        007594005925 4 EDLYN'S STORE                 
+
+
+        ** Sub Total **11
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/120260076/BAGUIO-LUCBAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007573007103 2 HATCH COFFEE                  
+        007573017770 1 BST CONSUMER GOODS TRADING    
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/130260231/STA. MARIA-BAGBAGUIN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007541008264 3 JA-YEN TILES STORE            
+        007541019258 2 ROIE'S HARDWARE &             
+                         CONST SUPPLY                  
+        007541039879 2 NUTRIGRAIN RICE MILLING       
+
+
+        ** Sub Total **7
+
+
+        Page No. 9
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/150260033/LA UNION-M.L. QUEZON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007526916928 3 ROBERT SUA PUA PHEE OR        
+                         MA CECILIA E PUA PHEE         
+        007526917215 2 NEE MEE FOODS CORP            
+        007526917258 20 TOYOTA LA UNION               
+        007526972542 1                               
+        007526972550 1                               
+        007526972569 1                               
+        007526972577 1                               
+        007526972585 1                               
+        007526972593 1                               
+        007526972607 1                               
+        007526972615 1                               
+
+
+        ** Sub Total **33
+
+
+        Page No. 10
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/150260033/LA UNION-M.L. QUEZON BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007526972623 1                               
+        007526972631 1                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/190260132/FPIP, STO. TOMAS-BATANGAS BR.
+
+
+        * Batch #-->ACT999_ACT001
+        007736007670 3 CROSS TRUCKING OPERATION      
+                         AND LOGISTICS                 
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/210260025/SURIGAO LUNA BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007457037399 3 RADIOWEALTH FINANCE           
+                         COMPANY, INC.                 
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/230260018/TUGUEGARAO-MAIN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007103515455 20 WIL-LYS CEREAL TRADING CORP   
+        007103515617 1 CANDELARIA S. ROA OR          
+                         GERONIMO D. ROA               
+        007103518195 2 MARB CIVIL ENGINEERING CONST. 
+
+
+        ** Sub Total **23
+
+
+        Page No. 11
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/230260018/TUGUEGARAO-MAIN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007103551052 2 KIMBERLIN ENTERPRISES         
+        007103551079 1 TUGUEGARAO EMPORIUM           
+        007103551320 5 R30 PHARMA AND MEDICAL        
+                         SUPPLIES TRADING              
+
+
+        ** Sub Total **8
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/310260019/CALAMBA-CROSSING BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007146517745 5 RICEOPTION CORPORATION        
+        007146519390 4 MAR ERICSON FAJARDO HERB      
+                         AND SPICES                    
+
+
+        ** Sub Total **9
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/310260103/CALAMBA-REAL BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007378008766 1 NATCORP CAREER GROWTH &       
+                         MANPOWER SERVICES INC         
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/310260158/CALAMBA MARKET BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007396509330 3 RIGUEL ENTERPRISES            
+
+
+        ** Sub Total **3
+
+
+        Page No. 12
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                         ACCOUNT ONE CHECKBOOKS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/370260017/MASBATE-MASBATE BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007369006440 2 MASBATE TOP FOOD SPECIALIST   
+        007369011460 2 BEST JAR FOOD CORP            
+
+
+        ** Sub Total **4
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/530260019/MIDSAYAP BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007334523841 3                               
+        007334527995 2 BEANS & BRICKS CAFE           
+        007334558327 5                               
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/660260015/CATARMAN BRANCH
+
+
+        * Batch #-->ACT999_ACT001
+        007346046704 2 AMOEC MPC                     
+
+
+        ** Sub Total **2
+
+

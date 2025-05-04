@@ -1,10 +1,11 @@
 ﻿
+using Captive.Model.Processing.Configurations.Interfaces;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Captive.Model.Processing.Configurations
 {
-    public class MdbConfiguration
+    public class MdbConfiguration : IPassword, ITable
     {
         [JsonPropertyName("hasPassword")]
         public bool HasPassword { get; set; }
@@ -13,17 +14,23 @@ namespace Captive.Model.Processing.Configurations
         public bool HasBarcode { get; set; }
 
         [JsonPropertyName("tableName")]
-        public string TableName {  get; set; }
+        public string TableName {  get; set; } = string.Empty;
 
-        [JsonPropertyName("columnDefinition")]
-        public List<MdbColumnDefinition> ColumnDefinition { get; set; }
+        [JsonPropertyName("IsEncrypted")]
+        public bool IsEncrypted { get; set; }
+
+        [JsonPropertyName("Password")]
+        public string? Password {  get; set; }
+
+        [JsonPropertyName("columnDefinitions")]
+        public List<MdbColumnDefinition> ColumnDefinitions { get; set; }
 
 
         public Dictionary<string,string> ToDictionary()
         {
             var dictionary = new Dictionary<string, string>();
 
-            foreach (var columnDefinition in ColumnDefinition)
+            foreach (var columnDefinition in ColumnDefinitions)
                 dictionary.Add(columnDefinition.FieldName, columnDefinition.ColumnName);
             
             return dictionary;

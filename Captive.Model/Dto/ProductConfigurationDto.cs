@@ -10,7 +10,8 @@ namespace Captive.Model.Dto
         public required string FileName { get; set; }
         public required string ConfigurationData { get; set; }
         public required string ConfigurationType { get; set; }
-
+        public bool IsChangeFileType { get; set; }
+        public string? FileType { get; set; } = string.Empty;
 
         public static ProductConfigurationDto ToDto(ProductConfiguration input)
         {
@@ -20,7 +21,9 @@ namespace Captive.Model.Dto
                 ProductId = input.ProductId,
                 FileName = input.FileName,
                 ConfigurationData = input.ConfigurationData,
-                ConfigurationType = input.ConfigurationType.ToString()
+                ConfigurationType = input.ConfigurationType.ToString(),
+                IsChangeFileType = input.IsChangeFileType,
+                FileType = input.FileType.ToString(),
             };
         }
     }

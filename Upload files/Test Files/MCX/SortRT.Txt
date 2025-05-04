@@ -1,0 +1,21 @@
+        Page No. 1
+        04/10/2025
+
+
+              Summary of RT nos / # of Books for METROBANK
+                           CHECKING ACCOUNTS
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260872/PLAZA CERVANTES CENTER
+
+
+        * Batch #-->MCX9435.9435X
+        007014516758 7 PHIL. BELT MFG. CORP.         
+        007014915245 3                               
+
+
+        ** Sub Total **10
+
+

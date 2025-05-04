@@ -46,7 +46,12 @@ namespace Captive.Applications.CheckInventory.Services
                 var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsActive, cancellationToken);
 
                 if (!string.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
-                {
+                { 
+                    if (formCheck.HasBranchCodeInSeries)
+                    {
+                        //checkOrder.PreStartingSeries = String.Concat() 
+                    }
+
                     await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
                     {
                         Id = Guid.Empty,

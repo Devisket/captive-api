@@ -1,0 +1,31 @@
+        Page No. 1
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+             METROBANK - Commercial Checking Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010260872 PLAZA CERVANTES CENTER(014)
+
+        * Batch Number: MCX9435.9435X
+
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145615401 0145615500
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145615501 0145615600
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145615601 0145615700
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145615701 0145615800
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145615801 0145615900
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145615901 0145616000
+        007-014-51675-8 PHIL. BELT MFG. CORP.           1 B 0145616001 0145616100
+        007-014-91524-5                                 1 B 0145616101 0145616200
+        007-014-91524-5                                 1 B 0145616201 0145616300
+        007-014-91524-5                                 1 B 0145616301 0145616400
+
+
+        ** Sub Total **10
+
+
+
+
