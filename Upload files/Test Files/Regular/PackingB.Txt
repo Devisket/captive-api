@@ -1,0 +1,431 @@
+        Page No. 1
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010260076 PASAY-LIBERTAD BRANCH(019)
+
+        * Batch Number: REG707
+
+        007-000-46491-7                                 1 B 0192651001 0192651100
+        007-000-46491-7                                 1 B 0192651101 0192651200
+        007-000-46491-7                                 1 B 0192651201 0192651300
+        007-000-46491-7                                 1 B 0192651301 0192651400
+        007-000-46491-7                                 1 B 0192651401 0192651500
+        007-000-46491-7                                 1 B 0192651501 0192651600
+        007-000-46491-7                                 1 B 0192651601 0192651700
+        007-000-46491-7                                 1 B 0192651701 0192651800
+        007-000-46491-7                                 1 B 0192651801 0192651900
+        007-000-46491-7                                 1 B 0192651901 0192652000
+        007-019-51341-2 MARISSA LIM MARQUEZ             1 B 0192652001 0192652100
+
+
+        ** Sub Total **11
+
+
+
+
+        Page No. 2
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010260212 BACLARAN BRANCH(070)
+
+        * Batch Number: REG707
+
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598001 0704598100
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598101 0704598200
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598201 0704598300
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598301 0704598400
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598401 0704598500
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598501 0704598600
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598601 0704598700
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598701 0704598800
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598801 0704598900
+        007-070-50026-0 DAUGHTERS OF SAINT PAUL         1 B 0704598901 0704599000
+
+
+        ** Sub Total **10
+
+
+
+
+        Page No. 3
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010260571 LEGASPI VILLAGE-MAKATI BRANCH(055)
+
+        * Batch Number: REG707
+
+        007-055-52032-8 007055520328                    1 B 0555784901 0555785000
+
+
+        ** Sub Total **1
+
+
+
+
+        Page No. 4
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010261059 TOMAS MORATO BRANCH(180)
+
+        * Batch Number: REG707
+
+        007-180-52544-7 PHIL GEO CALIBRATION &          1 B 1804115701 1804115800
+                        MEASUREMENT LAB CORP          
+
+
+        ** Sub Total **1
+
+
+
+
+        Page No. 5
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010261363 BUENDIA-DIAN BRANCH(227)
+
+        * Batch Number: REG707
+
+        007-227-52218-2 LAM POULTRY FARM                1 B 2274604101 2274604200
+        007-227-52218-2 LAM POULTRY FARM                1 B 2274604201 2274604300
+        007-227-52258-1                                 1 B 2274604301 2274604400
+
+
+        ** Sub Total **3
+
+
+
+
+        Page No. 6
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010261402 KAMUNING BRANCH(229)
+
+        * Batch Number: REG707
+
+        007-229-80190-9 CRADLE OF JOY                   1 B 2292076401 2292076500
+        007-229-80190-9 CRADLE OF JOY                   1 B 2292076501 2292076600
+        007-229-80190-9 CRADLE OF JOY                   1 B 2292076601 2292076700
+
+
+        ** Sub Total **3
+
+
+
+
+        Page No. 7
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010261981 CALUMPANG-MARIKINA BRANCH(315)
+
+        * Batch Number: REG707
+
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019101 3151019200
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019201 3151019300
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019301 3151019400
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019401 3151019500
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019501 3151019600
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019601 3151019700
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019701 3151019800
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019801 3151019900
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151019901 3151020000
+        007-315-50075-0 EL INVENTOR HEAVY IND. INC.     1 B 3151020001 3151020100
+
+
+        ** Sub Total **10
+
+
+
+
+        Page No. 8
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010262757 EASTWOOD CITY BRANCH(504)
+
+        * Batch Number: REG707
+
+        007-504-50247-0 YBM PNT, INC.                   1 B 5042275601 5042275700
+        007-504-50247-0 YBM PNT, INC.                   1 B 5042275701 5042275800
+        007-504-50247-0 YBM PNT, INC.                   1 B 5042275801 5042275900
+        007-504-50247-0 YBM PNT, INC.                   1 B 5042275901 5042276000
+
+
+        ** Sub Total **4
+
+
+
+
+        Page No. 9
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 010262896 SAN AGUSTIN-H.V. DELA COSTA BR(616)
+
+        * Batch Number: REG707
+
+        007-616-02271-3 CROWN TOWER CONDO CORP          1 B 6162673401 6162673500
+        007-616-02271-3 CROWN TOWER CONDO CORP          1 B 6162673501 6162673600
+
+
+        ** Sub Total **2
+
+
+
+
+        Page No. 10
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 030260043 DAVAO-STA. ANA BRANCH(095)
+
+        * Batch Number: REG707
+
+        007-095-50256-0                                 1 B 0953902501 0953902600
+
+
+        ** Sub Total **1
+
+
+
+
+        Page No. 11
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 040260020 BACOLOD-CAPITOL BRANCH(079)
+
+        * Batch Number: REG707
+
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793399701 0793399800
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793399801 0793399900
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793399901 0793400000
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400001 0793400100
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400101 0793400200
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400201 0793400300
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400301 0793400400
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400401 0793400500
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400501 0793400600
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400601 0793400700
+                        COMPANY INC.                  
+        007-079-50941-4 PHIL. BRITISH ASSURANCE         1 B 0793400701 0793400800
+                        COMPANY INC.                  
+
+
+        ** Sub Total **11
+
+
+
+
+        Page No. 12
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 110260099 LEYTE - PALOMPON BRANCH(594)
+
+        * Batch Number: REG707
+
+        007-594-00363-9 MOLAFCOR ENT                    1 B 5940425201 5940425300
+        007-594-00363-9 MOLAFCOR ENT                    1 B 5940425301 5940425400
+        007-594-00363-9 MOLAFCOR ENT                    1 B 5940425401 5940425500
+        007-594-00570-4 PERCIVAL SARI-SARI STORE        1 B 5940425501 5940425600
+        007-594-00613-1 J3 & B CONSTRUCTION SUPPLIES    1 B 5940425601 5940425700
+                        TRADING                       
+
+
+        ** Sub Total **5
+
+
+
+
+        Page No. 13
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 120260076 BAGUIO-LUCBAN BRANCH(573)
+
+        * Batch Number: REG707
+
+        007-573-00068-0 HOTEL ELEGANT                   1 B 5730334001 5730334100
+        007-573-00068-0 HOTEL ELEGANT                   1 B 5730334101 5730334200
+        007-573-00752-9 KOLLEBENG ENGINEERING AND       1 B 5730334201 5730334300
+                        CONSTRUCTION SUPPLY           
+        007-573-00752-9 KOLLEBENG ENGINEERING AND       1 B 5730334301 5730334400
+                        CONSTRUCTION SUPPLY           
+
+
+        ** Sub Total **4
+
+
+
+
+        Page No. 14
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 310260158 CALAMBA MARKET BRANCH(396)
+
+        * Batch Number: REG707
+
+        007-396-50069-4 ELESCOR                         1 B 3961107301 3961107400
+        007-396-50069-4 ELESCOR                         1 B 3961107401 3961107500
+        007-396-50445-2 FRANZEN HOME ESSENTIALS         1 B 3961107501 3961107600
+                        MARKETING                     
+        007-396-50445-2 FRANZEN HOME ESSENTIALS         1 B 3961107601 3961107700
+                        MARKETING                     
+
+
+        ** Sub Total **4
+
+
+
+
+        Page No. 15
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 310260174 LOS BANOS, LAGUNA BRANCH(485)
+
+        * Batch Number: REG707
+
+        007-485-91061-8 JB&MJ TECHNICAL SERVICES CO     1 B 4850681501 4850681600
+
+
+        ** Sub Total **1
+
+
+
+
+        Page No. 16
+        04/10/2025
+
+
+                      CAPTIVE PRINTING CORPORATION
+                 METROBANK - Commercial Checks Summary
+
+        ACCT_NO         ACCOUNT NAME                QTY CT START #    END #
+
+
+        ** ORDERS OF BRSTN 530260019 MIDSAYAP BRANCH(334)
+
+        * Batch Number: REG707
+
+        007-334-50317-4                                 1 B 3341282601 3341282700
+        007-334-50317-4                                 1 B 3341282701 3341282800
+        007-334-50317-4                                 1 B 3341282801 3341282900
+        007-334-50317-4                                 1 B 3341282901 3341283000
+        007-334-50317-4                                 1 B 3341283001 3341283100
+        007-334-50317-4                                 1 B 3341283101 3341283200
+        007-334-50810-9                                 1 B 3341283201 3341283300
+
+
+        ** Sub Total **7
+
+
+
+

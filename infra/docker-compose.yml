@@ -59,9 +59,9 @@ services:
     ports:
       - 1433:1433
     volumes:
-      - ~/mssql/data:/var/opt/mssql/data
-      - ~/mssql/log:/var/opt/mssql/log
-      - ~/mssql/secrets:/var/opt/mssql/secrets
+      - ~/mssql_captive/data:/var/opt/mssql/data
+      - ~/mssql_captive/log:/var/opt/mssql/log
+      - ~/mssql_captive/secrets:/var/opt/mssql/secrets
     networks:
       - captive_network
 

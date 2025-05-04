@@ -75,8 +75,8 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                             BRSTN = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRSTN)) ?? string.Empty,
                             BranchCode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.BRANCH_CODE)) ?? string.Empty,
                             AccountNumber = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NUMBER)) ?? string.Empty,
-                            AccountName1 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_1)),
-                            AccountName2 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_2)),
+                            AccountName1 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_1)) ?? string.Empty,
+                            AccountName2 = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ACCOUNT_NAME_2)) ?? string.Empty,
                             Quantity = Convert.ToInt32(GetValue(fieldValues, GetColumnName(FileConfigurationConstants.QUANTITY)) ?? "0"),
                             Concode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CONCODE)),
                             DeliverTo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.DELIVER_TO)),
@@ -84,7 +84,7 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                             EndingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ENDING_SERIAL_NO)),                          
                         };
 
-                        checkOrder.MainAccountName = checkOrder.AccountName1 + (!string.IsNullOrEmpty(checkOrder.AccountName2) ? (" " + checkOrder.AccountName2) :  string.Empty);
+                        checkOrder.MainAccountName = String.Format("{0} {1}", checkOrder.AccountName1, checkOrder.AccountName2);
 
                         checkOrders.Add(checkOrder);
                     }

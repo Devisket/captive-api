@@ -1,0 +1,764 @@
+        Page No. 1
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010260212/BACLARAN BRANCH
+
+
+        * Batch #-->REG707
+        007070576160 2                               
+        007070578863 2                               
+
+
+        ** Sub Total **4
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010260351/PASIG-MABINI BRANCH
+
+
+        * Batch #-->REG707
+        007080516602 1 ROYLYN ENRIQUEZ ASUNCION OR   
+                         CESAR FUENTES ASUNCION JR     
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010260571/LEGASPI VILLAGE-MAKATI BRANCH
+
+
+        * Batch #-->REG707
+        007055511094 2 JURGEN KARL LORENZ OR         
+                         MA. THERESA C. LORENZ         
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010260908/ADB EXTENSION OFFICE
+
+
+        * Batch #-->REG707
+        007159025396 2 BENJAMIN BUGAYONG CARBONELL   
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261059/TOMAS MORATO BRANCH
+
+
+        * Batch #-->REG707
+        007180527865 1 NORBERTO S. ROLDAN OR         
+                         JOAQUIN M. ROLDAN             
+
+
+        ** Sub Total **1
+
+
+        Page No. 2
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261091/KALAYAAN BRANCH
+
+
+        * Batch #-->REG707
+        007186530299 2 ANGELITO UY MEDINA            
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261185/WEST AVENUE BRANCH
+
+
+        * Batch #-->REG707
+        007198542802 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261240/J.P. RIZAL BRANCH
+
+
+        * Batch #-->REG707
+        007234520969 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261363/BUENDIA-DIAN BRANCH
+
+
+        * Batch #-->REG707
+        007227510885 1 VILMA C. MATRO                
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261402/KAMUNING BRANCH
+
+
+        * Batch #-->REG707
+        007229804312 1 FREDERICK FRANCIS V.YAN       
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261635/ALFARO BRANCH
+
+
+        * Batch #-->REG707
+        007270500192 2                               
+
+
+        ** Sub Total **2
+
+
+        Page No. 3
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010261648/PASAY-ROTONDA BRANCH
+
+
+        * Batch #-->REG707
+        007271511406 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262702/FORT-BONIFACIO GLOBAL CITY BR
+
+
+        * Batch #-->REG707
+        007492506539 2                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262760/CIRCUMFERENTIAL RD-ANTIPOLO BR
+
+
+        * Batch #-->REG707
+        007402533850 2 ETHEL MENDOZA FRADEJAS OR     
+                         EDMUND CABRERA FRADEJAS       
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010262896/SAN AGUSTIN-H.V. DELA COSTA BR
+
+
+        * Batch #-->REG707
+        007616009989 1 STEPHANIE ANN T MENDIOLA      
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010263345/AYALA AVENUE-VA RUFINO BRANCH
+
+
+        * Batch #-->REG707
+        007638510215 1 KERVIN PAUL RIVERA VINLUAN    
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010263510/METROPOLITAN PARK ROXAS BLVD BRANCH
+
+
+        * Batch #-->REG707
+        007715023810 4                               
+
+
+        ** Sub Total **4
+
+
+        Page No. 4
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/010263510/METROPOLITAN PARK ROXAS BLVD BRANCH
+
+
+        * Batch #-->REG707
+        007715024582 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/020260121/CEBU - LEON KILAT BRANCH
+
+
+        * Batch #-->REG707
+        007217511832 1 CHYLIAN GOCOTANO VILLACERAN   
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/020260231/CEBU GUADALUPE BRANCH
+
+
+        * Batch #-->REG707
+        007398516610 2                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/020260244/CEBU-BORROMEO BRANCH
+
+
+        * Batch #-->REG707
+        007419900288 2 ROY ONG SALUD OR VICKY CU     
+                         SALUD OR JASON KARL CU SALUD  
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/020260370/CEBU-MACTAN MEPZ BRANCH
+
+
+        * Batch #-->REG707
+        007657029820 1 CELESTE OBINA ESCULTOR        
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/030260043/DAVAO-STA. ANA BRANCH
+
+
+        * Batch #-->REG707
+        007095504430 15 DR. AILEEN S. LO              
+
+
+        ** Sub Total **15
+
+
+        Page No. 5
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/030260085/DAVAO-BAJADA BRANCH
+
+
+        * Batch #-->REG707
+        007239523800 1 JANE ALBERCA HUBAY            
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/030260195/DAVAO-DOCTORS BRANCH
+
+
+        * Batch #-->REG707
+        007667002008 3 DRS. CRISPIN GO OR            
+                         CECILIA GO                    
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/040260020/BACOLOD-CAPITOL BRANCH
+
+
+        * Batch #-->REG707
+        007079506415 11 ENRIQUE C. DY AND NIDA P. DY  
+                         AND SHEILA Q. DY              
+
+
+        ** Sub Total **11
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/040260075/BACOLOD-GATUSLAO BRANCH
+
+
+        * Batch #-->REG707
+        007438904766 2 FELY ROMANO SANIN             
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/040260114/BACOLOD-NORTH DRIVE BRANCH
+
+
+        * Batch #-->REG707
+        007546028433 1 WILFREDO BAYLON APARRI JR     
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260055/BALANGA-MAIN BRANCH
+
+
+        * Batch #-->REG707
+        007221512665 1 GARY VALERIO CRISTOBAL        
+
+
+        ** Sub Total **1
+
+
+        Page No. 6
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/060260107/ANGELES-BALIBAGO BRANCH
+
+
+        * Batch #-->REG707
+        007374402257 1 JONEL MALIG CANGCO            
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/070260016/NAGA-MAIN BRANCH
+
+
+        * Batch #-->REG707
+        007126506399 1 JACQUELINE LEE LO OR          
+                         ALVIN TEE LO                  
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/070260058/IRIGA-CAMARINES SUR BRANCH
+
+
+        * Batch #-->REG707
+        007508506380 6                               
+
+
+        ** Sub Total **6
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/110260099/LEYTE - PALOMPON BRANCH
+
+
+        * Batch #-->REG707
+        007594004775 3 GINKY T OBALES OR             
+                         BALDWIN M OBALES              
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/130260037/SAN JOSE, N.E. BRANCH
+
+
+        * Batch #-->REG707
+        007101507579 1 JOSELITO BONGATO ROSQUITA     
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/130260286/BULACAN-SAN ILDEFONSO BRANCH
+
+
+        * Batch #-->REG707
+        007449915646 1 MARIA ANGELITA MAMAWAN PUNO   
+
+
+        ** Sub Total **1
+
+
+        Page No. 7
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/150260020/AGOO, LA UNION BRANCH
+
+
+        * Batch #-->REG707
+        007404501450 5 ADELA DULAY OR                
+                         YOLANDA LOPICO OR RODEL LOPICO
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/150260033/LA UNION-M.L. QUEZON BRANCH
+
+
+        * Batch #-->REG707
+        007526937950 1 QUEMOY D. TUABAN              
+        007526962687 1                               
+        007526962695 1                               
+        007526962709 1                               
+        007526962717 1                               
+        007526962725 1                               
+        007526962733 1                               
+        007526962741 1                               
+        007526962750 1                               
+
+
+        ** Sub Total **9
+
+
+        Page No. 8
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/150260033/LA UNION-M.L. QUEZON BRANCH
+
+
+        * Batch #-->REG707
+        007526962768 1                               
+        007526962776 1                               
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/190260200/BATANGAS-SAN JUAN BRANCH
+
+
+        * Batch #-->REG707
+        007815015386 2 JASPER ADONIS CAYA VILLANUEVA 
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/230260018/TUGUEGARAO-MAIN BRANCH
+
+
+        * Batch #-->REG707
+        007103512049 1 CONRADO B MANUEL              
+        007103513479 2 LEOPOLDO A. CATABAY           
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/240260082/SOUTH COTABATO-POLOMOLOK BR
+
+
+        * Batch #-->REG707
+        007921002404 3                               
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/280260026/SUBIC BAY BRANCH
+
+
+        * Batch #-->REG707
+        007171604210 1 CARYL DUNGO ONG               
+
+
+        ** Sub Total **1
+
+
+        Page No. 9
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/310260093/CARMONA-BINAN HIGHWAY BRANCH
+
+
+        * Batch #-->REG707
+        007367506675 1 MA REMEDIOS T. VIDAL OR       
+                         REGINA T VIDAL                
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/310260103/CALAMBA-REAL BRANCH
+
+
+        * Batch #-->REG707
+        007378001680 2 EDGAR CHUA LABORADA OR        
+                         JOSIE EUSTAQUIO LABORADA      
+        007378005988 1 PATROCINIA OBLIGADO ROCO OR   
+                         JOEL ANTONIO ROCO             
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/310260158/CALAMBA MARKET BRANCH
+
+
+        * Batch #-->REG707
+        007396500767 3 L.PUA OR R.PUA OR L.BANATIN OR
+                         L.ALMASAN OR R.PUA            
+        007396502360 10 CHI CHUN W. HUNG OR           
+                         ROSA MARIA V. HUNG            
+
+
+        ** Sub Total **13
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/330260015/TAGBILARAN-MAIN BRANCH
+
+
+        * Batch #-->REG707
+        007123516903 2 MAXIMO O HAMPAC OR            
+                         FIRMA B HAMPAC                
+        007123528650 1 EDGELYN TESORIO NASAYAO       
+
+
+        ** Sub Total **3
+
+
+        Page No. 10
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> A/380260010/CALAPAN BRANCH
+
+
+        * Batch #-->REG707
+        007108020330 2 DAN RUSSEL S COLLERA AND      
+                         KIMBERLYN M BAUTISTA          
+
+
+        ** Sub Total **2
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260076/PASAY-LIBERTAD BRANCH
+
+
+        * Batch #-->REG707
+        007000464917 10                               
+        007019513412 1 MARISSA LIM MARQUEZ           
+
+
+        ** Sub Total **11
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260212/BACLARAN BRANCH
+
+
+        * Batch #-->REG707
+        007070500260 10 DAUGHTERS OF SAINT PAUL       
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010260571/LEGASPI VILLAGE-MAKATI BRANCH
+
+
+        * Batch #-->REG707
+        007055520328 1 007055520328                  
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261059/TOMAS MORATO BRANCH
+
+
+        * Batch #-->REG707
+        007180525447 1 PHIL GEO CALIBRATION &        
+                         MEASUREMENT LAB CORP          
+
+
+        ** Sub Total **1
+
+
+        Page No. 1
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261363/BUENDIA-DIAN BRANCH
+
+
+        * Batch #-->REG707
+        007227522182 2 LAM POULTRY FARM              
+        007227522581 1                               
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261402/KAMUNING BRANCH
+
+
+        * Batch #-->REG707
+        007229801909 3 CRADLE OF JOY                 
+
+
+        ** Sub Total **3
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010261981/CALUMPANG-MARIKINA BRANCH
+
+
+        * Batch #-->REG707
+        007315500750 10 EL INVENTOR HEAVY IND. INC.   
+
+
+        ** Sub Total **10
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262757/EASTWOOD CITY BRANCH
+
+
+        * Batch #-->REG707
+        007504502470 4 YBM PNT, INC.                 
+
+
+        ** Sub Total **4
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/010262896/SAN AGUSTIN-H.V. DELA COSTA BR
+
+
+        * Batch #-->REG707
+        007616022713 2 CROWN TOWER CONDO CORP        
+
+
+        ** Sub Total **2
+
+
+        Page No. 2
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/030260043/DAVAO-STA. ANA BRANCH
+
+
+        * Batch #-->REG707
+        007095502560 1                               
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/040260020/BACOLOD-CAPITOL BRANCH
+
+
+        * Batch #-->REG707
+        007079509414 11 PHIL. BRITISH ASSURANCE       
+                         COMPANY INC.                  
+
+
+        ** Sub Total **11
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/110260099/LEYTE - PALOMPON BRANCH
+
+
+        * Batch #-->REG707
+        007594003639 3 MOLAFCOR ENT                  
+        007594005704 1 PERCIVAL SARI-SARI STORE      
+        007594006131 1 J3 & B CONSTRUCTION SUPPLIES  
+                         TRADING                       
+
+
+        ** Sub Total **5
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/120260076/BAGUIO-LUCBAN BRANCH
+
+
+        * Batch #-->REG707
+        007573000680 2 HOTEL ELEGANT                 
+        007573007529 2 KOLLEBENG ENGINEERING AND     
+                         CONSTRUCTION SUPPLY           
+
+
+        ** Sub Total **4
+
+
+        Page No. 3
+        04/10/2025
+              Summary of RT nos / # of Books for METROBANK
+
+        ACCT_NO      QTY ACCOUNT NAME                  
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/310260158/CALAMBA MARKET BRANCH
+
+
+        * Batch #-->REG707
+        007396500694 2 ELESCOR                       
+        007396504452 2 FRANZEN HOME ESSENTIALS       
+                         MARKETING                     
+
+
+        ** Sub Total **4
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/310260174/LOS BANOS, LAGUNA BRANCH
+
+
+        * Batch #-->REG707
+        007485910618 1 JB&MJ TECHNICAL SERVICES CO   
+
+
+        ** Sub Total **1
+
+
+        ** CHECK TYPE/BRSTN/BRANCH--> B/530260019/MIDSAYAP BRANCH
+
+
+        * Batch #-->REG707
+        007334503174 6                               
+        007334508109 1                               
+
+
+        ** Sub Total **7
+
+
