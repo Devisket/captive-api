@@ -1,6 +1,8 @@
 ﻿using Captive.Data.UnitOfWork.Read;
 using Captive.MdbAPI.Request;
 using Captive.MdbProcessor.Processor.DbfGenerator;
+using Captive.MdbProcessor.Processor.DbfProcessor;
+using Captive.MdbProcessor.Processor.Interfaces;
 using Captive.Model.Dto;
 using Captive.Model.Processing.Configurations;
 using Captive.Processing.Processor.MDBFileProcessor;
@@ -12,17 +14,20 @@ namespace Captive.MdbAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MdbController : ControllerBase
+    public class ProcessorController : ControllerBase
     {
-        private readonly IMDBFileProcessor _mdbProcessor;
+        private readonly IProcessor<MdbConfiguration> _mdbProcessor;
+        private readonly IProcessor<DbfConfiguration> _dbfProcessor;
         private readonly IReadUnitOfWork _readUow;
         private readonly IDbfGenerator _dbfGenerator;
 
-        public MdbController(IMDBFileProcessor mdbProcessor, IReadUnitOfWork readUow, IDbfGenerator dbfGenerator)
+        public ProcessorController(IProcessor<MdbConfiguration> mdbProcessor, IProcessor<DbfConfiguration> dbfProcessor, IReadUnitOfWork readUow, IDbfGenerator dbfGenerator)
         {
             _mdbProcessor = mdbProcessor;
             _readUow = readUow;
             _dbfGenerator = dbfGenerator;
+
+            _dbfProcessor = dbfProcessor;
         }
 
         [HttpPost]
@@ -44,6 +49,30 @@ namespace Captive.MdbAPI.Controllers
             }
 
             var response = _mdbProcessor.Extractfile(request, extractedConfig);
+
+            return Ok(response);
+        }
+
+
+        [HttpPost("dbf")]
+        public async Task<ActionResult<IEnumerable<CheckOrderDto>>> ExtractDbf([FromBody] OrderfileDto request)
+        {
+            var config = await _readUow.ProductConfigurations.GetAll().FirstOrDefaultAsync(x => request.FileName.Contains(x.FileName));
+
+            if (config == null)
+                throw new Exception("Null configuration");
+
+            var extractedConfig = JsonConvert.DeserializeObject<DbfConfiguration>(config.ConfigurationData);
+
+            if (extractedConfig == null)
+                throw new Exception("Can't extract configuration");
+
+            if (config == null)
+            {
+                return Problem(detail: $"Can't find configuration for {request.FileName}", statusCode: 500);
+            }
+
+            var response = _dbfProcessor.Extractfile(request, extractedConfig);
 
             return Ok(response);
         }

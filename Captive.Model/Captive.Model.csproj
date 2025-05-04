@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

@@ -14,8 +14,8 @@
         public static readonly string FORM_TYPE = "formType";
         public static readonly string QUANTITY = "quantity";
         public static readonly string DELIVER_TO = "deliverTo";
-        public static readonly string STARTING_SERIAL_NO = "startingSerialNo";
-        public static readonly string ENDING_SERIAL_NO = "endingSerialNo";
+        public static readonly string STARTING_SERIAL_NO = "startingSerialNumber";
+        public static readonly string ENDING_SERIAL_NO = "endingSerialNumber";
         public static readonly string PASSWORD = "password";
         public static readonly string ENABLE_BARCODE = "enable_barcode";
         public static readonly string Batch = "batch";

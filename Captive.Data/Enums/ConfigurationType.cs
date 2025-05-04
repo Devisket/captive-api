@@ -4,6 +4,7 @@
     {
         TextConfiguration,
         ExcelConfiguration,
-        MdbConfiguration,   
+        MdbConfiguration,
+        DbfConfiguration
     }
 }

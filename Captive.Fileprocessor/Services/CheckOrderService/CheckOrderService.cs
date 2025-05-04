@@ -8,6 +8,7 @@ namespace Captive.Fileprocessor.Services.CheckOrderService
     public interface ICheckOrderService
     {
         Task<List<CheckOrderDto>> ExtractMdb(OrderfileDto orderFile);
+        Task<List<CheckOrderDto>> ExtractDbf(OrderfileDto orderFile);
         Task<(bool, List<CheckOrderDto>)> ValidateCheckOrder(List<CheckOrderDto> checkOrder, Guid OrderId, Guid bankId, string fileName);
         Task SendOrderFileStatus(Guid orderFileId, string ErrorMessage, OrderFilesStatus status);
         Task SendOrderFileStatus(Guid orderFileId, OrderFilesStatus status);
@@ -32,7 +33,42 @@ namespace Captive.Fileprocessor.Services.CheckOrderService
         {
             IEnumerable<CheckOrderDto> orderfileDatas = new List<CheckOrderDto>();
 
-            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/Mdb");
+            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/processor");
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage();
+
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(orderFile), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(baseUri, content);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (string.IsNullOrEmpty(responseData))
+                    throw new Exception($"Failed to get data from MDB processor for {orderFile.FileName}");
+
+                orderfileDatas = JsonConvert.DeserializeObject<List<CheckOrderDto>>(responseData);
+
+                if (orderfileDatas == null)
+                    throw new Exception($"Failed to map check orders for  {orderFile.FileName}");
+
+                return orderfileDatas.ToList();
+            }
+            else
+            {
+                throw new Exception(responseData);
+            }
+        }
+
+
+        public async Task<List<CheckOrderDto>> ExtractDbf(OrderfileDto orderFile)
+        {
+            IEnumerable<CheckOrderDto> orderfileDatas = new List<CheckOrderDto>();
+
+            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/processor/dbf");
 
             var client = new HttpClient();
 

@@ -85,21 +85,21 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
             List<OrderFile> result = new List<OrderFile>();
 
             foreach (var file in files) 
-            { 
-                await SaveFile(file, rootPath, cancellationToken);
+            {
+                var productConfiguration = await GetProductId(file.FileName, cancellationToken);
 
-                var orderFile = await CreateOrderFileRecord(batchId, file.FileName, directoryPath, cancellationToken);
+                var savedFile = await SaveFile(file, productConfiguration, rootPath, cancellationToken);
+
+                var orderFile = await CreateOrderFileRecord(batchId, productConfiguration.ProductId, savedFile, directoryPath, cancellationToken);
 
                 result.Add(orderFile);
             }
             return result;
         }
 
-        private async Task<OrderFile> CreateOrderFileRecord(Guid batchId, string fileName, string batchDirectory, CancellationToken cancellationToken )
+        private async Task<OrderFile> CreateOrderFileRecord(Guid batchId, Guid productId,  string fileName, string batchDirectory, CancellationToken cancellationToken )
         {
             var relativePath = batchDirectory.Split("processing")[1];
-
-            var productId = await GetProductId(fileName, cancellationToken);
 
             var orderFile = new OrderFile
             {
@@ -118,10 +118,22 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
             return orderFile;
         }
 
-        private async Task SaveFile(IFormFile file, string directoryPath,CancellationToken cancellationToken)
+        private async Task<string> SaveFile(IFormFile file, ProductConfiguration productConfiguration, string directoryPath,CancellationToken cancellationToken)
         {
+            var fileName = file.FileName;
+
+            if (productConfiguration.IsChangeFileType)
+            {
+                var fileType = productConfiguration.FileType;
+                fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                var newFileName = String.Format("{0}.{1}", fileName, fileType);
+                fileName = newFileName;
+            }
+
             var fileBytes = await ExtractFile(file, cancellationToken);       
-            await File.WriteAllBytesAsync(Path.Combine(directoryPath, file.FileName), fileBytes, cancellationToken);            
+            await File.WriteAllBytesAsync(Path.Combine(directoryPath, fileName), fileBytes, cancellationToken);  
+            
+            return fileName;
         }
 
         private string CreateDirectory(string bankShortName, string batchName)
@@ -153,14 +165,14 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
             }
         }      
 
-        private async Task<Guid> GetProductId(string fileName, CancellationToken cancellationToken)
+        private async Task<ProductConfiguration> GetProductId(string fileName, CancellationToken cancellationToken)
         {
             var productConfiguration = await _readUow.ProductConfigurations.GetAll().FirstOrDefaultAsync(x => fileName.Contains(x.FileName), cancellationToken);
 
             if (productConfiguration == null)
                 throw new Exception($"File name {fileName} has no product configuration");
 
-            return productConfiguration.ProductId;
+            return productConfiguration;
         }
     }
 }

@@ -44,6 +44,8 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
                 existingConfiguration.FileName = request.FileName;
                 existingConfiguration.ConfigurationType = request.ConfigurationType;
                 existingConfiguration.ConfigurationData = request.ConfigurationData;
+                existingConfiguration.IsChangeFileType = request.IsChangeFileType;
+                existingConfiguration.FileType= request.FileType;  
 
                 _writeUow.ProductConfigurations.Update(existingConfiguration);
 
@@ -56,6 +58,8 @@ namespace Captive.Applications.Product.Command.CreateProductConfiguration
                 FileName = request.FileName,
                 ConfigurationData = request.ConfigurationData,
                 ConfigurationType = request.ConfigurationType,
+                IsChangeFileType = request.IsChangeFileType,
+                FileType = request.FileType,
                 isActive = true,
                 ProductId = product.Id,
                 Product = product,

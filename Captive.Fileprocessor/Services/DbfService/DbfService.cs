@@ -23,7 +23,7 @@ namespace Captive.Fileprocessor.Services.DbfService
                 batchId
             };
 
-            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/Mdb/GenerateDbf");
+            var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/processor/GenerateDbf");
 
             var client = new HttpClient();
 
