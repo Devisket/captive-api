@@ -10,13 +10,6 @@ namespace Captive.Commands.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "ProductSequence",
-                table: "products",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
             migrationBuilder.AddColumn<bool>(
                 name: "HasBranchCodeInSeries",
                 table: "form_checks",
@@ -35,7 +28,7 @@ namespace Captive.Commands.Migrations
                 column: "ProductId",
                 principalTable: "products",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />
@@ -48,10 +41,6 @@ namespace Captive.Commands.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_check_orders_ProductId",
                 table: "check_orders");
-
-            migrationBuilder.DropColumn(
-                name: "ProductSequence",
-                table: "products");
 
             migrationBuilder.DropColumn(
                 name: "HasBranchCodeInSeries",
