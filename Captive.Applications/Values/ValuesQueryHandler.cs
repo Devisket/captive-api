@@ -42,6 +42,7 @@ namespace Captive.Applications.Values
                 {
                     Id = x.Id,
                     Value = String.Format("{0} {1}-{2}", x.FormCheckType.ToString(), x.FormType, x.CheckType),
+                    ProductId = x.ProductId
                 })
                 .ToListAsync(cancellationToken);
 
