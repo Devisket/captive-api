@@ -5,5 +5,6 @@ namespace Captive.Model.Dto.ValuesDto
     {
         public Guid Id { get; set; }
         public string Value {  get; set; }
+        public Guid? ProductId { get; set; }
     }
 }
