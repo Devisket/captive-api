@@ -14,6 +14,8 @@ namespace Captive.Data.Models
         public bool IsActive { get; set; }
         public Guid TagId { get; set; }
         public Tag Tag { get; set; }
+        public string? JsonMappingData { get; set; } = string.Empty;
+        public string? AccountNumber { get; set; } = string.Empty;
         public ICollection<CheckInventoryDetail>? CheckInventoryDetails { get; set; }
     }
 }
