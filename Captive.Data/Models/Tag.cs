@@ -13,5 +13,7 @@ namespace Captive.Data.Models
         public bool SearchByProduct { get; set; } = false;
         public ICollection<TagMapping> Mapping { get; set; }
         public ICollection<CheckInventory>? CheckInventories { get; set; }
+        public bool IsLock { get; set; }
+        public bool IsActive { get; set; }
     }
 }

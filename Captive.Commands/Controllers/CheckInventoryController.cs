@@ -1,6 +1,7 @@
 ﻿using Captive.Applications.CheckInventory.Commands.AddCheckInventory;
 using Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails;
 using Captive.Applications.CheckInventory.Commands.DeleteCheckInventory;
+using Captive.Applications.CheckInventory.Commands.InitiateCheckInventory;
 using Captive.Applications.CheckInventory.Commands.SetCheckInventoryActive;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,16 @@ namespace Captive.Commands.Controllers
             _mediator = mediator;
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateCheckInventory([FromBody]AddCheckInventoryCommand request)
+        public async Task<IActionResult> CreateCheckInventory([FromBody] AddCheckInventoryCommand request)
+        {
+            await _mediator.Send(request);
+            return Ok();
+        }
+
+        [HttpPost("InitiateCheckInventories")]
+        public async Task<IActionResult> InititateCheckInventory([FromBody] InitiateCheckInventoryCommand request)
         {
             await _mediator.Send(request);
             return Ok();

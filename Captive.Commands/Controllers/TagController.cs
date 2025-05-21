@@ -2,6 +2,7 @@
 using Captive.Applications.TagAndMapping.Command.CreateTag;
 using Captive.Applications.TagAndMapping.Command.DeleteMapping;
 using Captive.Applications.TagAndMapping.Command.DeleteTag;
+using Captive.Applications.TagAndMapping.Command.LockTag;
 using Captive.Model.Dto;
 using Captive.Model.Request;
 using MediatR;
@@ -84,6 +85,14 @@ namespace Captive.Commands.Controllers
                 SearchByFormCheck = request.SearchByFormCheck,
                 SearchByProduct = request.SearchByProduct
             });
+            return NoContent();
+        }
+
+        [HttpPost("Lock/{tagId}")]
+        public async Task<IActionResult> UpdateTag([FromRoute] Guid tagId, [FromRoute] Guid bankId)
+        {
+            await _mediator.Send(new LockTagCommand { Id = tagId });
+
             return NoContent();
         }
     }
