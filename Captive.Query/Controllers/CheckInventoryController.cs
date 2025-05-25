@@ -14,9 +14,9 @@ namespace Captive.Queries.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetCheckInventory([FromRoute] Guid tagId)
+        public async Task<ActionResult> GetCheckInventory([FromRoute] Guid tagId, [FromQuery]GetCheckInventoryQuery query)
         {
-            var response = await _mediator.Send(new GetCheckInventoryQuery { TagId = tagId });
+            var response = await _mediator.Send(query);
 
             return Ok(response);
         }

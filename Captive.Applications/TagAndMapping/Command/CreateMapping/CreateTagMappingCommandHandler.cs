@@ -1,9 +1,13 @@
-﻿using Azure;
+﻿using Captive.Data.Enums;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Model.Application;
+using Captive.Model.Dto;
+using Captive.Utility;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Captive.Applications.TagAndMapping.Command.CreateMapping
 {
@@ -26,40 +30,84 @@ namespace Captive.Applications.TagAndMapping.Command.CreateMapping
             if (tag == null)
                 throw new Exception($"The Tag ID: {request.TagId} doesn't exist");
 
-            if (request.Mappings != null && request.Mappings.Any())
+            if (!await IsRequestValid(request, tag.BankId, cancellationToken))
+                throw new CaptiveException("Request is invalid");
+            
+            await CreateTagMapping(request, cancellationToken);
+            
+            return Unit.Value;
+        }
+
+        private async Task CreateTagMapping(CreateTagMappingCommand request, CancellationToken cancellationToken)
+        {
+            var mappingData = JsonConvert.SerializeObject(GetMappingData(request));
+
+            if (request.Id.HasValue)
             {
-                foreach (var mapping in request.Mappings) {
+                var tagMapping = await _readUow.TagsMapping.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-                    if (mapping.Id.HasValue) {
+                if (tagMapping == null)
+                    throw new CaptiveException($"Tag Mapping ID: {request.Id} doesn't exist.");
 
-                        var existingTagMapping = await _readUow.TagsMapping.GetAll().FirstOrDefaultAsync(x => x.Id == mapping.Id, cancellationToken);
+                tagMapping.TagMappingData = mappingData;
+                tagMapping.UpdatedDate = DateTime.UtcNow;
 
-                        if (existingTagMapping == null)
-                            throw new Exception($"Tag Mapping ID: {mapping.Id} doesn't exist.");
+                _writeUow.TagMappings.Update(tagMapping);
+            }
+            else
+            {
+                await _writeUow.TagMappings.AddAsync(new TagMapping
+                {
+                    Id = Guid.NewGuid(),
+                    TagId = request.TagId,
+                    TagMappingData = mappingData,
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
 
-                        existingTagMapping.BranchId = mapping.BranchId;
-                        existingTagMapping.ProductId = mapping.ProductId;
-                        existingTagMapping.FormCheckId = mapping.FormCheckId;
+                }, cancellationToken);
+            }
+        }
 
-                        _writeUow.TagMappings.Update(existingTagMapping);
-                    }
-                    else
-                    {
-                        var tagMapping = new TagMapping
-                        {
-                            Id = Guid.NewGuid(),
-                            TagId = request.TagId,
-                            BranchId = mapping.BranchId,
-                            FormCheckId = mapping.FormCheckId,
-                            ProductId = mapping.ProductId,
-                        };
+        private async Task<bool> IsRequestValid(CreateTagMappingCommand request, Guid bankId, CancellationToken cancellationToken)
+        {
+            var branchs = await _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BankInfoId == bankId).Select(x => x.Id).ToListAsync(cancellationToken);
+            var products = await _readUow.Products.GetAll().AsNoTracking().Where(x => x.BankInfoId == bankId).Select(x => x.Id).ToListAsync(cancellationToken);
 
-                        await _writeUow.TagMappings.AddAsync(tagMapping, cancellationToken);
-                    }
-                }
+            if (request.MappingData.BranchIds == null || request.MappingData.BranchIds.Any(x => !branchs.Contains(x)))
+                return false;
+
+            if(request.MappingData.ProductIds != null && request.MappingData.ProductIds.Count() > 0)
+                if (request.MappingData.ProductIds.Any(x => !products.Contains(x)))
+                    return false;
+
+            var existingTagMapping = _readUow.TagsMapping.GetAll()
+                .Include(x => x.Tag)
+                .Where(tagMapping => tagMapping.Tag.BankId == bankId && !tagMapping.Tag.isDefaultTag)
+                .Select(tagMapping => JsonConvert.DeserializeObject<TagMappingData>(tagMapping.TagMappingData))
+                .ToList();
+
+            //I want to check every mapping if the combination of one of my mapping is already exist.
+            //Scenario
+            //Other mapping has: Branch A, B C | Product A, B | Formcheck A, B
+            //New mapping has: Branch A, D | Product B | Formcheck A 
+            //At this point combination of Branch A - Product B - FormCheck A both exist into these mappings 
+
+            if(existingTagMapping.Any(mapping => mapping.BranchIds.ContainsAny(request.MappingData.BranchIds) && mapping.ProductIds.ContainsAny(request.MappingData.ProductIds) && mapping.FormCheckType.ContainsAny(request.MappingData.FormCheckType)))
+            {
+                throw new CaptiveException("There is conflicted mapping");
             }
 
-            return Unit.Value;
+            return true;
+        }
+
+        private TagMappingData GetMappingData(CreateTagMappingCommand request)
+        {
+            return new TagMappingData
+            {
+                BranchIds = request.MappingData.BranchIds,
+                ProductIds = request.MappingData.ProductIds,
+                FormCheckType = request.MappingData.FormCheckType
+            };
         }
     }
 }

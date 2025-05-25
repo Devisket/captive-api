@@ -4,10 +4,10 @@ namespace Captive.Data.Models
     public class TagMapping
     {
         public Guid Id {  get; set; }
-        public Guid? BranchId { get; set; }
-        public Guid? ProductId{ get; set; }
-        public Guid? FormCheckId { get; set; }
+        public required string TagMappingData {  get; set; }
         public Guid TagId { get; set; }
         public Tag Tag { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

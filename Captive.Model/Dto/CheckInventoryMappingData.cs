@@ -1,4 +1,5 @@
 ﻿
+
 namespace Captive.Model.Dto
 {
     public class CheckInventoryMappingData
@@ -7,17 +8,17 @@ namespace Captive.Model.Dto
         {
             BranchIds = new List<Guid>();
             ProductIds = new List<Guid>();
-            FormCheckIds = new List<Guid>();
+            FormCheckType = new List<string>();
         }
-        public CheckInventoryMappingData(IEnumerable<Guid> branchIds, IEnumerable<Guid> productIds, IEnumerable<Guid> formCheckIds)
+        public CheckInventoryMappingData(IEnumerable<Guid> branchIds, IEnumerable<Guid> productIds, IEnumerable<string> formCheckIds)
         {
             BranchIds = branchIds;
             ProductIds = productIds;
-            FormCheckIds = formCheckIds;
+            FormCheckType = formCheckIds;
         }
 
         public IEnumerable<Guid> BranchIds { get; set; }
         public IEnumerable<Guid> ProductIds { get; set; }
-        public IEnumerable<Guid> FormCheckIds { get; set; }
+        public IEnumerable<string> FormCheckType { get; set; }
     }
 }

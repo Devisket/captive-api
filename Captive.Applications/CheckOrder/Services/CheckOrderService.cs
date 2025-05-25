@@ -145,7 +145,7 @@ namespace Captive.Applications.CheckOrder.Services
 
                     var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
                     
-                    var tag = await _checkValidationService.GetTag(orderFile.BatchFile!.BankInfoId, branch.Id, formCheck.Id, orderFile.ProductId, cancellationToken);
+                    var tag = await _checkValidationService.GetTag(orderFile.BatchFile!.BankInfoId, branch.Id, orderFile.ProductId, formCheck.FormCheckType, cancellationToken);
 
                     if(tag == null)
                     {

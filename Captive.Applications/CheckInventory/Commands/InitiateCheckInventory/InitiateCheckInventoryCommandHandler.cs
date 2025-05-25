@@ -1,6 +1,8 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Model.Application;
 using Captive.Model.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -90,6 +92,8 @@ namespace Captive.Applications.CheckInventory.Commands.InitiateCheckInventory
                 await _writeUow.CheckInventory.AddAsync(newCheckInventory, cancellationToken);
             }
 
+            tag.CheckInventoryInitiated = true;
+
             return;
         }
 
@@ -100,48 +104,34 @@ namespace Captive.Applications.CheckInventory.Commands.InitiateCheckInventory
             var branchIds = await _readUow.BankBranches.GetAll().Where(x => x.BankInfoId == tag.BankId).Select(x => x.Id).ToListAsync(cancellationToken);
             var productIds = await _readUow.Products.GetAll().Where(x => x.BankInfoId == tag.BankId).Select(x => x.Id).ToListAsync(cancellationToken);
 
-            var formcheckIds = _readUow.FormChecks.GetAll().Include(x => x.Product).Where(x => x.Product.BankInfoId == tag.BankId ).Select(x => new Tuple<Guid, Guid>(x.Id, x.ProductId)).ToList();
-
             var includedBranch = new List<Guid>();
             var includedProducts = new List<Guid>();
-            var includedFormCheck = new List<Tuple<Guid,Guid>>();
+            var includedFormCheck = new List<FormCheckType>();
+
+            var mappingDatas = tag.isDefaultTag?  null  : tag.Mapping?.Where(x => !string.IsNullOrEmpty(x.TagMappingData)).Select(x => JsonConvert.DeserializeObject<TagMappingData>(x.TagMappingData)).ToList();
 
             if (tag.SearchByBranch)
             {
-                if(tag.Mapping.Any(x => x.BranchId.HasValue))
-                {
-                    includedBranch = tag.Mapping.Where(x => x.BranchId.HasValue).Select(x => x.BranchId!.Value).ToList();
-                }
+                if(mappingDatas != null && mappingDatas.Any(x => x!.BranchIds.Any()))
+                    includedBranch = mappingDatas.Where(x => x!.BranchIds.Any()).SelectMany(x => x!.BranchIds).Distinct().ToList();
                 else
-                {
                     includedBranch = branchIds;
-                }
             }
 
             if (tag.SearchByProduct)
             {
-                if (tag.Mapping.Any(x => x.ProductId.HasValue))
-                {
-                    includedProducts = tag.Mapping.Where(x => x.ProductId.HasValue).Select(x => x.ProductId!.Value).ToList();
-                }
+                if (mappingDatas != null && mappingDatas.Any(x => x!.ProductIds.Any()))
+                    includedProducts = mappingDatas.Where(x => x!.ProductIds.Any()).SelectMany(x => x!.ProductIds).Distinct().ToList();
                 else
-                {
                     includedProducts = productIds;
-                }
             }
 
             if (tag.SearchByFormCheck)
             {
-                if (tag.Mapping.Any(x => x.FormCheckId.HasValue))
-                {
-                    var mappedFormChecks = tag.Mapping.Where(x => x.FormCheckId.HasValue).Select(x => x.FormCheckId!.Value).ToList();
-
-                    includedFormCheck = formcheckIds.Where(x => mappedFormChecks.Contains(x.Item1)).ToList();
-                }
+                if (mappingDatas != null && mappingDatas.Any(x => x!.FormCheckType.Any()))
+                    includedFormCheck = mappingDatas.Where(x => x!.FormCheckType.Any()).SelectMany(x => x!.FormCheckType.Select(z=> Enum.Parse<FormCheckType>(z))).Distinct().ToList();
                 else
-                {
-                    includedFormCheck = formcheckIds;
-                }
+                    includedFormCheck = new List<FormCheckType> { FormCheckType.Personal, FormCheckType.Commercial };
             }
 
             if (includedBranch.Any())
@@ -150,61 +140,57 @@ namespace Captive.Applications.CheckInventory.Commands.InitiateCheckInventory
 
                     if (includedProducts.Any())
                     {
-                        //If search by product is on
                         foreach (var product in includedProducts) {
 
                             if (includedFormCheck.Any())
                             {
-                                foreach (var formCheck in includedFormCheck.Where(x => x.Item2 == product))
+                                foreach (var formCheck in includedFormCheck)
                                 {
-                                    mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, new List<Guid> { product }, new List<Guid> { formCheck.Item1 }));
+                                    mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, new List<Guid> { product }, new List<string> { formCheck.ToString()}));
                                     continue;
                                 }
                             }
                             else
                             {
-                                mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, new List<Guid> { product } , formcheckIds.Where(x =>x.Item2 == product).Select(x => x.Item1)));
+                                mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, new List<Guid> { product } , new List<string>(){ FormCheckType.Personal.ToString(), FormCheckType.Commercial.ToString() }));
                                 continue;
                             }
                         }
                     }
                     else
                     {
-                        //If search by product is off
                         if (includedFormCheck.Any())
                         {
                             foreach(var formCheck in includedFormCheck)
                             {
-                                mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, productIds, new List<Guid> { formCheck.Item1 }));
+                                mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, productIds, new List<string> { formCheck.ToString() }));
                                 continue;
                             }
                         }
                         else
                         {
-                            mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, productIds, formcheckIds.Select(x => x.Item1)));
+                            mappings.Add(new CheckInventoryMappingData(new List<Guid> { branch }, productIds, new List<string>() { FormCheckType.Personal.ToString(), FormCheckType.Commercial.ToString()}));
                             continue;
                         }
                     }
-                
                 }
-
                 return mappings;
             }
 
             if (includedProducts.Any())
             {
                 foreach (var product in includedProducts) {
-                    if (includedFormCheck.Any(x => x.Item2 == product))
+                    if (includedFormCheck.Any())
                     {
-                        foreach (var formCheck in includedFormCheck.Where(x => x.Item2 == product))
+                        foreach (var formCheck in includedFormCheck)
                         {
-                            mappings.Add(new CheckInventoryMappingData(branchIds , new List<Guid> { product }, new List<Guid> { formCheck.Item1 }));
+                            mappings.Add(new CheckInventoryMappingData(branchIds , new List<Guid> { product }, new List<string> { formCheck.ToString() }));
                             continue;
                         }
                     }
                     else
                     {
-                        mappings.Add(new CheckInventoryMappingData(branchIds, new List<Guid> { product }, formcheckIds.Where(x => x.Item2 == product).Select(x => x.Item1)));
+                        mappings.Add(new CheckInventoryMappingData(branchIds, new List<Guid> { product }, new List<string>() { FormCheckType.Commercial.ToString(), FormCheckType.Personal.ToString() }));
                         continue;
                     }
 
@@ -216,7 +202,7 @@ namespace Captive.Applications.CheckInventory.Commands.InitiateCheckInventory
             {
                 foreach (var formCheck in includedFormCheck)
                 {
-                    mappings.Add(new CheckInventoryMappingData(branchIds, productIds.Where(x => x == formCheck.Item2), new List<Guid> { formCheck.Item1 }));
+                    mappings.Add(new CheckInventoryMappingData(branchIds, productIds, new List<string> { formCheck.ToString() }));
                     continue;
                 }
             }

@@ -37,19 +37,19 @@ namespace Captive.Applications.CheckInventory.Services
 
             foreach (var checkOrder in checkOrders)
             {
-                var formCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
+                var formCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
 
                 var bankId = orderFile.BatchFile!.BankInfoId;
 
-                var tag = await _checkValidationService.GetTag(bankId, checkOrder.BranchId, checkOrder.FormCheckId!.Value, checkOrder.ProductId, cancellationToken);
+                var tag = await _checkValidationService.GetTag(bankId, checkOrder.BranchId, checkOrder.ProductId, formCheck.FormCheckType, cancellationToken);
 
-                var checkInventory = await _readUow.CheckInventory.GetAll().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsActive, cancellationToken);
+                var checkInventory = await _checkValidationService.GetCheckInventory(tag, checkOrder.BranchId, checkOrder.ProductId, formCheck.FormCheckType, cancellationToken);
 
                 if (!string.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 { 
                     if (formCheck.HasBranchCodeInSeries)
                     {
-                        //checkOrder.PreStartingSeries = String.Concat() 
+                        //checkOrder.PreStartingSeries = String.Concat()
                     }
 
                     await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail

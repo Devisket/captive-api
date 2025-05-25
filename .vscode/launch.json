@@ -1,0 +1,61 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Captive.Commands",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/Captive.Commands/Captive.Commands.csproj",
+            "launchConfigurationId": "TargetFramework=;Captive.Commands",
+            "preLaunchTask": "build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Captive.MdbAPI",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/Captive.MdbAPI/Captive.MdbAPI.csproj",
+            "launchConfigurationId": "TargetFramework=;Captive.MdbAPI",
+            "preLaunchTask": "build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Captive.Query",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/Captive.Query/Captive.Queries.csproj",
+            "launchConfigurationId": "TargetFramework=;Captive.Query",
+            "preLaunchTask": "build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Captive.Fileprocessor",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/Captive.Fileprocessor/Captive.Fileprocessor.csproj",
+            "launchConfigurationId": "TargetFramework=;Captive.Fileprocessor",
+            "preLaunchTask": "build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All Services",
+            "configurations": [
+                "Captive.Commands",
+                "Captive.MdbAPI",
+                "Captive.Query",
+                "Captive.Fileprocessor"
+            ],
+            "stopAll": true
+        }
+    ]
+}

@@ -3,6 +3,8 @@ using Captive.Applications.TagAndMapping.Command.CreateTag;
 using Captive.Applications.TagAndMapping.Command.DeleteMapping;
 using Captive.Applications.TagAndMapping.Command.DeleteTag;
 using Captive.Applications.TagAndMapping.Command.LockTag;
+using Captive.Data.UnitOfWork.Read;
+using Captive.Model.Application;
 using Captive.Model.Dto;
 using Captive.Model.Request;
 using MediatR;
@@ -38,12 +40,12 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("{tagId}/mapping")]
-        public async Task<IActionResult> AddTagMapping([FromRoute] Guid tagId, [FromBody] IList<TagMappingDto> request)
+        public async Task<IActionResult> AddTagMapping([FromRoute] Guid tagId, [FromBody] TagMappingData request)
         {
             await _mediator.Send(new CreateTagMappingCommand
             {
                 TagId = tagId,
-                Mappings = request
+                MappingData = request
             });
 
             return NoContent();

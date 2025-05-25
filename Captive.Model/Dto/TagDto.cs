@@ -14,7 +14,7 @@ namespace Captive.Model.Dto
         public bool SearchByProduct { get; set; }
         public bool isLocked { get; set; }
         public bool isActive { get; set; }
-
+        public bool CheckInventoryInitiated { get; set; }
 
         public static TagDto ToDto (Tag input)
         {
@@ -28,7 +28,8 @@ namespace Captive.Model.Dto
                 SearchByFormCheck = input.SearchByFormCheck,
                 SearchByProduct = input.SearchByProduct,
                 isLocked = input.IsLock,
-                isActive = input.IsActive
+                isActive = input.IsActive,
+                CheckInventoryInitiated = input.CheckInventoryInitiated,
             };
         }
     }
