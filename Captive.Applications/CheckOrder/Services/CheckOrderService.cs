@@ -69,7 +69,7 @@ namespace Captive.Applications.CheckOrder.Services
             foreach (var checkOrder in floatingCheckOrders)
             {
                 //Validate FormCheck
-                if (!formChecks.Any(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType))
+                if (!formChecks.Any(x => x.FormType.Trim() == checkOrder.FormType.Trim() && x.CheckType.Trim() == checkOrder.CheckType.Trim()))
                 {
                     checkOrder.IsValid = false;
                     checkOrder.ErrorMessage = $"Check Type: {checkOrder.CheckType} and Form type: {checkOrder.FormType} doesn't exist";
