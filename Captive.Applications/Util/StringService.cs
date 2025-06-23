@@ -33,11 +33,20 @@ namespace Captive.Applications.Util
 
         public Tuple<int, int> ExtractNumber(string seriesPattern, string startingSeries, string endingSeries)
         {
-            var startingNumber = startingSeries.Replace(seriesPattern, string.Empty);
-            var endingNumber = endingSeries.Replace(seriesPattern, string.Empty);
+            int a, b = 0;
 
-            var a = int.Parse(startingNumber);
-            var b = int.Parse(endingNumber);
+            if (!String.IsNullOrEmpty(seriesPattern))
+            {
+                var startingNumber = startingSeries.Replace(seriesPattern, string.Empty);
+                var endingNumber = endingSeries.Replace(seriesPattern, string.Empty);
+                a = int.Parse(startingNumber);
+                b = int.Parse(endingNumber);
+            }
+            else
+            {
+                a = int.Parse(startingSeries);
+                b = int.Parse(endingSeries);
+            }
 
             return new Tuple<int, int>(a, b);
         }

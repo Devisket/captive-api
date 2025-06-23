@@ -200,9 +200,9 @@ namespace Captive.Applications.CheckValidation.Services
             if (tag.SearchByFormCheck)
                 query = query.Where(x => x.CheckInventoryMappingData.FormCheckType.Contains(checkType.ToString()));
 
-            var checkInventory = await query.FirstOrDefaultAsync(cancellationToken);
+            var checkInventory = query.FirstOrDefault();
 
-            if (checkInventory != null) {
+            if (checkInventory == null) {
                 throw new CaptiveException("Can't find the check inventory");
             }
 

@@ -76,7 +76,7 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
-                var formCheck = formChecks.First(x => x.FormType == checkOrder.FormType && x.CheckType == checkOrder.CheckType);
+                var formCheck = formChecks.First(x => x.FormType.Trim() == checkOrder.FormType.Trim() && x.CheckType.Trim() == checkOrder.CheckType.Trim());
 
                 personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? ((checkOrder.Quantity * formCheck.Quantity) + personalQuantity) : personalQuantity;
                 commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? ((checkOrder.Quantity * formCheck.Quantity) + commercialQuantity): commercialQuantity;
@@ -112,19 +112,19 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
-                if (string.IsNullOrEmpty(checkOrder.FormType))
-                {
-                    checkOrder.IsValid = false;
-                    checkOrder.ErrorMessage = "Form type is empty.";
-                    continue;
-                }
+                //if (string.IsNullOrEmpty(checkOrder.FormType))
+                //{
+                //    checkOrder.IsValid = false;
+                //    checkOrder.ErrorMessage = "Form type is empty.";
+                //    continue;
+                //}
 
-                if (string.IsNullOrEmpty(checkOrder.CheckType))
-                {
-                    checkOrder.IsValid = false;
-                    checkOrder.ErrorMessage = "Check type is empty.";
-                    continue;
-                }
+                //if (string.IsNullOrEmpty(checkOrder.CheckType))
+                //{
+                //    checkOrder.IsValid = false;
+                //    checkOrder.ErrorMessage = "Check type is empty.";
+                //    continue;
+                //}
 
                 //Validate branch's BRSTN
                 if (!brstns.Contains(checkOrder.BRSTN))
