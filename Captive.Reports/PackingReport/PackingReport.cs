@@ -44,7 +44,7 @@ namespace Captive.Reports.PackingReport
 
                         RenderHeader(writer, formCheckName, pageNo, firstData.BankBranch, filBranch.Key.OrderFileName, firstData.DeliverTo);
 
-                        foreach (var checkOrder in filBranch)
+                        foreach (var checkOrder in filBranch.OrderBy(x => x.StartSeries))
                         {
                             RenderData(writer, checkOrder);
                             subTotal++;
@@ -116,12 +116,14 @@ namespace Captive.Reports.PackingReport
                         ProductTypeName = formCheck.Product.ProductName,
                         FormCheckName = formCheck.Description,
                         FileInitial = formCheck.FileInitial,
+                        FormCheckType = formCheck.FormCheckType,
                         CheckOrder = checkOrder,
                         BankBranch = branch,
                         DeliverTo = deliveringBranch,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
                         EndSeries = check.EndingSeries ?? string.Empty,
+
                         OrderFileId = checkOrder.OrderFileId,
                         OrderFileName = checkOrder.OrderFile.FileName
                     });
@@ -145,13 +147,20 @@ namespace Captive.Reports.PackingReport
                 Regex regex = new Regex("[ ]{2,}", options);
                 var accountName = regex.Replace(checkData.AccountName, " ");
 
-                writer.Write($"  {string.Format("{0,-38}", accountName)}");
+                // Ensure account name is exactly 50 characters
+                if (accountName.Length > 50)
+                {
+                    accountName = accountName.Substring(0, 50);
+                }
+                accountName = accountName.PadRight(50);
+
+                writer.Write($"  {accountName}");
             }
             else
-                writer.Write($"  \t\t\t\t\t\t\t\t\t\t");
+                writer.Write($"  {new string(' ', 50)}");
 
-            writer.Write("1  ");
-            writer.Write($"{checkDto.StartSeries}  {checkDto.EndSeries}\n");
+            writer.Write("  1");
+            writer.Write($"\t\t{checkDto.StartSeries.PadLeft(10,'0')}  {checkDto.EndSeries.PadLeft(10,'0')}\n");
         }
 
         private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)
@@ -162,13 +171,13 @@ namespace Captive.Reports.PackingReport
             writer.WriteLine($"  {DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
             writer.WriteLine("\t\t\t\t\t\t\t  CAPTIVE PRINTING CORPORATION");
             writer.WriteLine($"\t\t\t\t\t\t\t  {bankShortName} - {formCheckName} Summary");
-            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\t\t  QTY\tSTART #\t  END #");
+            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\t\t\t\t\t\t QTY\tSTART #\t\t  END #");
 
             if (deliverTo != null)
                 writer.WriteLine($"\n ** DELIVER TO {deliverTo.BRSTNCode} {deliverTo.BranchName}");
 
             writer.WriteLine($"\n ** ORDERS OF BRSTN {orderBranch.BRSTNCode} {orderBranch.BranchName}");
-            writer.WriteLine($"\n * Batch #: {orderFileName.ToUpper()} \n");
+            writer.WriteLine($"\n * Batch #: {orderFileName.Split('.').First().ToUpper()} \n");
         }
         private void RenderFooter(StreamWriter writer, int subTotal)
         {
