@@ -2,6 +2,7 @@
 using Captive.Data.UnitOfWork.Read;
 using Captive.Reports.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Captive.Reports.BlockReport
 {
@@ -22,7 +23,6 @@ namespace Captive.Reports.BlockReport
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
 
-
             int runningNo = 0, blockNo = 0, pageNo = 0;
 
 
@@ -31,6 +31,7 @@ namespace Captive.Reports.BlockReport
                 var productName = productCheckOrder.Key.ProductTypeName;
                 var formCheckName = productCheckOrder.Key.FormCheckName ?? string.Empty;
                 var bankShortName = branches.First().BankInfo.ShortName;
+                var fileName = productCheckOrder.First().OrderFileName;
 
                 var productFCGroup = checkDto.Where(x => x.ProductTypeName == productCheckOrder.Key.ProductTypeName).GroupBy(x => x.FormCheckName);
 
@@ -44,7 +45,7 @@ namespace Captive.Reports.BlockReport
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
-                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.Id).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.CheckInventoryId))
+                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.Id).ThenBy(x => x.StartSeries))
                     {
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0)
                         {
@@ -63,11 +64,11 @@ namespace Captive.Reports.BlockReport
                         runningNo++;
 
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1)
-                            RenderFooter(writer, formcheckList);
+                            RenderFooter(writer, formcheckList, fileName);
                     }
 
                     if (blockNo <= 4)
-                        RenderFooter(writer, formcheckList);
+                        RenderFooter(writer, formcheckList,fileName);
 
                     runningNo = 0;
                     blockNo = 0;
@@ -78,7 +79,8 @@ namespace Captive.Reports.BlockReport
 
         private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, int blockNo)
         {
-            writer.WriteLine($"\t  {blockNo} {branch.BRSTNCode}\t{checkOrder.AccountNo}\t{startingSeries} {endingSeries}");
+            var accNo = Regex.Replace(checkOrder.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
+            writer.WriteLine($"\t  {blockNo} {branch.BRSTNCode}\t{accNo}\t{startingSeries.PadLeft(10, '0')} {endingSeries.PadLeft(10,'0')}");
         }
 
         private void RenderHeader(StreamWriter writer, string bankShortName, string productDescription, string formCheckDescription, int page)
@@ -89,13 +91,11 @@ namespace Captive.Reports.BlockReport
             writer.WriteLine($"\t \t \t \t  {bankShortName.ToUpper()} - SUMMARY OF BLOCK - {formCheckDescription.ToUpper()} Check");
             writer.WriteLine($"\t \t \t \t \t \t \t \t    {productDescription.ToUpper()} Check");
             writer.Write("\n \n");
-            writer.WriteLine("  BLOCK RT_NO\t\tACCT_NO\t\tSTART_NO.\t\tEND_NO.\t\tDELIVER_TO");
+            writer.WriteLine("  BLOCK RT_NO\t\tACCT_NO\t\t\tSTART_NO.\tEND_NO.\t\tDELIVER_TO");
         }
 
-        private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType)
+        private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName)
         {
-            string month = DateTime.UtcNow.ToString("MM");
-            string day = DateTime.UtcNow.ToString("dd");
             writer.WriteLine();
             foreach (var item in formcheckType)
             {
@@ -103,7 +103,7 @@ namespace Captive.Reports.BlockReport
                 writer.Write($"\t {item.Item1}: {item.Item2}");
 
                 if (item.Equals(formcheckType.Last()))
-                    writer.Write($"\t\t\t\t\t\t {month + day}_C12.txt");
+                    writer.Write($"\t\t\t\t\t\t {fileName}");
 
                 writer.Write('\n');
             }
@@ -173,6 +173,7 @@ namespace Captive.Reports.BlockReport
                         FileInitial = formCheck.FileInitial,
                         CheckOrder = checkOrder,
                         BankBranch = branch,
+                        OrderFileName = checkOrder.OrderFile.FileName,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
                         EndSeries = check.EndingSeries ?? string.Empty
