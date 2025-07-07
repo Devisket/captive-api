@@ -45,7 +45,7 @@ namespace Captive.Reports.BlockReport
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
-                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.Id).ThenBy(x => x.StartSeries))
+                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                     {
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0)
                         {
@@ -80,7 +80,7 @@ namespace Captive.Reports.BlockReport
         private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, int blockNo)
         {
             var accNo = Regex.Replace(checkOrder.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
-            writer.WriteLine($"\t  {blockNo} {branch.BRSTNCode}\t{accNo}\t{startingSeries.PadLeft(10, '0')} {endingSeries.PadLeft(10,'0')}");
+            writer.WriteLine($"\t  {blockNo} {branch.BRSTNCode}\t{accNo}\t\t{startingSeries.PadLeft(10, '0')} \t{endingSeries.PadLeft(10,'0')}");
         }
 
         private void RenderHeader(StreamWriter writer, string bankShortName, string productDescription, string formCheckDescription, int page)
@@ -99,11 +99,10 @@ namespace Captive.Reports.BlockReport
             writer.WriteLine();
             foreach (var item in formcheckType)
             {
-
                 writer.Write($"\t {item.Item1}: {item.Item2}");
 
                 if (item.Equals(formcheckType.Last()))
-                    writer.Write($"\t\t\t\t\t\t {fileName}");
+                    writer.Write($"\t\t\t\t\t\t {fileName.Split('.').First()}");
 
                 writer.Write('\n');
             }

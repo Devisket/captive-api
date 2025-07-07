@@ -1,8 +1,11 @@
 ﻿using Captive.Applications.CheckInventory.Services;
 using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.Orderfiles.Services;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Messaging.Interfaces;
+using Captive.Messaging.Models;
 using Captive.Model.Dto;
 using Captive.Reports;
 using MediatR;
@@ -19,8 +22,9 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
         private readonly ICheckInventoryService _checkInventoryService;
         private readonly IReportGenerator _reportGenerator;
         private readonly IOrderFileService _orderFileService;
+        private readonly IProducer<DbfGenerateMessage> _producer;
 
-        public ProcessBatchCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckOrderService checkOrderService, ICheckInventoryService checkInventoryService, IReportGenerator reportGenerator, IOrderFileService orderFileService)
+        public ProcessBatchCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckOrderService checkOrderService, ICheckInventoryService checkInventoryService, IReportGenerator reportGenerator, IOrderFileService orderFileService, IProducer<DbfGenerateMessage> producer  )
         {
             _writeUow = writeUow;
             _readUow = readUow;
@@ -28,6 +32,7 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
             _checkInventoryService = checkInventoryService;
             _reportGenerator = reportGenerator;
             _orderFileService = orderFileService;
+            _producer = producer;
         }
 
         public async Task<ProcessBatchCommandResponse> Handle(ProcessBatchCommand request, CancellationToken cancellationToken)
@@ -62,6 +67,12 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
             }
 
             await _reportGenerator.OnGenerateReport(request.BatchId, cancellationToken);
+
+
+            _producer.ProduceMessage(new DbfGenerateMessage
+            {
+                BatchId = request.BatchId
+            });
 
             return returningObj;
         }
