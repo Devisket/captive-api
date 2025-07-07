@@ -59,7 +59,7 @@ namespace Captive.Reports.BlockReport
                             writer.WriteLine($" ** BLOCK{blockNo}");
                         }
 
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, blockNo);
+                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, blockNo, checkOrder.AccountNumberFormat);
 
                         runningNo++;
 
@@ -77,9 +77,13 @@ namespace Captive.Reports.BlockReport
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, int blockNo)
+        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, int blockNo, string? accountNumberFormat)
         {
-            var accNo = Regex.Replace(checkOrder.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
+            var accNo = checkOrder.AccountNo;
+
+            if(!string.IsNullOrEmpty(accountNumberFormat))
+                accNo = Regex.Replace(checkOrder.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
+
             writer.WriteLine($"\t  {blockNo} {branch.BRSTNCode}\t{accNo}\t\t{startingSeries.PadLeft(10, '0')} \t{endingSeries.PadLeft(10,'0')}");
         }
 
@@ -175,7 +179,8 @@ namespace Captive.Reports.BlockReport
                         OrderFileName = checkOrder.OrderFile.FileName,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
-                        EndSeries = check.EndingSeries ?? string.Empty
+                        EndSeries = check.EndingSeries ?? string.Empty,
+                        AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,
                     });
                 }
             }

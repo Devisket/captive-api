@@ -21,6 +21,8 @@ namespace Captive.Reports.PackingReport
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.FormCheckType });
 
+            var accountNumberFormat = checkDto.First().AccountNumberFormat;
+
             foreach (var productData in productGroup)
             {
                 var productName = productData.Key.ProductTypeName;
@@ -46,7 +48,7 @@ namespace Captive.Reports.PackingReport
 
                         foreach (var checkOrder in filBranch.OrderBy(x => x.StartSeries))
                         {
-                            RenderData(writer, checkOrder);
+                            RenderData(writer, checkOrder, accountNumberFormat);
                             subTotal++;
                         }
 
@@ -132,11 +134,14 @@ namespace Captive.Reports.PackingReport
             return returnDatas;
         }
 
-        private void RenderData(StreamWriter writer, CheckOrderDTO checkDto)
+        private void RenderData(StreamWriter writer, CheckOrderDTO checkDto, string? accountNumberFormat)
         {
             var checkData = checkDto.CheckOrder;
 
-            var accNo = Regex.Replace(checkData.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
+            var accNo = checkData.AccountNo;
+
+            if(!string.IsNullOrEmpty(accountNumberFormat))
+                accNo = Regex.Replace(checkData.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
 
             writer.Write($"  {accNo}");
 
@@ -159,8 +164,8 @@ namespace Captive.Reports.PackingReport
             else
                 writer.Write($"  {new string(' ', 50)}");
 
-            writer.Write("  1");
-            writer.Write($"\t\t{checkDto.StartSeries.PadLeft(10,'0')}  {checkDto.EndSeries.PadLeft(10,'0')}\n");
+            writer.Write("  \t1");
+            writer.Write($"\t{checkDto.StartSeries.PadLeft(10,'0')}  \t{checkDto.EndSeries.PadLeft(10,'0')}\n");
         }
 
         private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)
@@ -171,7 +176,7 @@ namespace Captive.Reports.PackingReport
             writer.WriteLine($"  {DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
             writer.WriteLine("\t\t\t\t\t\t\t  CAPTIVE PRINTING CORPORATION");
             writer.WriteLine($"\t\t\t\t\t\t\t  {bankShortName} - {formCheckName} Summary");
-            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\t\t\t\t\t\t QTY\tSTART #\t\t  END #");
+            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\tQTY\tSTART #\t\tEND #");
 
             if (deliverTo != null)
                 writer.WriteLine($"\n ** DELIVER TO {deliverTo.BRSTNCode} {deliverTo.BranchName}");

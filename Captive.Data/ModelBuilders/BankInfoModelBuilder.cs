@@ -31,6 +31,8 @@ namespace Captive.Data.ModelBuilders
 
             entity.Property(x => x.BankDescription).IsRequired(false);
 
+            entity.Property(x => x.AccountNumberFormat).IsRequired(false).HasDefaultValue("(\\w{3})(\\w{6})(\\w{3})");
+
             entity.ToTable("banks_info");
         }
     }

@@ -104,6 +104,7 @@ namespace Captive.Reports.PrinterFileReport
             return formCheck;
         }
 
+
         private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankID)
         {
             var branches = await GetAlLBranches(bankID);
@@ -134,7 +135,8 @@ namespace Captive.Reports.PrinterFileReport
                         BankBranch = branch,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
-                        EndSeries = check.EndingSeries ?? string.Empty
+                        EndSeries = check.EndingSeries ?? string.Empty,
+                        AccountNumberFormat = branch.BankInfo.AccountNumberFormat
                     });
                 }
             }

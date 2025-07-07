@@ -25,7 +25,8 @@ namespace Captive.Applications.Bank.Query.GetAllBankInfos
                     BankName = x.BankName,
                     BankDescription = x.BankDescription ?? string.Empty,
                     BankShortName = x.ShortName,
-                    CreatedDate = x.CreatedDate
+                    CreatedDate = x.CreatedDate,
+                    AccountNumberFormat = x.AccountNumberFormat
                 }).AsNoTracking().ToListAsync(cancellationToken);
 
             return new GetAllBankInfoResponse
