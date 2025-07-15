@@ -20,6 +20,8 @@ namespace Captive.Data.ModelBuilders
             entity.Property(x => x.Concode)
                 .IsRequired(false);
 
+            entity.Property(x => x.BarCodeValue).IsRequired(false).HasDefaultValue(null);
+
             entity.Property(x => x.OrderQuanity).IsRequired();
 
             entity.HasMany(x => x.CheckInventoryDetail)

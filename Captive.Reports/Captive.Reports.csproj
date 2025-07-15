@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Captive.Data\Captive.Data.csproj" />
+    <ProjectReference Include="..\Captive.Messaging\Captive.Messaging.csproj" />
     <ProjectReference Include="..\Captive.Processing\Captive.Processing.csproj" />
   </ItemGroup>
 

@@ -38,6 +38,7 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
             var orderFile = await _readUow.OrderFiles
                 .GetAll()
                 .Include(x => x.BatchFile)
+                    .ThenInclude(x => x.BankInfo)
                 .Include(x => x.FloatingCheckOrders)
                 .Include(x => x.Product)
                 .FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
@@ -46,6 +47,7 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
                 throw new SystemException($"Order file ID {request.OrderFileId} doesn't exist");
 
             await _checkOrderService.CreateCheckOrder(orderFile, cancellationToken);
+
             var logDto = await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
 
             if (!String.IsNullOrEmpty(logDto.LogMessage))
@@ -54,16 +56,11 @@ namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
                 returnObj.LogType = logDto.LogType;
             }
 
-            await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.Completed, cancellationToken);
+            await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.GeneratingReport, cancellationToken);
 
             await _writeUow.Complete();
 
-            await _reportGenerator.OnGenerateReport(orderFile.BatchFileId, cancellationToken);
-
-            _producer.ProduceMessage(new DbfGenerateMessage
-            {
-                BatchId = orderFile.BatchFileId
-            });
+            await _reportGenerator.GenerateBarcode(orderFile.BatchFile!.BankInfo, orderFile.BatchFileId, cancellationToken);
 
             return returnObj;
         }

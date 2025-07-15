@@ -12,12 +12,13 @@
         public string? DeliverTo { get; set; }
         public string? Concode {  get; set; }
         public string? StartingSeries {  get; set; }
-        public string? EndingSeries { get; set; }    
+        public string? EndingSeries { get; set; }
         public string? MainAccountName {  get; set; }
         public string? AccountName1 { get; set; }
         public string? AccountName2 { get; set; }
         public bool IsValid {  get; set; }
         public bool IsOnHold { get; set; }
+        public string? BarCodeValue {  get; set; }
         public string? ErrorMessage { get; set; }
     }
 }

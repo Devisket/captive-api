@@ -1,6 +1,6 @@
 ﻿using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
-using Captive.Reports.Models;
+using Captive.Model.Dto.Reports;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -151,11 +151,11 @@ namespace Captive.Reports.BlockReport
             return formCheck;
         }
 
-        private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankId, CancellationToken cancellationToken)
+        private async Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankId, CancellationToken cancellationToken)
         {
             var branches = await GetAlLBranches(bankId, cancellationToken);
 
-            var returnDatas = new List<CheckOrderDTO>();
+            var returnDatas = new List<CheckOrderReport>();
 
             var formChecks = await GetFormChecks(checkOrders.GroupBy(x => x.FormCheckId ?? Guid.Empty).Select(x => x.Key).ToList());
 
@@ -169,7 +169,7 @@ namespace Captive.Reports.BlockReport
 
                 foreach (var check in checkInventory)
                 {
-                    returnDatas.Add(new CheckOrderDTO
+                    returnDatas.Add(new CheckOrderReport
                     {
                         ProductTypeName = formCheck.Product.ProductName,
                         FormCheckName = formCheck.Description,

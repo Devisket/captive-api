@@ -61,6 +61,7 @@ namespace Captive.Commands.Extensions
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
             services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
+            services.AddScoped<IProducer<GenerateBarcodeMessage>, GenerateBarcodeProducerMessage>();
             services.AddScoped<IBranchService, BranchService>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));
             var assembly = Assembly.Load("Captive.Applications");

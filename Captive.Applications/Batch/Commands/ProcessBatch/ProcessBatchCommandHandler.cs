@@ -6,7 +6,6 @@ using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
-using Captive.Model.Dto;
 using Captive.Reports;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -41,8 +40,10 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
             var orderFiles = await _readUow.OrderFiles
                 .GetAll()
                 .Include(x => x.BatchFile)
+
                 .Include(x => x.FloatingCheckOrders)
                 .Include(x => x.Product)
+                    .ThenInclude(x => x.BankInfo)
                 .OrderBy(x => x.Product.ProductSequence)
                 .Where(x => x.BatchFileId == request.BatchId).ToListAsync(cancellationToken);
 
@@ -55,7 +56,7 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
             {
                 await _checkOrderService.CreateCheckOrder(orderFile, cancellationToken);
                 var logDto = await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
-                await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.Completed, cancellationToken);
+                await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.GeneratingReport, cancellationToken);
 
                 if (!string.IsNullOrEmpty(logDto.LogMessage))
                 {
@@ -66,13 +67,7 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
                 await _writeUow.Complete();
             }
 
-            await _reportGenerator.OnGenerateReport(request.BatchId, cancellationToken);
-
-
-            _producer.ProduceMessage(new DbfGenerateMessage
-            {
-                BatchId = request.BatchId
-            });
+            await _reportGenerator.GenerateBarcode(orderFiles.First().Product.BankInfo!, orderFiles.First().BatchFileId, cancellationToken);
 
             return returningObj;
         }

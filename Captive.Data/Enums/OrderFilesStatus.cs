@@ -8,6 +8,7 @@ namespace Captive.Data.Enums
         Invalid,
         Pending,
         Error,
-        Completed
+        Completed,
+        GeneratingReport
     }
 }

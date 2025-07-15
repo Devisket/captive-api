@@ -6,8 +6,6 @@ namespace Captive.Data.Models
     public class CheckOrders
     {
         public Guid Id { get; set; }
-       
-
         public string? BranchCode { get; set; }
         public string AccountNo { get; set; }
         public required string BRSTN { get; set; }
@@ -20,12 +18,10 @@ namespace Captive.Data.Models
         public int Quantity {  get; set; }
         public Guid OrderFileId { get; set; }
         public OrderFile OrderFile { get; set; }
-
+        public string? BarCodeValue {  get; set; }
         public Guid? FormCheckId { get; set; }
-
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
-
         public Guid BranchId { get; set; }
         public ICollection<CheckInventoryDetail>? CheckInventoryDetail { get; set; } 
 

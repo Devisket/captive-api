@@ -1,6 +1,6 @@
 ﻿using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
-using Captive.Reports.Models;
+using Captive.Model.Dto.Reports;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -40,6 +40,9 @@ namespace Captive.Reports.PrinterFileReport
         private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, string CheckType)
         {
             var concodes = string.IsNullOrEmpty(checkOrder.Concode) ? null : checkOrder.Concode.Split(";");
+
+            var barcodeValues = !string.IsNullOrEmpty(checkOrder.BarCodeValue) ? checkOrder.BarCodeValue.Split(';') : new string[] { };
+
             writer.WriteLine(3);
             writer.WriteLine(checkOrder.BRSTN);
             writer.WriteLine(checkOrder.AccountNo);
@@ -67,6 +70,12 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(branch.BranchAddress5);
             writer.WriteLine(branch.BankInfo.BankName);
             writer.WriteLine("\n \n \n \n \n \n");
+
+            foreach(var barcodeValue in barcodeValues)
+            {
+                writer.WriteLine($"{barcodeValue}");
+            }
+
             writer.WriteLine(startingSeries);
             writer.WriteLine(endingSeries);
         }
@@ -105,11 +114,11 @@ namespace Captive.Reports.PrinterFileReport
         }
 
 
-        private async Task<ICollection<CheckOrderDTO>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankID)
+        private async Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankID)
         {
             var branches = await GetAlLBranches(bankID);
 
-            var returnDatas = new List<CheckOrderDTO>();
+            var returnDatas = new List<CheckOrderReport>();
 
             var formChecks = await GetFormChecks(checkOrders.GroupBy(x => x.FormCheckId ?? Guid.Empty).Select(x => x.Key).ToList());
 
@@ -123,7 +132,7 @@ namespace Captive.Reports.PrinterFileReport
 
                 foreach (var check in checkInventory)
                 {
-                    returnDatas.Add(new CheckOrderDTO
+                    returnDatas.Add(new CheckOrderReport
                     {
                         ProductTypeName = formCheck.Product.ProductName,
                         FormCheckName = formCheck.Description,
