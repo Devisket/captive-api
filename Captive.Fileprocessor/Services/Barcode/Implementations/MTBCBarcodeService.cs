@@ -9,13 +9,11 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MTBCBarcodeService> _logger;
-        private readonly IBarcodeUpdateService _barcodeUpdateService;
 
-        public MTBCBarcodeService(IConfiguration configuration, ILogger<MTBCBarcodeService> logger, IBarcodeUpdateService barcodeUpdateService)
+        public MTBCBarcodeService(IConfiguration configuration, ILogger<MTBCBarcodeService> logger)
         {
             _configuration = configuration;
             _logger = logger;
-            _barcodeUpdateService = barcodeUpdateService;
         }
 
         public string BarcodeServiceName => "MTBCBarcode";
