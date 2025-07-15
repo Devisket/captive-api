@@ -33,9 +33,6 @@ namespace Captive.Fileprocessor
             // Register HttpClient
             builder.Services.AddHttpClient();
             
-            // Register barcode update service
-            builder.Services.AddScoped<IBarcodeUpdateService, BarcodeUpdateService>();
-            
             // Register barcode implementations
             builder.Services.AddScoped<IBarcodeImplementationService, MTBCBarcodeService>();
             // Add more barcode implementations here as needed
