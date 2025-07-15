@@ -3,6 +3,9 @@ using Captive.Applications.CheckOrder.Command.CreateCheckOrder;
 using Captive.Applications.CheckOrder.Command.DeleteFloatingCheckOrder;
 using Captive.Applications.CheckOrder.Command.HoldFloatingCheckOrder;
 using Captive.Applications.CheckOrder.Command.ReleaseFloatingCheckOrder;
+using Captive.Applications.CheckOrder.Command.UpdateCheckOrderBarcode;
+using Captive.Model.Dto;
+using Captive.Model.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,6 +70,18 @@ namespace Captive.Commands.Controllers
         {
             await _mediator.Send(new ReleaseFloatingCheckOrderCommand { Id = floatingCheckOrderId });
             return NoContent();
+        }
+
+        [HttpPost("UpdateCheckOrderBarCode")]
+        public async Task<IActionResult> UpdateCheckOrderBarCode([FromBody] UpdateCheckOrderBarCodeRequest request)
+        {
+            await _mediator.Send(new UpdateCheckOrderBarcodeCommand
+            {
+                BatchId = request.BatchId,
+                CheckordersToUpdate = request.CheckOrdersToUpdate
+            });
+
+            return Ok();
         }
     }
 }

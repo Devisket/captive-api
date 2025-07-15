@@ -17,16 +17,10 @@ namespace Captive.Applications.Reports.Commands
         }
         public async Task<Unit> Handle(GenerateReportCommand request, CancellationToken cancellationToken)
         {
-
             var batchFile = await _readUow.BatchFiles.GetAll().Include(x => x.OrderFiles).AsNoTracking().FirstOrDefaultAsync(x => x.Id == request.BatchId);
-
 
             if (batchFile == null)
                 throw new Exception($"BatchID {request.BatchId} doesn't exist");
-
-            if (batchFile.OrderFiles.Any(x => x.Status == Data.Enums.OrderFilesStatus.Error)) { 
-            
-            }
 
             await _reportGenerator.OnGenerateReport(request.BatchId, cancellationToken);
 

@@ -50,7 +50,8 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
 
             await _writeUow.Complete(cancellationToken);
 
-            return Unit.Value;
+            return Unit.Value;     
+                       
         }
     }
 }

@@ -92,6 +92,9 @@ namespace Captive.Commands.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BarcodeService")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -257,6 +260,9 @@ namespace Captive.Commands.Migrations
 
                     b.Property<string>("BRSTN")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BarCodeValue")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BranchCode")

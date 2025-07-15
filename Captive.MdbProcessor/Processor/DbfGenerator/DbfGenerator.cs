@@ -1,5 +1,7 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
+using Captive.Data.UnitOfWork.Write;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data.OleDb;
@@ -14,31 +16,40 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
     {
         private readonly IConfiguration _configuration;
         private readonly IReadUnitOfWork _readUow;
+        private readonly IWriteUnitOfWork _writeUow;
 
-        public DbfGenerator(IConfiguration configuration, IReadUnitOfWork readUow)
+        public DbfGenerator(IConfiguration configuration, IReadUnitOfWork readUow, IWriteUnitOfWork writeUow)
         {
             _configuration = configuration;
             _readUow = readUow;
+            _writeUow = writeUow;
         }
 
         public async Task GenerateDbf(List<OrderFile> orderFiles, CancellationToken cancellationToken)
         {
-            var bankInfo = await _readUow.Banks.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.Id == orderFiles.First().BatchFile.BankInfoId, cancellationToken);           
-
-            var fileDirectory = CreateDirectory(bankInfo.ShortName, orderFiles.First().BatchFile.BatchName);
+            var bankInfo = orderFiles.First().BatchFile.BankInfo;
 
             try
             {
                 foreach (var orderFile in orderFiles) 
                 {
+                    var fileDirectory = CreateDirectory(bankInfo.ShortName, orderFiles.First().BatchFile.BatchName);
+
                     var productNames = orderFile.Product.ProductName;
 
                     fileDirectory = Path.Combine(fileDirectory, productNames);
 
-                    if (!File.Exists(fileDirectory)) 
+                    if (!Directory.Exists(fileDirectory)) 
                     { 
                         Directory.CreateDirectory(fileDirectory);
-                    }                    
+                    }
+
+                    // Delete existing DBF file if it exists
+                    var dbfFilePath = Path.Combine(fileDirectory, "dbf_file.dbf");
+                    if (File.Exists(dbfFilePath))
+                    {
+                        File.Delete(dbfFilePath);
+                    }
 
                     string strConnectionString = $"Provider='Microsoft.Jet.OLEDB.4.0';Data Source={fileDirectory};" + "Extended Properties=dBase IV";
 
@@ -58,7 +69,13 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
                     await InsertDbfRecord(connection, orderFile, cancellationToken);
 
                     await connection.CloseAsync();
+
+                    orderFile.Status = OrderFilesStatus.Completed;
                 }
+
+                _writeUow.OrderFiles.UpdateRange(orderFiles);
+
+                await _writeUow.Complete();
             }
             catch (Exception ex)
             {

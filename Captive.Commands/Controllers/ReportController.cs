@@ -15,10 +15,13 @@ namespace Captive.Commands.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GenerateReport([FromBody]GenerateReportCommand request)
+        [HttpPost("GenerateOutput/{batchId}")]
+        public async Task<IActionResult> GenerateReport([FromRoute] Guid batchId)
         {
-            await _mediator.Send(request);
+            await _mediator.Send(new GenerateReportCommand
+            {
+                BatchId = batchId
+            });
 
             return Ok();
         }
