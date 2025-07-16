@@ -52,7 +52,6 @@ namespace Captive.Fileprocessor
                     if(deserializedMessage == null)
                     {
                         _logger.LogError("Cannot serialize GenerateBarcodeMessage");
-                        _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                         return;
                     }
                     else
@@ -63,14 +62,11 @@ namespace Captive.Fileprocessor
                 catch (Exception ex)
                 {
                     _logger.LogError(ex.Message);
-                    _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                     return;
                 }
-                
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
-            _channel.BasicConsume("GenerateBarcode", false, consumer);
+            _channel.BasicConsume("GenerateBarcode", true, consumer);
 
             return Task.CompletedTask;
         }
