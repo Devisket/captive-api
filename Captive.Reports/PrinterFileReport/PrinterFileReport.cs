@@ -29,7 +29,7 @@ namespace Captive.Reports.PrinterFileReport
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
-                    foreach (var checkOrder in productCheckOrder)
+                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                     {
                         RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType);
                     }
@@ -71,13 +71,18 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(branch.BankInfo.BankName);
             writer.WriteLine("\n \n \n \n \n \n");
 
-            foreach(var barcodeValue in barcodeValues)
+            writer.WriteLine(startingSeries);
+            writer.WriteLine(endingSeries);
+
+            foreach (var barcodeValue in barcodeValues)
+            {
+                writer.WriteLine($"*{barcodeValue}*");
+            }
+
+            foreach (var barcodeValue in barcodeValues)
             {
                 writer.WriteLine($"{barcodeValue}");
             }
-
-            writer.WriteLine(startingSeries);
-            writer.WriteLine(endingSeries);
         }
 
         private async Task<ICollection<CheckInventoryDetail>> GetCheckInventory(Guid checkOrderId)

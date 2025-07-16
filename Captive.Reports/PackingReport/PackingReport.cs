@@ -46,7 +46,7 @@ namespace Captive.Reports.PackingReport
 
                         RenderHeader(writer, formCheckName, pageNo, firstData.BankBranch, filBranch.Key.OrderFileName, firstData.DeliverTo);
 
-                        foreach (var checkOrder in filBranch.OrderBy(x => x.StartSeries))
+                        foreach (var checkOrder in filBranch.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                         {
                             RenderData(writer, checkOrder, accountNumberFormat);
                             subTotal++;
