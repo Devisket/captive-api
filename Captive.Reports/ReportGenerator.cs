@@ -181,7 +181,13 @@ namespace Captive.Reports
                 AccountNumber = x.AccountNo,
                 BRSTN = x.BRSTN,
                 CheckOrderId = x.Id,
-                StartingSeries = x.CheckInventoryDetail!.Select(x => x.StartingSeries!).ToList(),
+                Quantity = x.Quantity,
+                CheckInventories = x.CheckInventoryDetail!.OrderBy(x => x.StartingSeries).Select(x => new CheckInventoryDetailBarcodeDto 
+                { 
+                    CheckInventoryDetailId = x.Id,
+                    StartingSeries = x.StartingSeries!,
+                    EndingSeries = x.EndingSeries!
+                }).ToList(),
             });
 
             if (!checkOrderWithoutBarcode.Any())

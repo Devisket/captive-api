@@ -125,7 +125,7 @@ namespace Captive.Reports.PackingReport
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
                         EndSeries = check.EndingSeries ?? string.Empty,
-
+                        BarcodeValue = check.BarCodeValue,
                         OrderFileId = checkOrder.OrderFileId,
                         OrderFileName = checkOrder.OrderFile.FileName
                     });

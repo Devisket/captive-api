@@ -40,44 +40,123 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
             {
                 _logger.LogInformation($"Processing barcode generation for CheckOrderId: {checkOrder.CheckOrderId}");
                 
-                var barcodeValues = new List<string>();
-                
-                // Iterate through each starting series for this check order
-                foreach (var startingSeries in checkOrder.StartingSeries)
+                // Process each check series in the check order
+                foreach (var checkSeries in checkOrder.CheckInventories)
                 {
+                    // Generate all series between starting and ending series as semicolon-separated string
+                    var seriesString = GenerateSeriesBetween(checkSeries.StartingSeries, checkSeries.EndingSeries);
+
                     try
                     {
-                        var barcodeValue = await GenerateBarcodeForSeries(cliPath, checkOrder.AccountNumber, checkOrder.BRSTN, startingSeries);
-                        barcodeValues.Add(barcodeValue);
-                        _logger.LogInformation($"Successfully generated barcode for CheckOrderId: {checkOrder.CheckOrderId}, StartingSeries: {startingSeries}");
+                        var barcodeValue = await GenerateBarcodeForSeries(cliPath, checkOrder.AccountNumber, checkOrder.BRSTN, seriesString);
+
+                        updateBarcodeRequests.Add(new UpdateCheckOrderBarcodeDto
+                        {
+                            CheckOrderId = checkOrder.CheckOrderId,
+                            BarcodeValue = barcodeValue,
+                            CheckInventoryDetailId = checkSeries.CheckInventoryDetailId,
+                        });
+
+
+                        _logger.LogInformation($"Successfully generated barcode for CheckOrderId: {checkOrder.CheckOrderId}, Series: {seriesString}");
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"Failed to generate barcode for CheckOrderId: {checkOrder.CheckOrderId}, StartingSeries: {startingSeries}");
+                        _logger.LogError(ex, $"Failed to generate barcode for CheckOrderId: {checkOrder.CheckOrderId}, Series: {seriesString}");
                         throw;
                     }
                 }
-
-                // Combine all barcode values for this check order (you might want to adjust this logic)
-                var combinedBarcodeValue = string.Join(";", barcodeValues);
-                
-                updateBarcodeRequests.Add(new UpdateCheckOrderBarcodeDto
-                {
-                    CheckOrderId = checkOrder.CheckOrderId,
-                    BarcodeValue = combinedBarcodeValue
-                });
             }
-
-
             return updateBarcodeRequests;
         }
 
-        private async Task<string> GenerateBarcodeForSeries(string cliPath, string accountNumber, string brstn, string startingSeries)
+        /// <summary>
+        /// Generates a semicolon-separated string of all series between starting and ending series (inclusive)
+        /// Example: StartingSeries="ABC000001", EndingSeries="ABC000010" -> "ABC000001;ABC000002;ABC000003;...;ABC000010"
+        /// </summary>
+        private string GenerateSeriesBetween(string startingSeries, string endingSeries)
+        {
+            var result = new List<string>();
+            
+            if (string.IsNullOrEmpty(startingSeries) || string.IsNullOrEmpty(endingSeries))
+            {
+                return string.Empty;
+            }
+
+            // Find where the numeric part starts from the end for both series
+            int startNumericIndex = FindNumericStartIndex(startingSeries);
+            int endNumericIndex = FindNumericStartIndex(endingSeries);
+
+            // Extract prefix and numeric parts for starting series
+            string startPrefix = startingSeries.Substring(0, startNumericIndex);
+            string startNumericPart = startingSeries.Substring(startNumericIndex);
+            
+            // Extract prefix and numeric parts for ending series
+            string endPrefix = endingSeries.Substring(0, endNumericIndex);
+            string endNumericPart = endingSeries.Substring(endNumericIndex);
+
+            // Validate that prefixes match
+            if (startPrefix != endPrefix)
+            {
+                _logger.LogWarning($"Series prefixes don't match: '{startPrefix}' vs '{endPrefix}'. Using starting series only.");
+                return startingSeries;
+            }
+
+            // Parse numeric parts
+            if (!int.TryParse(startNumericPart, out int startNumber) || !int.TryParse(endNumericPart, out int endNumber))
+            {
+                _logger.LogWarning($"Failed to parse numeric parts: '{startNumericPart}' or '{endNumericPart}'. Using starting series only.");
+                return startingSeries;
+            }
+
+            // Validate that start <= end
+            if (startNumber > endNumber)
+            {
+                _logger.LogWarning($"Starting number {startNumber} is greater than ending number {endNumber}. Using starting series only.");
+                return startingSeries;
+            }
+
+            // Use the padding length from the starting series
+            int paddingLength = startNumericPart.Length;
+
+            // Generate all series from start to end (inclusive)
+            for (int currentNumber = startNumber; currentNumber <= endNumber; currentNumber++)
+            {
+                string formattedNumber = currentNumber.ToString().PadLeft(paddingLength, '0');
+                result.Add(startPrefix + formattedNumber);
+            }
+
+            // Join all series with semicolons
+            return string.Join(";", result);
+        }
+
+        /// <summary>
+        /// Finds the index where the numeric part starts from the end of the string
+        /// </summary>
+        private int FindNumericStartIndex(string series)
+        {
+            int numericStartIndex = series.Length;
+            for (int i = series.Length - 1; i >= 0; i--)
+            {
+                if (!char.IsDigit(series[i]))
+                {
+                    numericStartIndex = i + 1;
+                    break;
+                }
+                if (i == 0) // All characters from start are digits
+                {
+                    numericStartIndex = 0;
+                }
+            }
+            return numericStartIndex;
+        }
+
+        private async Task<string> GenerateBarcodeForSeries(string cliPath, string accountNumber, string brstn, string series)
         {
             var startInfo = new ProcessStartInfo
             {
                 FileName = cliPath,
-                Arguments = $"\"{accountNumber}\" \"{brstn}\" \"{startingSeries}\"",
+                Arguments = $"\"{accountNumber}\" \"{brstn}\" \"{series}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -110,7 +189,7 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
             }
 
             // If no output, return a placeholder or handle accordingly
-            return $"BARCODE_{accountNumber}_{brstn}_{startingSeries}";
+            return $"BARCODE_{accountNumber}_{brstn}_{series}";
         }
     }
 }

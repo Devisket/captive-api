@@ -14,6 +14,7 @@ namespace Captive.Data.Models
         public int StartingNumber { get; set; } = 0;
         public int EndingNumber { get; set; } = 0;
         public bool IsReserve { get; set; }
+        public string? BarCodeValue {  get; set; }
         public required int Quantity { get; set; }
         public Guid? CheckOrderId { get; set; }
         public CheckOrders? CheckOrder{ get; set; }

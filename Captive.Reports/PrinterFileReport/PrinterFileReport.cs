@@ -118,7 +118,6 @@ namespace Captive.Reports.PrinterFileReport
             return formCheck;
         }
 
-
         private async Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankID)
         {
             var branches = await GetAlLBranches(bankID);

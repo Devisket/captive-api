@@ -28,6 +28,7 @@ namespace Captive.Applications.CheckOrder.Command.UpdateCheckOrderBarcode
             var checkOrders = await _readUow.CheckOrders
                 .GetAll()
                 .Include(x => x.OrderFile)
+                .Include(x => x.CheckInventoryDetail)
                 .Where(x => x.OrderFile.BatchFileId == request.BatchId)
                 .ToListAsync(cancellationToken);
 
@@ -38,14 +39,20 @@ namespace Captive.Applications.CheckOrder.Command.UpdateCheckOrderBarcode
 
             foreach (var checkOrder in checkOrders.Where(x => request.CheckordersToUpdate.Any(z => z.CheckOrderId == x.Id)))
             {
-                var updateRequest = request.CheckordersToUpdate
-                    .FirstOrDefault(x => x.CheckOrderId == checkOrder.Id);
+                var barCodeUpdates = request.CheckordersToUpdate.Where(x => x.CheckOrderId == checkOrder.Id);
 
-                if (updateRequest != null)
+                var consolidatedBarCodes = string.Join(';', barCodeUpdates.Select(x => x.BarcodeValue));
+
+                checkOrder.BarCodeValue = consolidatedBarCodes;
+
+                foreach(var checkInventoryDetail in checkOrder.CheckInventoryDetail!)
                 {
-                    checkOrder.BarCodeValue = updateRequest.BarcodeValue;
-                    _writeUow.CheckOrders.Update(checkOrder);
+                    checkInventoryDetail.BarCodeValue = barCodeUpdates.First(x => x.CheckInventoryDetailId == checkInventoryDetail.Id).BarcodeValue;
+
+                    _writeUow.CheckInventoryDetails.Update(checkInventoryDetail);
                 }
+
+                _writeUow.CheckOrders.Update(checkOrder);
             }
 
             await _writeUow.Complete();
