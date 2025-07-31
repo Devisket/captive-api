@@ -5,10 +5,10 @@ namespace Captive.Data.Models
     {
         public Guid Id { get; set; }    
         public required string SeriesPatern { get; set; }
-        public int StartingSeries { get; set; }
-        public int WarningSeries {  get; set; }
-        public int EndingSeries { get; set; }
-        public int CurrentSeries { get; set; }
+        public long StartingSeries { get; set; }
+        public long WarningSeries {  get; set; }
+        public long EndingSeries { get; set; }
+        public long CurrentSeries { get; set; }
         public int NumberOfPadding {  get; set; }
         public bool isRepeating {  get; set; }
         public bool IsActive { get; set; }

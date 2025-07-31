@@ -9,11 +9,11 @@ namespace Captive.Model.Dto
         public Guid? Id { get; set; }
         public Guid TagId { get; set; }
         public string? SeriesPattern { get; set; }
-        public int WarningSeries { get; set; }
+        public long WarningSeries { get; set; }
         public int NumberOfPadding {  get; set; }
-        public int StartingSeries {  get; set; }
-        public int EndingSeries { get; set; }
-        public int CurrentSeries {  get; set; }
+        public long StartingSeries {  get; set; }
+        public long EndingSeries { get; set; }
+        public long CurrentSeries {  get; set; }
         public bool IsRepeating {  get; set; }
         public bool IsActive { get; set; }
         public CheckInventoryMappingData? MappingData { get; set; }
