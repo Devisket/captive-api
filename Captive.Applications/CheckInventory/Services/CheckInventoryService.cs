@@ -71,7 +71,7 @@ namespace Captive.Applications.CheckInventory.Services
                     continue;
                 }
 
-                var startingSeriesNumber = 1;
+                var startingSeriesNumber = checkInventory.StartingSeries;
 
                 var lastCheck = GetLastCheckDetail(tag, checkOrder, checkInventory.Id);
 

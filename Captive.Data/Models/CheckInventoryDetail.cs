@@ -11,8 +11,8 @@ namespace Captive.Data.Models
         public string? StartingSeries { get; set; }
         public string? EndingSeries { get; set; }
         public string? AccountNumber {  get; set; }
-        public int StartingNumber { get; set; } = 0;
-        public int EndingNumber { get; set; } = 0;
+        public long StartingNumber { get; set; } = 0;
+        public long EndingNumber { get; set; } = 0;
         public bool IsReserve { get; set; }
         public string? BarCodeValue {  get; set; }
         public required int Quantity { get; set; }
