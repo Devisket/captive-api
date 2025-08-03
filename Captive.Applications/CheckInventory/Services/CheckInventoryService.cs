@@ -33,7 +33,7 @@ namespace Captive.Applications.CheckInventory.Services
             var productConfiguration = await _readUow.ProductConfigurations.GetAll()
                 .AsNoTracking().FirstOrDefaultAsync(x => x.ProductId == orderFile.ProductId, cancellationToken);
 
-            var checkOrders = _readUow.CheckOrders.GetAllLocal().Where(x => x.OrderFileId == orderFile.Id).ToArray();
+            var checkOrders = _readUow.CheckOrders.GetAllLocal().Where(x => x.OrderFileId == orderFile.Id).OrderBy(x => x.AccountNo).ToArray();
 
             foreach (var checkOrder in checkOrders)
             {

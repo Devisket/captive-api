@@ -12,7 +12,10 @@ namespace Captive.Model.Dto.Reports
         public required CheckOrders CheckOrder { get; set; }
         public Guid CheckInventoryId { get; set; }
         public string StartSeries { get; set; }
+        public long StartNumber { get; set; }
         public string EndSeries { get; set; }
+        public string SeriesPattern {  get; set; }
+        
         public Guid? OrderFileId { get; set; }
         public string? AccountNumberFormat { get; set; }
         public string? BarcodeValue {  get; set; }

@@ -91,7 +91,7 @@ namespace Captive.Reports.BlockReport
         {
             writer.WriteLine();
             writer.WriteLine($"\t \t Page No.{page}");
-            writer.WriteLine($"\t \t {DateTime.Now.ToString("ddd, dd MMMM yyyy")}");
+            writer.WriteLine($"\t \t {DateTime.Now.ToString("dd/MM/yyyy")}");
             writer.WriteLine($"\t \t \t \t  {bankShortName.ToUpper()} - SUMMARY OF BLOCK - {formCheckDescription.ToUpper()} Check");
             writer.WriteLine($"\t \t \t \t \t \t \t \t    {productDescription.ToUpper()} Check");
             writer.Write("\n \n");

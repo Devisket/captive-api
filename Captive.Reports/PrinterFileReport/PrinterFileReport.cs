@@ -31,27 +31,28 @@ namespace Captive.Reports.PrinterFileReport
                 {
                     foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                     {
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType);
+                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.SeriesPattern, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType, checkOrder.BarcodeValue);
                     }
                 }
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, string CheckType)
+        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string seriesPattern, string startingSeries, string endingSeries, string CheckType, string? checkBarcodeValue)
         {
             var concodes = string.IsNullOrEmpty(checkOrder.Concode) ? null : checkOrder.Concode.Split(";");
 
-            var barcodeValues = !string.IsNullOrEmpty(checkOrder.BarCodeValue) ? checkOrder.BarCodeValue.Split(';') : new string[] { };
+            var barcodeValues = !string.IsNullOrEmpty(checkBarcodeValue) ? checkBarcodeValue!.Split(';') : new string[] { };
 
-            writer.WriteLine(3);
+            var nextStartSeries = GetNextStartingSeries(seriesPattern, endingSeries);
+
+            writer.WriteLine(5);
             writer.WriteLine(checkOrder.BRSTN);
             writer.WriteLine(checkOrder.AccountNo);
-            //Todo endingseries + 1
-            writer.WriteLine(endingSeries);
+            writer.WriteLine(nextStartSeries);
             writer.WriteLine(CheckType);
             writer.WriteLine();
             writer.WriteLine(checkOrder.BRSTN.Substring(0, 5));
-            writer.WriteLine(string.Format(" {0}", checkOrder.BRSTN.Substring(4, 4)));
+            writer.WriteLine(string.Format(" {0}", checkOrder.BRSTN.Substring(5, 4)));
 
             var formattedAccNo = Regex.Replace(checkOrder.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
             writer.WriteLine(formattedAccNo);
@@ -85,9 +86,29 @@ namespace Captive.Reports.PrinterFileReport
             }
         }
 
+
+        private string GetNextStartingSeries(string pattern, string endingSeries)
+        {
+            var numerical = new long();
+            var numericalString = endingSeries;
+
+            if (!string.IsNullOrEmpty(pattern))
+            {
+                numericalString = endingSeries.Replace(pattern, string.Empty);
+            }
+            
+            numerical = long.Parse(numericalString);
+            numerical += 1;
+
+            return numerical.ToString();
+        }
+
+
+
         private async Task<ICollection<CheckInventoryDetail>> GetCheckInventory(Guid checkOrderId)
         {
             var checkInventory = await _readUow.CheckInventoryDetails.GetAll()
+                .Include(x => x.CheckInventory)
                 .AsNoTracking()
                 .Where(x => x.CheckOrderId == checkOrderId)
                 .ToListAsync();
@@ -147,8 +168,11 @@ namespace Captive.Reports.PrinterFileReport
                         FormCheckType = formCheck.FormCheckType,
                         BankBranch = branch,
                         CheckInventoryId = check.Id,
+                        BarcodeValue = check.BarCodeValue,
                         StartSeries = check.StartingSeries ?? string.Empty,
                         EndSeries = check.EndingSeries ?? string.Empty,
+                        StartNumber = check.StartingNumber,
+                        SeriesPattern = check.CheckInventory!.SeriesPatern,
                         AccountNumberFormat = branch.BankInfo.AccountNumberFormat
                     });
                 }

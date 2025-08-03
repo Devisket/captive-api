@@ -39,9 +39,9 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
             foreach (var checkOrder in checkOrders)
             {
                 _logger.LogInformation($"Processing barcode generation for CheckOrderId: {checkOrder.CheckOrderId}");
-                
+
                 // Process each check series in the check order
-                foreach (var checkSeries in checkOrder.CheckInventories)
+                foreach (var checkSeries in checkOrder.CheckInventories.OrderByDescending(x => x.StartingSeries))
                 {
                     // Generate all series between starting and ending series as semicolon-separated string
                     var seriesString = GenerateSeriesBetween(checkSeries.StartingSeries, checkSeries.EndingSeries);
@@ -74,7 +74,7 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
         /// Generates a semicolon-separated string of all series between starting and ending series (inclusive)
         /// Example: StartingSeries="ABC000001", EndingSeries="ABC000010" -> "ABC000001;ABC000002;ABC000003;...;ABC000010"
         /// </summary>
-        private string GenerateSeriesBetween(string startingSeries, string endingSeries)
+        private string  GenerateSeriesBetween(string startingSeries, string endingSeries)
         {
             var result = new List<string>();
             
@@ -103,7 +103,7 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
             }
 
             // Parse numeric parts
-            if (!int.TryParse(startNumericPart, out int startNumber) || !int.TryParse(endNumericPart, out int endNumber))
+            if (!long.TryParse(startNumericPart, out long startNumber) || !long.TryParse(endNumericPart, out long endNumber))
             {
                 _logger.LogWarning($"Failed to parse numeric parts: '{startNumericPart}' or '{endNumericPart}'. Using starting series only.");
                 return startingSeries;
@@ -120,7 +120,7 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
             int paddingLength = startNumericPart.Length;
 
             // Generate all series from start to end (inclusive)
-            for (int currentNumber = startNumber; currentNumber <= endNumber; currentNumber++)
+            for (long currentNumber = endNumber; currentNumber >= startNumber; currentNumber--)
             {
                 string formattedNumber = currentNumber.ToString().PadLeft(paddingLength, '0');
                 result.Add(startPrefix + formattedNumber);
@@ -137,8 +137,9 @@ namespace Captive.Fileprocessor.Services.Barcode.Implementations
         {
             int numericStartIndex = series.Length;
             for (int i = series.Length - 1; i >= 0; i--)
-            {
-                if (!char.IsDigit(series[i]))
+            { 
+                var c = series[i];
+                if (!char.IsDigit(c))
                 {
                     numericStartIndex = i + 1;
                     break;
