@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto.Reports;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ namespace Captive.Reports.PackingReport
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
                     var pageNo = 1;
-                    foreach (var filBranch in orderFileBranchGroupBy)
+                    foreach (var filBranch in orderFileBranchGroupBy.OrderBy(x => x.Key.BRSTNCode))
                     {
                         var subTotal = 0;
                         var firstData = filBranch.First();
@@ -121,6 +122,7 @@ namespace Captive.Reports.PackingReport
                         FormCheckType = formCheck.FormCheckType,
                         CheckOrder = checkOrder,
                         BankBranch = branch,
+                        AccountNumberFormat = branch.BankInfo.AccountNumberFormat,
                         DeliverTo = deliveringBranch,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
@@ -137,11 +139,12 @@ namespace Captive.Reports.PackingReport
         private void RenderData(StreamWriter writer, CheckOrderReport checkDto, string? accountNumberFormat)
         {
             var checkData = checkDto.CheckOrder;
+            var formCheckType = checkDto.FormCheckType == FormCheckType.Personal ? "A" : "B";
 
             var accNo = checkData.AccountNo;
 
             if(!string.IsNullOrEmpty(accountNumberFormat))
-                accNo = Regex.Replace(checkData.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
+                accNo = FormatAccountNumber(checkData.AccountNo, accountNumberFormat);
 
             writer.Write($"  {accNo}");
 
@@ -165,6 +168,7 @@ namespace Captive.Reports.PackingReport
                 writer.Write($"  {new string(' ', 50)}");
 
             writer.Write("  \t1");
+            writer.Write($"\t{formCheckType}");
             writer.Write($"\t{checkDto.StartSeries.PadLeft(10,'0')}  \t{checkDto.EndSeries.PadLeft(10,'0')}\n");
         }
 
@@ -176,18 +180,45 @@ namespace Captive.Reports.PackingReport
             writer.WriteLine($"  {DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
             writer.WriteLine("\t\t\t\t\t\t\t  CAPTIVE PRINTING CORPORATION");
             writer.WriteLine($"\t\t\t\t\t\t\t  {bankShortName} - {formCheckName} Summary");
-            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\tQTY\tSTART #\t\tEND #");
+            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\tQTY\tCT\tSTART #\t\tEND #");
 
             if (deliverTo != null)
                 writer.WriteLine($"\n ** DELIVER TO {deliverTo.BRSTNCode} {deliverTo.BranchName}");
 
-            writer.WriteLine($"\n ** ORDERS OF BRSTN {orderBranch.BRSTNCode} {orderBranch.BranchName}");
+            writer.WriteLine($"\n ** ORDERS OF BRSTN {orderBranch.BRSTNCode} {orderBranch.BranchName}({orderBranch.BranchCode ?? string.Empty})");
             writer.WriteLine($"\n * Batch #: {orderFileName.Split('.').First().ToUpper()} \n");
         }
         private void RenderFooter(StreamWriter writer, int subTotal)
         {
             writer.WriteLine($"\n *** SUB TOTAL: {subTotal}\n");
             writer.WriteLine("\f");
+        }
+
+        private string FormatAccountNumber(string accountNumber, string format)
+        {
+            if (string.IsNullOrEmpty(accountNumber) || string.IsNullOrEmpty(format))
+                return accountNumber;
+
+            var segments = format.Split('-');
+            var result = new List<string>();
+            var currentIndex = 0;
+
+            foreach (var segment in segments)
+            {
+                var segmentLength = segment.Length;
+                if (currentIndex + segmentLength <= accountNumber.Length)
+                {
+                    result.Add(accountNumber.Substring(currentIndex, segmentLength));
+                    currentIndex += segmentLength;
+                }
+                else if (currentIndex < accountNumber.Length)
+                {
+                    result.Add(accountNumber.Substring(currentIndex));
+                    break;
+                }
+            }
+
+            return string.Join("-", result);
         }
     }
 }

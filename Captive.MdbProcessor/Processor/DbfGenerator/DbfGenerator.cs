@@ -87,13 +87,15 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
         {
             var batch = orderFile.BatchFile;
 
-            var checkOrders = orderFile.CheckOrders;
+            var checkOrders = orderFile.CheckOrders.OrderBy(x => x.BRSTN).ThenBy(x => x.AccountNo);
             
             var formChecks = await _readUow.FormChecks.GetAll().Where(x => x.ProductId == orderFile.ProductId).Select(x => new {x.Id, x.FormCheckType}).ToListAsync();
 
+            var branches = _readUow.BankBranches.GetAll().Include(x => x.BankInfo).Where(x => x.BankInfoId ==  orderFile.BatchFile.BankInfoId);
+
             foreach (var checkOrder in checkOrders) 
             {                
-                var checkInventoryDetails = checkOrder.CheckInventoryDetail.OrderBy(x => x.StartingNumber).ToList();
+                var checkInventoryDetails = checkOrder.CheckInventoryDetail.OrderBy(x => x.StartingSeries).ToList();
 
                 foreach (var checkInventoryDetail in checkInventoryDetails)
                 {
@@ -104,13 +106,23 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
 
                     var command = new OleDbCommand(commandInsert, connection, transaction);
 
-                    command.Parameters.AddWithValue("@batchNo", batch.BatchName);
+                    var branch = branches.First(x => x.Id == checkOrder.BranchId);
+
+                    var accountNumberFormat = branch.BankInfo.AccountNumberFormat;
+
+                    var formattedAccNo = FormatAccountNumber(checkOrder.AccountNo, accountNumberFormat);
+
+                    var formCheckType = formChecks.First(x => x.Id == checkOrder.FormCheckId).FormCheckType;
+
+                    var formCheckTypeString = formCheckType == FormCheckType.Personal ? "A" : "B";
+
+                    command.Parameters.AddWithValue("@batchNo", orderFile.FileName);
                     command.Parameters.AddWithValue("@block", 0);
                     command.Parameters.AddWithValue("@rtNo", checkOrder.BRSTN);
-                    command.Parameters.AddWithValue("@branch", checkOrder.BRSTN);
+                    command.Parameters.AddWithValue("@branch", $"{branch.BranchName} BRANCH({branch.BranchCode})");
                     command.Parameters.AddWithValue("@acctNo", checkOrder.AccountNo);
-                    command.Parameters.AddWithValue("@acctNoP", checkOrder.AccountNo);
-                    command.Parameters.AddWithValue("@checkType", formChecks.First(x => x.Id == checkOrder.FormCheckId).FormCheckType);
+                    command.Parameters.AddWithValue("@acctNoP", formattedAccNo);
+                    command.Parameters.AddWithValue("@checkType", formCheckTypeString);
                     command.Parameters.AddWithValue("@accName1", checkOrder.AccountName);
                     command.Parameters.AddWithValue("@accName2", string.Empty);
                     command.Parameters.AddWithValue("@ckNoP", 0);
@@ -140,6 +152,33 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
             Directory.CreateDirectory(rootPath);
 
             return rootPath;
+        }
+
+        private string FormatAccountNumber(string accountNumber, string format)
+        {
+            if (string.IsNullOrEmpty(accountNumber) || string.IsNullOrEmpty(format))
+                return accountNumber;
+
+            var segments = format.Split('-');
+            var result = new List<string>();
+            var currentIndex = 0;
+
+            foreach (var segment in segments)
+            {
+                var segmentLength = segment.Length;
+                if (currentIndex + segmentLength <= accountNumber.Length)
+                {
+                    result.Add(accountNumber.Substring(currentIndex, segmentLength));
+                    currentIndex += segmentLength;
+                }
+                else if (currentIndex < accountNumber.Length)
+                {
+                    result.Add(accountNumber.Substring(currentIndex));
+                    break;
+                }
+            }
+
+            return string.Join("-", result);
         }
     }
 }

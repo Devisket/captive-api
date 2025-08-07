@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto.Reports;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,9 @@ namespace Captive.Reports.BlockReport
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
 
+
+            var formCheckTypeCount = checkDto.GroupBy(x => x.FormCheckType);
+
             int runningNo = 0, blockNo = 0, pageNo = 0;
 
 
@@ -33,12 +37,14 @@ namespace Captive.Reports.BlockReport
                 var bankShortName = branches.First().BankInfo.ShortName;
                 var fileName = productCheckOrder.First().OrderFileName;
 
-                var productFCGroup = checkDto.Where(x => x.ProductTypeName == productCheckOrder.Key.ProductTypeName).GroupBy(x => x.FormCheckName);
 
                 List<Tuple<string, int>> formcheckList = new List<Tuple<string, int>>();
-                foreach (var productFC in productFCGroup)
+
+                foreach (var checkType in formCheckTypeCount)
                 {
-                    formcheckList.Add(new Tuple<string, int>(productFC.First().FileInitial, productFC.Count()));
+                    var checkTypeInitial = checkType.Key == FormCheckType.Personal ? "A" : "B";
+
+                    formcheckList.Add(new Tuple<string, int>(checkTypeInitial, checkType.Count()));
                 }
 
                 var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"Block{formCheckName?.First()}.txt");
@@ -66,6 +72,7 @@ namespace Captive.Reports.BlockReport
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1)
                             RenderFooter(writer, formcheckList, fileName);
                     }
+                    Console.WriteLine();
 
                     if (blockNo <= 4)
                         RenderFooter(writer, formcheckList,fileName);
@@ -105,17 +112,22 @@ namespace Captive.Reports.BlockReport
             {
                 writer.Write($"\t {item.Item1}: {item.Item2}");
 
-                if (item.Equals(formcheckType.Last()))
-                    writer.Write($"\t\t\t\t\t\t {fileName.Split('.').First()}");
+                if (item.Equals(formcheckType.First()))
+                {
+                    writer.Write($"\t\t\t\t\t\t {fileName}");
+                    writer.Write($"\t\t\t\t\t\t DLV: {DateTime.Now.AddDays(2)} ({DateTime.Now.ToString("ddd")})");
+                }
 
                 writer.Write('\n');
             }
 
             writer.WriteLine($"\t Prepared By:");
             writer.WriteLine($"\t Updated By:");
-            writer.WriteLine($"\t Time Start:");
-            writer.WriteLine($"\t Time Finished:\t\t\t\t\t\t RECHECKED BY:");
+            writer.WriteLine($"\t Time Start: {DateTime.Now.TimeOfDay}");
+            writer.WriteLine($"\t Time Finished:{DateTime.Now.AddMinutes(3).TimeOfDay}\t\t\t\t\t\t RECHECKED BY:");
             writer.WriteLine($"\t File Rcvd:");
+            writer.WriteLine($"\n\n");
+            writer.WriteLine($"\f");
         }
 
         public async Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId, CancellationToken cancellationToken)
@@ -176,6 +188,7 @@ namespace Captive.Reports.BlockReport
                         FileInitial = formCheck.FileInitial,
                         CheckOrder = checkOrder,
                         BankBranch = branch,
+                        FormCheckType = formCheck.FormCheckType,
                         OrderFileName = checkOrder.OrderFile.FileName,
                         CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
