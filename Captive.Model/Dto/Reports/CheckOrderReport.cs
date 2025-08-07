@@ -16,6 +16,8 @@ namespace Captive.Model.Dto.Reports
         public string EndSeries { get; set; }
         public string SeriesPattern {  get; set; }
         
+        public int NoOfPadding {  get; set; }
+
         public Guid? OrderFileId { get; set; }
         public string? AccountNumberFormat { get; set; }
         public string? BarcodeValue {  get; set; }

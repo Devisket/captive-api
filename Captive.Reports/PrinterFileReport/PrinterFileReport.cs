@@ -31,19 +31,19 @@ namespace Captive.Reports.PrinterFileReport
                 {
                     foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                     {
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.SeriesPattern, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType, checkOrder.BarcodeValue);
+                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.SeriesPattern, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType, checkOrder.BarcodeValue, checkOrder.NoOfPadding);
                     }
                 }
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string seriesPattern, string startingSeries, string endingSeries, string CheckType, string? checkBarcodeValue)
+        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string seriesPattern, string startingSeries, string endingSeries, string CheckType, string? checkBarcodeValue, int noOfPadding)
         {
             var concodes = string.IsNullOrEmpty(checkOrder.Concode) ? null : checkOrder.Concode.Split(";");
 
             var barcodeValues = !string.IsNullOrEmpty(checkBarcodeValue) ? checkBarcodeValue!.Split(';') : new string[] { };
 
-            var nextStartSeries = GetNextStartingSeries(seriesPattern, endingSeries);
+            var nextStartSeries = GetNextStartingSeries(seriesPattern, endingSeries, noOfPadding);
 
             writer.WriteLine(5);
             writer.WriteLine(checkOrder.BRSTN);
@@ -87,7 +87,7 @@ namespace Captive.Reports.PrinterFileReport
         }
 
 
-        private string GetNextStartingSeries(string pattern, string endingSeries)
+        private string GetNextStartingSeries(string pattern, string endingSeries, int noOfPadding)
         {
             var numerical = new long();
             var numericalString = endingSeries;
@@ -100,7 +100,13 @@ namespace Captive.Reports.PrinterFileReport
             numerical = long.Parse(numericalString);
             numerical += 1;
 
-            return numerical.ToString();
+
+            if(!string.IsNullOrEmpty(pattern))
+            {
+                return string.Concat(pattern, numericalString.PadLeft(noOfPadding, '0'));
+            }
+
+            return numerical.ToString().PadLeft(noOfPadding,'0');
         }
 
 
@@ -167,6 +173,7 @@ namespace Captive.Reports.PrinterFileReport
                         CheckOrder = checkOrder,
                         FormCheckType = formCheck.FormCheckType,
                         BankBranch = branch,
+                        NoOfPadding = check.CheckInventory!.NumberOfPadding,
                         CheckInventoryId = check.Id,
                         BarcodeValue = check.BarCodeValue,
                         StartSeries = check.StartingSeries ?? string.Empty,
