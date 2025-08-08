@@ -1,4 +1,5 @@
-﻿using Captive.Data.UnitOfWork.Read;
+﻿using Captive.Applications.Orderfiles.Services;
+using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,15 @@ namespace Captive.Applications.Orderfiles.Command.UpdateOrderFile
     {
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
+        private readonly IOrderFileService _orderFileService;
         public UpdateOrderFileCommandHandler(
             IWriteUnitOfWork writeUow,
-            IReadUnitOfWork readUow) 
+            IReadUnitOfWork readUow,
+            IOrderFileService orderFileService) 
         {
             _writeUow = writeUow;
             _readUow = readUow;
+            _orderFileService = orderFileService;
         }
         public async Task<Unit> Handle(UpdateOrderFileCommand request, CancellationToken cancellationToken)
         {
@@ -23,12 +27,18 @@ namespace Captive.Applications.Orderfiles.Command.UpdateOrderFile
             if (orderFile == null)
                 throw new HttpRequestException($"Order file id: {request.Id.ToString()} doesn't exist");
 
+            // Update error message first if provided
             if (!String.IsNullOrEmpty(request.ErrorMessage))
+            {
                 orderFile.ErrorMessage = request.ErrorMessage;
-            
-            orderFile.Status = request.Status;
-
-            _writeUow.OrderFiles.Update(orderFile);
+                _writeUow.OrderFiles.Update(orderFile);
+                await _orderFileService.UpdateOrderFileStatus(request.Id, request.ErrorMessage, cancellationToken);
+            }
+            else
+            {
+                // Update status through the service to trigger SignalR notifications
+                await _orderFileService.UpdateOrderFileStatus(request.Id, request.Status, cancellationToken);
+            }
 
             return Unit.Value;
         }

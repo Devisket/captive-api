@@ -14,5 +14,7 @@ namespace Captive.Model.Dto
         public int PersonalQuantity { get; set; }
         public int CommercialQuantity { get; set; }
         public ICollection<CheckOrderDto>? CheckOrders { get; set; }
+
+        public string? ErrorMessage {  get; set; }
     }
 }

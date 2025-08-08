@@ -1,4 +1,5 @@
 ﻿using Captive.Applications.CheckOrder.Services;
+using Captive.Applications.Orderfiles.Services;
 using Captive.Data.Enums;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
@@ -13,14 +14,14 @@ namespace Captive.Applications.Batch.Commands.ValidateBatch
         private readonly ICheckOrderService _checkOrderService;
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
+        private readonly IOrderFileService _orderFileService;
 
-
-
-        public ValidateBatchCommandHandler(ICheckOrderService checkOrderService, IWriteUnitOfWork writeUow, IReadUnitOfWork readUow) 
+        public ValidateBatchCommandHandler(ICheckOrderService checkOrderService, IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, IOrderFileService orderFileService) 
         {
             _checkOrderService = checkOrderService;
             _writeUow = writeUow;
             _readUow = readUow;
+            _orderFileService = orderFileService;
         }
 
         public async Task<IEnumerable<LogDto>?> Handle(ValidateBatchCommand request, CancellationToken cancellationToken)
@@ -60,17 +61,21 @@ namespace Captive.Applications.Batch.Commands.ValidateBatch
 
                 _writeUow.FloatingCheckOrders.UpdateRange(floatingChecks);
 
+                // Update quantities first
+                orderFile.PersonalQuantity = tupleObj.Item2;
+                orderFile.CommercialQuantity = tupleObj.Item3;
+                _writeUow.OrderFiles.Update(orderFile);
+
+                // Update status through the service to trigger SignalR notifications
                 if (!floatingChecks.Any(x => !x.IsValid))
                 {
                     orderFile.IsValidated = true;
-                    orderFile.Status = OrderFilesStatus.Valid;
-                } else
-                    orderFile.Status = OrderFilesStatus.Invalid;
-                
-                orderFile.PersonalQuantity = tupleObj.Item2;
-                orderFile.CommercialQuantity = tupleObj.Item3;
-
-                _writeUow.OrderFiles.Update(orderFile);
+                    await _orderFileService.UpdateOrderFileStatus(orderFileId, OrderFilesStatus.Valid, cancellationToken);
+                }
+                else
+                {
+                    await _orderFileService.UpdateOrderFileStatus(orderFileId, OrderFilesStatus.Invalid, cancellationToken);
+                }
             }
 
             return logRecords;
