@@ -40,15 +40,13 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                     if (existingFloatingCheckOrder == null)
                         throw new Exception($"Floating Check Order ID:{floatingCheckOrder.Id} doesn't exist.");
 
-                    existingFloatingCheckOrder.AccountName = floatingCheckOrder.MainAccountName ?? string.Empty;
+                    existingFloatingCheckOrder.AccountName = String.Format("{0} {1}", floatingCheckOrder.AccountName1, floatingCheckOrder.AccountName2); ;
                     existingFloatingCheckOrder.AccountName1 = floatingCheckOrder.AccountName1 ?? string.Empty;
                     existingFloatingCheckOrder.AccountName2 = floatingCheckOrder.AccountName2 ?? string.Empty;
                     existingFloatingCheckOrder.ErrorMessage = string.Empty;
                     existingFloatingCheckOrder.BRSTN = floatingCheckOrder.BRSTN;
                     existingFloatingCheckOrder.FormType = floatingCheckOrder.FormType;
                     existingFloatingCheckOrder.CheckType = floatingCheckOrder.CheckType;
-                    existingFloatingCheckOrder.Concode = floatingCheckOrder.Concode;
-                    existingFloatingCheckOrder.BranchCode = floatingCheckOrder.BranchCode;
                     existingFloatingCheckOrder.AccountNo = floatingCheckOrder.AccountNumber;
                     existingFloatingCheckOrder.PreEndingSeries = floatingCheckOrder.StartingSeries;
                     existingFloatingCheckOrder.PreStartingSeries = floatingCheckOrder.EndingSeries;
