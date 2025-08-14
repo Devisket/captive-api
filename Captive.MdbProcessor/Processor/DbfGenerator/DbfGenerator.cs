@@ -116,6 +116,8 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
 
                     var formCheckTypeString = formCheckType == FormCheckType.Personal ? "A" : "B";
 
+                    var deliverTo = checkOrder.DeliverTo ??  string.Empty;
+
                     command.Parameters.AddWithValue("@batchNo", orderFile.FileName);
                     command.Parameters.AddWithValue("@block", 0);
                     command.Parameters.AddWithValue("@rtNo", checkOrder.BRSTN);
@@ -128,7 +130,7 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
                     command.Parameters.AddWithValue("@ckNoP", 0);
                     command.Parameters.AddWithValue("@ckNoB", checkInventoryDetail.StartingSeries);
                     command.Parameters.AddWithValue("@ckNoE", checkInventoryDetail.EndingSeries);
-                    command.Parameters.AddWithValue("@deliverTo", checkOrder.DeliverTo);
+                    command.Parameters.AddWithValue("@deliverTo", deliverTo);
 
                     command.ExecuteNonQuery();
 

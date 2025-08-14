@@ -21,15 +21,21 @@ namespace Captive.Applications.Batch.Query.GetBatchById
         public async Task<GetBatchByIdQueryResponse> Handle(GetBatchByIdQuery request, CancellationToken cancellationToken)
         {
             var batch = await _readUow.BatchFiles.GetAll()
-                .Where(x => x.BankInfoId == request.BankId && x.Id == request.BatchId)
-                .Select(x => new GetBatchByIdQueryResponse()
+                .Include(x => x.OrderFiles!)
+                    .ThenInclude(x => x.FloatingCheckOrders)
+                .FirstOrDefaultAsync(x => x.BankInfoId == request.BankId && x.Id == request.BatchId, cancellationToken);
+
+            if (batch == null)
+                throw new CaptiveException($"Batch ID: {request.BatchId} doesn't exist.");
+
+            var response = new GetBatchByIdQueryResponse
             {
-                Id = x.Id,
-                BatchFileStatus = x.BatchFileStatus,
-                BatchName = x.BatchName,
-                CreatedDate = x.CreatedDate,
-                OrderNumber = x.OrderNumber,
-                OrderFiles = x.OrderFiles != null && x.OrderFiles.Any() ? x.OrderFiles.Select(x => new OrderfileDto
+                Id = batch.Id,
+                BatchFileStatus = batch.BatchFileStatus,
+                BatchName = batch.BatchName,
+                CreatedDate = batch.CreatedDate,
+                OrderNumber = batch.OrderNumber,
+                OrderFiles = batch.OrderFiles != null && batch.OrderFiles.Any() ? batch.OrderFiles.Select(x => new OrderfileDto
                 {
                     Id = x.Id,
                     BatchId = x.BatchFileId,
@@ -43,7 +49,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     CheckOrders = x.FloatingCheckOrders != null && x.FloatingCheckOrders.Any() ? x.FloatingCheckOrders.Select(c => new CheckOrderDto
                     {
                         Id = c.Id,
-                        BRSTN = c.BRSTN,                        
+                        BRSTN = c.BRSTN,
                         AccountNumber = c.AccountNo,
                         MainAccountName = c.AccountName,
                         DeliverTo = c.DeliverTo,
@@ -55,10 +61,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                         IsValid = c.IsValid
                     }).ToList() : null
                 }).ToList() : null
-            }).FirstOrDefaultAsync();
-
-            if (batch!.OrderFiles == null || !batch.OrderFiles.Any())
-                return batch;
+            };
 
             foreach (var orderFile in batch!.OrderFiles)
             {
@@ -73,7 +76,7 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                 }
             }
 
-            return batch;
+            return response;
         }
     }
 }
