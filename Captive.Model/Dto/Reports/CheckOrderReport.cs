@@ -6,6 +6,7 @@ namespace Captive.Model.Dto.Reports
     public class CheckOrderReport
     {
         public required string ProductTypeName { get; set; }
+        public string? CustomizeFileName { get; set; }
         public string? FormCheckName { get; set; }
         public string CheckType { get; set; }
         public string FormType { get; set; }

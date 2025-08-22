@@ -30,6 +30,7 @@ namespace Captive.Applications.Batch.Query.GetAllBatch
                 NoOfFiles = x.OrderFiles.Count(),
                 OrderNumber = x.OrderNumber,
                 ErrorMessage = x.ErrorMessage,
+                DeliveryDate = x.DeliveryDate
             }).ToListAsync();
 
             return batches;

@@ -4,6 +4,7 @@ using Captive.Applications.Batch.Commands.ProcessBatch;
 using Captive.Applications.Batch.Commands.ValidateBatch;
 using Captive.Applications.Batch.Hubs;
 using Captive.Applications.Batch.Services;
+using Captive.Model.Request;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,18 +17,15 @@ namespace Captive.Commands.Controllers
     public class BatchController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IHubContext<BatchHub> _hubContext;
-        private readonly IBatchService _batchService;
-        public BatchController(IMediator mediator, IHubContext<BatchHub> hubContext, IBatchService batchService) {
+        public BatchController(IMediator mediator) 
+        {
             _mediator = mediator;
-            _hubContext = hubContext;
-            _batchService = batchService;
         }
 
         [HttpPost]
-        public async Task<CreateBatchFileResponse> CreateBatch([FromRoute] Guid bankId)
+        public async Task<CreateBatchFileResponse> CreateBatch([FromRoute] Guid bankId, [FromBody] CreateBatchRequest request)
         {
-            var response = await _mediator.Send(new CreateBatchFileCommand { BankInfoId = bankId });
+            var response = await _mediator.Send(new CreateBatchFileCommand { BankInfoId = bankId, DeliveryDate = request.DeliveryDate, BatchName = request.BatchName});
 
             return response;
         }

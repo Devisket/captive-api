@@ -28,7 +28,7 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
                 throw new Exception($"Bank Id:{request.BankInfoId} doesn't exist");
             }
                       
-            var batchName = String.Format("{0}{1}",DateTime.UtcNow.ToString("MM-dd-yyyy").Replace("-",""), StringHelper.GenerateRandomChar(5));
+            var batchName =  request.BatchName ?? String.Format("{0}{1}",DateTime.UtcNow.ToString("MM-dd-yyyy").Replace("-",""), StringHelper.GenerateRandomChar(5));
 
             var batchFile = new BatchFile()
             {
@@ -38,6 +38,7 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
                 BankInfoId = request.BankInfoId,
                 CreatedDate = DateTime.UtcNow,
                 BatchFileStatus = BatchFileStatus.Pending,
+                DeliveryDate = request.DeliveryDate
             };
 
             await _writeUow.BatchFiles.AddAsync(batchFile, cancellationToken);

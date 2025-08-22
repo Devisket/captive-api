@@ -20,12 +20,15 @@ namespace Captive.Reports.PrinterFileReport
 
             var checkDto = await ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId);
 
-            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
+            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.CustomizeFileName});
 
             foreach (var productCheckOrder in productGroup)
             {
                 var productName = productCheckOrder.Key.ProductTypeName;
-                var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"PrinterFile{productCheckOrder.Key.FormCheckName.First()}.txt");
+
+                var fileName = productCheckOrder.Key.CustomizeFileName ?? "PrinterFile";
+
+                var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"{fileName}{productCheckOrder.Key.FormCheckName.First()}A.txt");
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
@@ -166,6 +169,7 @@ namespace Captive.Reports.PrinterFileReport
                     returnDatas.Add(new CheckOrderReport
                     {
                         ProductTypeName = formCheck.Product.ProductName,
+                        CustomizeFileName = formCheck.Product.CustomizeFileName,
                         FormCheckName = formCheck.Description,
                         FileInitial = formCheck.FileInitial,
                         CheckType = formCheck.CheckType,

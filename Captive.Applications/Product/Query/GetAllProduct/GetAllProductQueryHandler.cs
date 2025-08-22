@@ -21,7 +21,8 @@ namespace Captive.Applications.Product.Query.GetAllProduct
                 {
                     ProductId = x.Id,
                     ProductName = x.ProductName,
-                    ProductSequence = x.ProductSequence
+                    ProductSequence = x.ProductSequence,
+                    CustomizeFileName = x.CustomizeFileName,
                 }).ToListAsync();
 
             return products;

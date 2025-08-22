@@ -43,6 +43,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
 
                 productType.ProductName = request.ProductName;
                 productType.ProductSequence = request.ProductSequence;
+                productType.CustomizeFileName = request.CustomizeFileName;
 
                 _writeUow.ProductTypes.Update(productType);
             }
@@ -58,7 +59,8 @@ namespace Captive.Applications.Product.Command.CreateProductType
                 {
                     BankInfoId = request.BankId,
                     ProductName = request.ProductName,
-                    ProductSequence = request.ProductSequence
+                    ProductSequence = request.ProductSequence,
+                    CustomizeFileName = request.CustomizeFileName,
                 }, cancellationToken);
             }
 

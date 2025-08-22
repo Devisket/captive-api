@@ -22,6 +22,9 @@ namespace Captive.Data.ModelBuilders
                 .HasForeignKey(x => x.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.Property(x => x.CustomizeFileName)
+                .IsRequired(false);
+
             entity.HasMany(x => x.OrderFiles)
                 .WithOne(x => x.Product)
                 .HasForeignKey(x => x.ProductId)

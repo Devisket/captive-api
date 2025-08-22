@@ -9,7 +9,9 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
 {
     public class CreateBatchFileCommand : IRequest<CreateBatchFileResponse>
     {
+        public string? BatchName { get; set; }
         public Guid BankInfoId { get; set; }
+        public DateTime DeliveryDate { get; set; }
     }
 
     public class CreateBatchFileResponse

@@ -70,12 +70,12 @@ namespace Captive.Reports.BlockReport
                         runningNo++;
 
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1)
-                            RenderFooter(writer, formcheckList, fileName);
+                            RenderFooter(writer, formcheckList, fileName, batchFile.DeliveryDate);
                     }
                     Console.WriteLine();
 
                     if (blockNo <= 4)
-                        RenderFooter(writer, formcheckList,fileName);
+                        RenderFooter(writer, formcheckList,fileName, batchFile.DeliveryDate);
 
                     runningNo = 0;
                     blockNo = 0;
@@ -105,7 +105,7 @@ namespace Captive.Reports.BlockReport
             writer.WriteLine("  BLOCK RT_NO\t\tACCT_NO\t\t\tSTART_NO.\tEND_NO.\t\tDELIVER_TO");
         }
 
-        private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName)
+        private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName, DateTime deliveryDate)
         {
             writer.WriteLine();
             foreach (var item in formcheckType)
@@ -115,7 +115,7 @@ namespace Captive.Reports.BlockReport
                 if (item.Equals(formcheckType.First()))
                 {
                     writer.Write($"\t\t\t\t\t\t {fileName}");
-                    writer.Write($"\t\t\t\t\t\t DLV: {DateTime.Now.AddDays(2)} ({DateTime.Now.ToString("ddd")})");
+                    writer.Write($"\t\t\t\t\t\t DLV: {deliveryDate.ToString("MMM-dd-yyyy")} ({deliveryDate.ToString("ddd")})");
                 }
 
                 writer.Write('\n');

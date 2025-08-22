@@ -11,5 +11,6 @@ namespace Captive.Model.Dto
         public required string BatchFileStatus { get; set; }
         public required int NoOfFiles { get; set; }
         public string? ErrorMessage { get; set; }
+        public DateTime DeliveryDate { get; set; }
     }
 }

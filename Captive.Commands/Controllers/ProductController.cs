@@ -24,6 +24,7 @@ namespace Captive.Commands.Controllers
                 BankId = bankId,
                 ProductName = request.ProductName,
                 ProductSequence = request.ProductSequence,
+                CustomizeFileName = request.CustomizeFileName,
             });
             return Ok();
             
@@ -38,6 +39,7 @@ namespace Captive.Commands.Controllers
                 BankId = bankId,
                 ProductName = request.ProductName,
                 ProductSequence = request.ProductSequence,
+                CustomizeFileName = request.CustomizeFileName,
             });
 
             return Ok();

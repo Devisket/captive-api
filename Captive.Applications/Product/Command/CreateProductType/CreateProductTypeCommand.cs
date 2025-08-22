@@ -9,5 +9,6 @@ namespace Captive.Applications.Product.Command.CreateProductType
         public Guid? ProductId { get; set; }
         public required string ProductName { get; set; }
         public required int ProductSequence { get; set; }
+        public string? CustomizeFileName {  get; set; }
     }
 }

@@ -6,10 +6,9 @@ namespace Captive.Data.Models
         public Guid Id { get; set; }
         public required string ProductName { get; set; }
         public required int ProductSequence { get; set; }
-
+        public string? CustomizeFileName { get; set; }
         public Guid BankInfoId { get; set; }
         public BankInfo? BankInfo { get; set; }
-
         public ICollection<FormChecks>? FormChecks { get; set; }
         public ICollection<OrderFile>? OrderFiles { get; set; }
 

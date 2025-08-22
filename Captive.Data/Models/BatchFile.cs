@@ -13,5 +13,6 @@ namespace Captive.Data.Models
         public ICollection<OrderFile>? OrderFiles { get; set; }
         public Guid BankInfoId { get; set; }
         public BankInfo BankInfo{ get; set; }
+        public required DateTime DeliveryDate { get; set; }
     }
 }
