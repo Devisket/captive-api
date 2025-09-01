@@ -24,7 +24,6 @@ namespace Captive.Reports.BlockReport
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
 
-
             var formCheckTypeCount = checkDto.GroupBy(x => x.FormCheckType);
 
             int runningNo = 0, blockNo = 0, pageNo = 0;
@@ -103,6 +102,7 @@ namespace Captive.Reports.BlockReport
             writer.WriteLine($"\t \t \t \t \t \t \t \t    {productDescription.ToUpper()} Check");
             writer.Write("\n \n");
             writer.WriteLine("  BLOCK RT_NO\t\tACCT_NO\t\t\tSTART_NO.\tEND_NO.\t\tDELIVER_TO");
+            writer.Write("\n \n");
         }
 
         private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName, DateTime deliveryDate)
@@ -115,7 +115,7 @@ namespace Captive.Reports.BlockReport
                 if (item.Equals(formcheckType.First()))
                 {
                     writer.Write($"\t\t\t\t\t\t {fileName}");
-                    writer.Write($"\t\t\t\t\t\t DLV: {deliveryDate.ToString("MMM-dd-yyyy")} ({deliveryDate.ToString("ddd")})");
+                    writer.Write($"\t\t\t\t\t\t DLV: {deliveryDate.ToString("MMM-dd")} ({deliveryDate.ToString("ddd")})");
                 }
 
                 writer.Write('\n');
@@ -128,6 +128,7 @@ namespace Captive.Reports.BlockReport
             writer.WriteLine($"\t File Rcvd:");
             writer.WriteLine($"\n\n");
             writer.WriteLine($"\f");
+            writer.Write("\n \n");
         }
 
         public async Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId, CancellationToken cancellationToken)

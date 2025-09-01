@@ -16,7 +16,7 @@ namespace Captive.Messaging
             _connectionFactory = new ConnectionFactory()
             {
                 HostName = _configuration["Rabbitmq:Hostname"],
-                Port = 5672,
+                Port = int.Parse(_configuration["Rabbitmq:Port"]!),
                 UserName = _configuration["Rabbitmq:Username"],
                 Password = _configuration["Rabbitmq:Password"],
             };

@@ -34,13 +34,13 @@ namespace Captive.Reports.PrinterFileReport
                 {
                     foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                     {
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.SeriesPattern, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType, checkOrder.BarcodeValue, checkOrder.NoOfPadding);
+                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.SeriesPattern, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType, checkOrder.BarcodeValue, checkOrder.NoOfPadding, checkOrder.AccountNumberFormat);
                     }
                 }
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string seriesPattern, string startingSeries, string endingSeries, string CheckType, string? checkBarcodeValue, int noOfPadding)
+        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string seriesPattern, string startingSeries, string endingSeries, string CheckType, string? checkBarcodeValue, int noOfPadding, string? accountNumberFormat)
         {
             var concodes = string.IsNullOrEmpty(checkOrder.Concode) ? null : checkOrder.Concode.Split(";");
 
@@ -57,8 +57,12 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(checkOrder.BRSTN.Substring(0, 5));
             writer.WriteLine(string.Format(" {0}", checkOrder.BRSTN.Substring(5, 4)));
 
-            var formattedAccNo = Regex.Replace(checkOrder.AccountNo, @"(\w{3})(\w{6})(\w{3})", @"$1-$2-$3");
-            writer.WriteLine(formattedAccNo);
+            var accNo = checkOrder.AccountNo;
+
+            if (!string.IsNullOrEmpty(accountNumberFormat))
+                accNo = Regex.Replace(checkOrder.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
+
+            writer.WriteLine(accNo);
             writer.WriteLine(concodes == null ? checkOrder.AccountName : concodes[0]);
             writer.WriteLine("SN");
             writer.WriteLine(string.Empty);
