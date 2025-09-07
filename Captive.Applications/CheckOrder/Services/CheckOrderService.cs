@@ -213,7 +213,7 @@ namespace Captive.Applications.CheckOrder.Services
                 throw new Exception($"Order file ID: {orderFile.Id} doesn't exist");
             }
 
-            var floatingCheckOrders = orderFile.FloatingCheckOrders.Where(x => !x.IsOnHold).ToArray();
+            var floatingCheckOrders = orderFile.FloatingCheckOrders.Where(x => !x.IsOnHold && x.Quantity > 0).ToArray();
 
             List<Captive.Data.Models.CheckOrders> newCheckOrders = new List<CheckOrders>();
 
