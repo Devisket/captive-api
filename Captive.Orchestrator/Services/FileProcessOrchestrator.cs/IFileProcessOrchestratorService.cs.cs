@@ -1,6 +1,6 @@
 ﻿using Captive.Messaging.Models;
 
-namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
+namespace Captive.Orchestrator.Services.FileProcessOrchestrator.cs
 {
     public interface IFileProcessOrchestratorService
     {

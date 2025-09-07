@@ -1,11 +1,11 @@
-﻿using Captive.Fileprocessor.Services.Barcode;
+﻿using Captive.Orchestrator.Services.Barcode;
 using Captive.Model.Dto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace Captive.Fileprocessor.Services.GenerateBarcodeService
+namespace Captive.Orchestrator.Services.GenerateBarcodeService
 {
     public class GenerateBarcodeService : IGenerateBarcodeService
     {

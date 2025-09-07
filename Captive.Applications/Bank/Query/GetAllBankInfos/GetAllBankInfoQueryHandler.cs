@@ -23,7 +23,6 @@ namespace Captive.Applications.Bank.Query.GetAllBankInfos
                 {
                     Id = x.Id,
                     BankName = x.BankName,
-                    BankDescription = x.BankDescription ?? string.Empty,
                     BankShortName = x.ShortName,
                     CreatedDate = x.CreatedDate,
                     AccountNumberFormat = x.AccountNumberFormat

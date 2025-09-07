@@ -1,5 +1,5 @@
-﻿using Captive.Fileprocessor.Services.DbfService;
-using Captive.Fileprocessor.Services.FileProcessOrchestrator.cs;
+﻿using Captive.Orchestrator.Services.DbfService;
+using Captive.Orchestrator.Services.FileProcessOrchestrator.cs;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +9,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace Captive.Fileprocessor
+namespace Captive.Orchestrator
 {
     public class DbfRequestConsumerService : BackgroundService
     {

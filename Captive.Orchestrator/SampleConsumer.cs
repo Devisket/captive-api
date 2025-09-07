@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace Captive.Fileprocessor
+namespace Captive.Orchestrator
 {
     public class SampleConsumer : BackgroundService
     {

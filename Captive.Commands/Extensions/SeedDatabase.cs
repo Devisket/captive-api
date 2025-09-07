@@ -37,7 +37,6 @@ namespace Captive.Commands.Extensions
                 {
                     Id = Guid.NewGuid(),
                     BankName = "Metrobank",
-                    BankDescription = "Metrobank sample description",
                     ShortName = "mbtc",                    
                     CreatedDate = DateTime.Now,
                 },
@@ -45,7 +44,6 @@ namespace Captive.Commands.Extensions
                 {
                     Id = Guid.NewGuid(),
                     BankName = "Security Bank",
-                    BankDescription = "Security Bank sample description",
                     ShortName = "sbtc",
                     CreatedDate = DateTime.Now,
                 },            

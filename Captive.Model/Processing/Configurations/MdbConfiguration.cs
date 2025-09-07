@@ -23,8 +23,7 @@ namespace Captive.Model.Processing.Configurations
         public string? Password {  get; set; }
 
         [JsonPropertyName("columnDefinitions")]
-        public List<MdbColumnDefinition> ColumnDefinitions { get; set; }
-
+        public List<MdbColumnDefinition>? ColumnDefinitions { get; set; }
 
         public Dictionary<string,string> ToDictionary()
         {
@@ -35,8 +34,6 @@ namespace Captive.Model.Processing.Configurations
             
             return dictionary;
         }
-
-        
     }
 
     public class MdbColumnDefinition

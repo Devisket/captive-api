@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace Captive.Fileprocessor.Services.Barcode.Implementations
+namespace Captive.Orchestrator.Services.Barcode.Implementations
 {
     public class MTBCBarcodeService : IBarcodeImplementationService
     {

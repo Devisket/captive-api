@@ -1,4 +1,4 @@
-﻿using Captive.Fileprocessor.Services.GenerateBarcodeService;
+﻿using Captive.Orchestrator.Services.GenerateBarcodeService;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace Captive.Fileprocessor
+namespace Captive.Orchestrator
 {
     public class GenerateBarcodeConsumerService : BackgroundService
     {

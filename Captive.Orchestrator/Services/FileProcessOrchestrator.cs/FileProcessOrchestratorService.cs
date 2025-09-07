@@ -1,10 +1,10 @@
 ﻿using Captive.Data.Enums;
-using Captive.Fileprocessor.Services.CheckOrderService;
+using Captive.Orchestrator.Services.CheckOrderService;
 using Captive.Messaging.Models;
 using Captive.Model.Dto;
 using Captive.Utility;
 
-namespace Captive.Fileprocessor.Services.FileProcessOrchestrator.cs
+namespace Captive.Orchestrator.Services.FileProcessOrchestrator.cs
 {
     class FileProcessOrchestratorService : IFileProcessOrchestratorService
     {

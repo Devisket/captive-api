@@ -1,1 +1,1 @@
-dotnet watch run --project Captive.Fileprocessor
+dotnet watch run --project Captive.Orchestrator

@@ -35,11 +35,11 @@
             }
         },
         {
-            "name": "Captive.Fileprocessor",
+            "name": "Captive.Orchestrator",
             "type": "dotnet",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/Captive.Fileprocessor/Captive.Fileprocessor.csproj",
-            "launchConfigurationId": "TargetFramework=;Captive.Fileprocessor",
+            "projectPath": "${workspaceFolder}/Captive.Orchestrator/Captive.Orchestrator.csproj",
+            "launchConfigurationId": "TargetFramework=;Captive.Orchestrator",
             "preLaunchTask": "build",
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
@@ -53,7 +53,7 @@
                 "Captive.Commands",
                 "Captive.MdbAPI",
                 "Captive.Query",
-                "Captive.Fileprocessor"
+                "Captive.Orchestrator"
             ],
             "stopAll": true
         }
