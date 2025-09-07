@@ -3,7 +3,7 @@ using Captive.Model.Dto;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Captive.Fileprocessor.Services.CheckOrderService
+namespace Captive.Orchestrator.Services.CheckOrderService
 {
     public interface ICheckOrderService
     {

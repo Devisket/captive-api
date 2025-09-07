@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Captive.Fileprocessor.Services.GenerateBarcodeService
+namespace Captive.Orchestrator.Services.GenerateBarcodeService
 {
     public interface IGenerateBarcodeService
     {

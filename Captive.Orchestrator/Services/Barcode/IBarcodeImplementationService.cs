@@ -1,6 +1,6 @@
 ﻿using Captive.Model.Dto;
 
-namespace Captive.Fileprocessor.Services.Barcode
+namespace Captive.Orchestrator.Services.Barcode
 {
     public interface IBarcodeImplementationService
     {

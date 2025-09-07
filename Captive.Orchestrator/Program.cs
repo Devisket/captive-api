@@ -1,9 +1,9 @@
-﻿using Captive.Fileprocessor.Services.CheckOrderService;
-using Captive.Fileprocessor.Services.DbfService;
-using Captive.Fileprocessor.Services.FileProcessOrchestrator.cs;
-using Captive.Fileprocessor.Services.GenerateBarcodeService;
-using Captive.Fileprocessor.Services.Barcode;
-using Captive.Fileprocessor.Services.Barcode.Implementations;
+﻿using Captive.Orchestrator.Services.CheckOrderService;
+using Captive.Orchestrator.Services.DbfService;
+using Captive.Orchestrator.Services.FileProcessOrchestrator.cs;
+using Captive.Orchestrator.Services.GenerateBarcodeService;
+using Captive.Orchestrator.Services.Barcode;
+using Captive.Orchestrator.Services.Barcode.Implementations;
 using Captive.Messaging;
 using Captive.Messaging.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 
-namespace Captive.Fileprocessor
+namespace Captive.Orchestrator
 {
     internal class Program
     {

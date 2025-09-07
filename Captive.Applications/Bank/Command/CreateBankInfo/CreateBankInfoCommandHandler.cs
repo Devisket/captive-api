@@ -28,7 +28,6 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
                     throw new Exception("Bank is null");
 
                 bankInfo.BankName = request.BankName;
-                bankInfo.BankDescription = request.Description;
                 bankInfo.ShortName = request.ShortName;
                 bankInfo.AccountNumberFormat = request.AccountNumberFormat;
 
@@ -40,7 +39,6 @@ namespace Captive.Applications.Bank.Command.CreateBankInfo
                 {
                     BankName = request.BankName,
                     ShortName = request.ShortName,
-                    BankDescription = request.Description,
                     CreatedDate = DateTime.UtcNow,
                     AccountNumberFormat = request.AccountNumberFormat,
                 };

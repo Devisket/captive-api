@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace Captive.Fileprocessor.Services.DbfService
+namespace Captive.Orchestrator.Services.DbfService
 {
     public interface IDbfService 
     {

@@ -61,6 +61,7 @@ namespace Captive.Reports.BlockReport
                         if ((runningNo % 4) == 0 || blockNo == 0)
                         {
                             blockNo++;
+                            writer.WriteLine();
                             writer.WriteLine($" ** BLOCK{blockNo}");
                         }
 
@@ -103,6 +104,7 @@ namespace Captive.Reports.BlockReport
             writer.Write("\n \n");
             writer.WriteLine("  BLOCK RT_NO\t\tACCT_NO\t\t\tSTART_NO.\tEND_NO.\t\tDELIVER_TO");
             writer.Write("\n \n");
+            writer.WriteLine();
         }
 
         private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName, DateTime deliveryDate)
