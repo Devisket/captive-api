@@ -20,6 +20,7 @@ namespace Captive.Data.Models
         public bool IsValid {  get; set; }
         public string ErrorMessage { get; set; } = string.Empty;
         public bool IsOnHold { get; set; } = false;
+        public string? OrderNo { get; set; }
         public Guid OrderFileId { get; set; }
         public OrderFile OrderFile { get; set; }
     }

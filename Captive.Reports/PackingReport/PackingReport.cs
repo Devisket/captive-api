@@ -1,24 +1,22 @@
 ﻿using Captive.Data.Enums;
 using Captive.Data.Models;
-using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto.Reports;
-using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace Captive.Reports.PackingReport
 {
     public class PackingReport : IPackingReport
     {
-        private IReadUnitOfWork _readUow;
+        private readonly IReportService _reportService;
 
-        public PackingReport(IReadUnitOfWork readUow)
+        public PackingReport(IReportService reportService)
         {
-            _readUow = readUow;
+            _reportService = reportService;
         }
 
         public async Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken)
         {
-            var checkDto = await ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
+            var checkDto = await _reportService.ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.FormCheckType });
 
@@ -59,81 +57,6 @@ namespace Captive.Reports.PackingReport
                     }
                 }
             }
-        }
-
-        public async Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId, CancellationToken cancellationToken)
-        {
-            var bankBranches = await _readUow.BankBranches.GetAll()
-                .Include(x => x.BankInfo)
-                .Where(x => x.BankInfoId == bankId)
-                .AsNoTracking()
-                .ToListAsync();
-
-            return bankBranches;
-        }
-
-        public async Task<ICollection<CheckInventoryDetail>> GetCheckInventory(Guid checkOrderId, CancellationToken cancellationToken)
-        {
-            var checkInventory = await _readUow.CheckInventoryDetails.GetAll()
-               .AsNoTracking()
-               .Where(x => x.CheckOrderId == checkOrderId)
-               .ToListAsync();
-
-            return checkInventory;
-        }
-
-        private async Task<ICollection<FormChecks>> GetFormChecks(List<Guid> formCheckIds)
-        {
-            var formCheck = await _readUow.FormChecks.GetAll()
-                .Include(x => x.Product)
-                .AsNoTracking()
-                .Where(x => formCheckIds.Any(z => z == x.Id))
-                .AsNoTracking()
-                .ToListAsync();
-
-            return formCheck;
-        }
-
-        private async Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankId, CancellationToken cancellationToken)
-        {
-            var branches = await GetAlLBranches(bankId, cancellationToken);
-
-            var formChecks = await GetFormChecks(checkOrders.GroupBy(x => x.FormCheckId ?? Guid.Empty).Select(x => x.Key).ToList());
-
-            var returnDatas = new List<CheckOrderReport>();
-
-            foreach (var checkOrder in checkOrders)
-            {
-                var checkInventory = await GetCheckInventory(checkOrder.Id, cancellationToken);
-
-                var branch = branches.First(x => x.BRSTNCode == checkOrder.BRSTN);
-
-                var deliveringBranch = branches.FirstOrDefault(x => x.BRSTNCode == checkOrder.DeliverTo);
-
-                var formCheck = formChecks.First(x => x.Id == checkOrder.FormCheckId);
-
-                foreach (var check in checkInventory)
-                {
-                    returnDatas.Add(new CheckOrderReport
-                    {
-                        ProductTypeName = formCheck.Product.ProductName,
-                        FormCheckName = formCheck.Description,
-                        FileInitial = formCheck.FileInitial,
-                        FormCheckType = formCheck.FormCheckType,
-                        CheckOrder = checkOrder,
-                        BankBranch = branch,
-                        AccountNumberFormat = branch.BankInfo.AccountNumberFormat,
-                        DeliverTo = deliveringBranch,
-                        CheckInventoryId = check.Id,
-                        StartSeries = check.StartingSeries ?? string.Empty,
-                        EndSeries = check.EndingSeries ?? string.Empty,
-                        BarcodeValue = check.BarCodeValue,
-                        OrderFileId = checkOrder.OrderFileId,
-                        OrderFileName = checkOrder.OrderFile.FileName
-                    });
-                }
-            }
-            return returnDatas;
         }
 
         private void RenderData(StreamWriter writer, CheckOrderReport checkDto, string? accountNumberFormat)

@@ -20,5 +20,6 @@
         public static readonly string ENABLE_BARCODE = "enable_barcode";
         public static readonly string Batch = "batch";
         public static readonly string IsEncrypted = "isEncrypted";
+        public static readonly string ORDER_NO = "orderNo";
     }
 }

@@ -1,0 +1,86 @@
+services:
+  # captive-api-query:
+  #   build:
+  #     context: ../
+  #     dockerfile: ./Captive.Query/Dockerfile
+  #   environment:
+  #     ConnectionStrings__DefaultConnection: "Server=mssql-server;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
+  #     #ASPNETCORE_HTTPS_PORTS: 8443
+  #     #ASPNETCORE_URLS: https://+:8443;http://+8080
+  #     #ASPNETCORE_HTTPS_PORTS: 8443
+  #     ASPNETCORE_HTTPS_PORTS: 8030
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+  #     ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
+  #   ports:
+  #     - 8030:8030
+  #   volumes:
+  #     - C:/https:/https
+  #   networks:
+  #     - captive_network
+  #   depends_on:
+  #     captive-api-command:
+  #       condition: service_started
+
+  # captive-api-command: 
+  #   build:
+  #     context: ../
+  #     dockerfile: ./Captive.Commands/Dockerfile
+  #   environment:
+  #     ConnectionStrings__DefaultConnection: "Server=mssql-server;Database=CaptiveDB;User Id=sa;Password=Password1;TrustServerCertificate=True"
+  #     Rabbitmq__Hostname: "rabbitmq"
+  #     #ASPNETCORE_HTTPS_PORTS: 7443
+  #     ASPNETCORE_HTTPS_PORTS: 7020
+  #     #ASPNETCORE_URLS: https://+:7443;http://+7080
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+  #     ASPNETCORE_Kestrel__Certificates__Default__Password: SECRETPASSWORD
+  #     Processing__OutputDirectory: app/output/bankShortName/currentDate/batchName/
+  #     Processing__ArchiveDirectory: /app/archive
+  #     Processing__FileProcessing: /app/processing/bankShortName/currentDate/batchName/
+  #     Endpoints__MdbApi: http://host.docker.internal:9010
+  #   ports:
+  #     - 7020:7020
+  #   networks:
+  #     - captive_network
+  #   volumes:
+  #     - C:/https:/https
+  #     - C:/Captive/output:/app/output
+  #     - C:/Captive/archive:/app/archive
+  #     - C:/Captive/processing:/app/processing
+  #   depends_on:
+  #     - mssql-server
+  #     - rabbitmq
+  #   command: bash -c "dotnet ef database update && dotnet run"
+
+  mssql-server:
+    build: ./mssql-db
+    user: root
+    ports:
+      - 1433:1433
+    volumes:
+      - ~/mssql_captive/data:/var/opt/mssql/data
+      - ~/mssql_captive/log:/var/opt/mssql/log
+      - ~/mssql_captive/secrets:/var/opt/mssql/secrets
+    networks:
+      - captive_network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+        - captive_network
+
+networks:
+  captive_network:
+    driver: bridge
+
+
+
+    

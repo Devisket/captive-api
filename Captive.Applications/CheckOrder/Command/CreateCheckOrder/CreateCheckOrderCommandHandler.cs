@@ -55,6 +55,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
                         BranchCode = checkOrder.BranchCode ?? string.Empty,
+                        OrderNo = checkOrder.OrderNo,
                     });
                 }
                 else
@@ -76,6 +77,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         Concode = checkOrder.Concode,
                         OrderFileId = request.OrderFileId,
                         BranchCode = checkOrder.BranchCode ?? string.Empty,
+                        OrderNo = checkOrder.OrderNo,
                     });
                 }
             }

@@ -81,7 +81,8 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                             Concode = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.CONCODE)),
                             DeliverTo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.DELIVER_TO)),
                             StartingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.STARTING_SERIAL_NO)),
-                            EndingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ENDING_SERIAL_NO)),                          
+                            EndingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ENDING_SERIAL_NO)),
+                            OrderNo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ORDER_NO)) ?? string.Empty
                         };
 
                         checkOrder.MainAccountName = String.Format("{0} {1}", checkOrder.AccountName1, checkOrder.AccountName2);

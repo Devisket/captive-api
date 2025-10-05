@@ -63,6 +63,7 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
             services.AddScoped<IProducer<GenerateBarcodeMessage>, GenerateBarcodeProducerMessage>();
             services.AddScoped<IBranchService, BranchService>();
+            services.AddScoped<IReportService, ReportService>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

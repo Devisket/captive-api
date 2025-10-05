@@ -61,6 +61,7 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IProducer<GenerateBarcodeMessage>, GenerateBarcodeProducerMessage>();
             services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<IOrderFileService, OrderFileService>();
+            services.AddScoped<IReportService, ReportService>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

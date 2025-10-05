@@ -80,6 +80,7 @@ namespace Captive.MdbProcessor.Processor.DbfProcessor
                             DeliverTo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.DELIVER_TO), config.IsEncrypted),
                             StartingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.STARTING_SERIAL_NO), config.IsEncrypted),
                             EndingSeries = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ENDING_SERIAL_NO), config.IsEncrypted),
+                            OrderNo = GetValue(fieldValues, GetColumnName(FileConfigurationConstants.ORDER_NO)) ?? string.Empty
                         };
 
                         checkOrder.MainAccountName = String.Format("{0} {1}", checkOrder.AccountName1, checkOrder.AccountName2);
