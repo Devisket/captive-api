@@ -9,6 +9,8 @@ namespace Captive.Orchestrator.Services.Barcode.Implementations
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MTBCBarcodeService> _logger;
+        private const int MAX_RETRY_ATTEMPTS = 3;
+        private const int RETRY_DELAY_MS = 100;
 
         public MTBCBarcodeService(IConfiguration configuration, ILogger<MTBCBarcodeService> logger)
         {
@@ -36,37 +38,53 @@ namespace Captive.Orchestrator.Services.Barcode.Implementations
 
             var updateBarcodeRequests = new List<UpdateCheckOrderBarcodeDto>();
 
+
+            _logger.LogInformation($"Starting To Generate Barcode");
+
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             foreach (var checkOrder in checkOrders)
             {
                 _logger.LogInformation($"Processing barcode generation for CheckOrderId: {checkOrder.CheckOrderId}");
 
-                // Process each check series in the check order
-                foreach (var checkSeries in checkOrder.CheckInventories.OrderByDescending(x => x.StartingSeries))
-                {
-                    // Generate all series between starting and ending series as semicolon-separated string
-                    var seriesString = GenerateSeriesBetween(checkSeries.StartingSeries, checkSeries.EndingSeries);
-
-                    try
+                // Create tasks for all series in parallel
+                var barcodeTasks = checkOrder.CheckInventories
+                    .OrderByDescending(x => x.StartingSeries)
+                    .Select(async checkSeries =>
                     {
-                        var barcodeValue = await GenerateBarcodeForSeries(cliPath, checkOrder.AccountNumber, checkOrder.BRSTN, seriesString);
+                        var seriesString = GenerateSeriesBetween(checkSeries.StartingSeries, checkSeries.EndingSeries);
 
-                        updateBarcodeRequests.Add(new UpdateCheckOrderBarcodeDto
+                        try
                         {
-                            CheckOrderId = checkOrder.CheckOrderId,
-                            BarcodeValue = barcodeValue,
-                            CheckInventoryDetailId = checkSeries.CheckInventoryDetailId,
-                        });
+                            var barcodeValue = await GenerateBarcodeForSeries(cliPath, checkOrder.AccountNumber, checkOrder.BRSTN, seriesString);
 
+                            _logger.LogInformation($"Successfully generated barcode for CheckOrderId: {checkOrder.CheckOrderId}, Series: {seriesString}");
 
-                        _logger.LogInformation($"Successfully generated barcode for CheckOrderId: {checkOrder.CheckOrderId}, Series: {seriesString}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, $"Failed to generate barcode for CheckOrderId: {checkOrder.CheckOrderId}, Series: {seriesString}");
-                        throw;
-                    }
-                }
+                            return new UpdateCheckOrderBarcodeDto
+                            {
+                                CheckOrderId = checkOrder.CheckOrderId,
+                                BarcodeValue = barcodeValue,
+                                CheckInventoryDetailId = checkSeries.CheckInventoryDetailId,
+                            };
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"Failed to generate barcode for CheckOrderId: {checkOrder.CheckOrderId}, Series: {seriesString}");
+                            throw;
+                        }
+                    })
+                    .ToList();
+
+                // Wait for all parallel operations to complete
+                var results = await Task.WhenAll(barcodeTasks);
+                updateBarcodeRequests.AddRange(results);
             }
+
+            stopWatch.Stop();
+
+            _logger.LogInformation($"Generate Barcode Finished with {stopWatch.Elapsed.TotalSeconds} seconds");
+
             return updateBarcodeRequests;
         }
 
@@ -154,6 +172,57 @@ namespace Captive.Orchestrator.Services.Barcode.Implementations
 
         private async Task<string> GenerateBarcodeForSeries(string cliPath, string accountNumber, string brstn, string series)
         {
+            Exception lastException = null;
+
+            for (int attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt++)
+            {
+                try
+                {
+                    var result = await ExecuteCliProcess(cliPath, accountNumber, brstn, series, attempt);
+
+                    // Success! Log if we had to retry
+                    if (attempt > 1)
+                    {
+                        _logger.LogInformation($"Successfully generated barcode on attempt {attempt} for AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
+                    }
+
+                    return result;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    lastException = ex;
+
+                    // Check if this is an access violation error
+                    bool isAccessViolation = ex.Message.Contains("access violation", StringComparison.OrdinalIgnoreCase) ||
+                                            ex.Message.Contains("-1073741819");
+
+                    if (isAccessViolation && attempt < MAX_RETRY_ATTEMPTS)
+                    {
+                        var delay = RETRY_DELAY_MS * attempt; // Exponential backoff
+                        _logger.LogWarning($"Access violation detected on attempt {attempt}/{MAX_RETRY_ATTEMPTS}. Retrying after {delay}ms... AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
+                        await Task.Delay(delay);
+
+                        // Force garbage collection to clean up any orphaned resources
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                    }
+                    else
+                    {
+                        // Either not an access violation, or we've exhausted retries
+                        throw;
+                    }
+                }
+            }
+
+            // All retry attempts failed
+            _logger.LogError($"All {MAX_RETRY_ATTEMPTS} attempts failed for AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}. Last error: {lastException?.Message}");
+            throw new InvalidOperationException(
+                $"Failed to generate barcode after {MAX_RETRY_ATTEMPTS} attempts. AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}",
+                lastException);
+        }
+
+        private async Task<string> ExecuteCliProcess(string cliPath, string accountNumber, string brstn, string series, int attempt)
+        {
             var startInfo = new ProcessStartInfo
             {
                 FileName = cliPath,
@@ -164,33 +233,55 @@ namespace Captive.Orchestrator.Services.Barcode.Implementations
                 CreateNoWindow = true
             };
 
-            _logger.LogInformation($"Executing CLI: {cliPath} with arguments: {startInfo.Arguments}");
+            _logger.LogInformation($"Executing CLI (attempt {attempt}): {cliPath} with arguments: AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
 
             using var process = new Process();
             process.StartInfo = startInfo;
-            
+
+            var processStartTime = DateTime.UtcNow;
             process.Start();
-            
-            var output = await process.StandardOutput.ReadToEndAsync();
-            var error = await process.StandardError.ReadToEndAsync();
-            
+
+            // Read both output and error streams concurrently to prevent deadlock
+            var outputTask = process.StandardOutput.ReadToEndAsync();
+            var errorTask = process.StandardError.ReadToEndAsync();
+
+            await Task.WhenAll(outputTask, errorTask);
             await process.WaitForExitAsync();
-            
+
+            var output = outputTask.Result;
+            var error = errorTask.Result;
+            var processEndTime = DateTime.UtcNow;
+            var duration = (processEndTime - processStartTime).TotalMilliseconds;
+
+            _logger.LogInformation($"CLI process completed in {duration}ms with exit code {process.ExitCode}");
+
+            // Log stderr output even if exit code is 0 (might contain warnings)
+            if (!string.IsNullOrEmpty(error))
+            {
+                _logger.LogWarning($"CLI stderr output: {error}");
+            }
+
+            // Handle specific exit codes
+            if (process.ExitCode == -1073741819) // 0xC0000005 - Access Violation
+            {
+                _logger.LogError($"CLI crashed with ACCESS_VIOLATION (exit code -1073741819) for AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}. Output: {output}, Error: {error}");
+                throw new InvalidOperationException($"BarcodeGenerator CLI crashed with access violation -1073741819. AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
+            }
+
             if (process.ExitCode != 0)
             {
-                _logger.LogError($"CLI execution failed with exit code {process.ExitCode}. Error: {error}");
-                throw new InvalidOperationException($"BarcodeGenerator CLI failed with exit code {process.ExitCode}. Error: {error}");
+                _logger.LogError($"CLI execution failed with exit code {process.ExitCode} for AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}. Output: {output}, Error: {error}");
+                throw new InvalidOperationException($"BarcodeGenerator CLI failed with exit code {process.ExitCode}. Error: {error}. AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
             }
-            
+
             if (!string.IsNullOrEmpty(output))
             {
-                _logger.LogInformation($"CLI output: {output}");
-                // Return the generated barcode value (assuming CLI outputs the barcode value)
+                _logger.LogInformation($"CLI generated barcode successfully: {output}");
                 return output.Trim();
             }
 
-            // If no output, return a placeholder or handle accordingly
-            return $"BARCODE_{accountNumber}_{brstn}_{series}";
+            _logger.LogWarning($"CLI returned exit code 0 but produced no output for AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
+            throw new InvalidOperationException($"BarcodeGenerator CLI produced no output. AccountNumber={accountNumber}, BRSTN={brstn}, Series={series}");
         }
     }
 }
