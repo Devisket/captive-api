@@ -1,7 +1,7 @@
-﻿using Captive.Applications.CheckInventory.Commands.AddCheckInventory;
+using Captive.Applications.CheckInventory.Commands.AddCheckInventory;
 using Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails;
 using Captive.Applications.CheckInventory.Commands.DeleteCheckInventory;
-using Captive.Applications.CheckInventory.Commands.InitiateCheckInventory;
+using Captive.Applications.CheckInventory.Commands.ImportCheckInventory;
 using Captive.Applications.CheckInventory.Commands.SetCheckInventoryActive;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +13,11 @@ namespace Captive.Commands.Controllers
     public class CheckInventoryController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public CheckInventoryController(IMediator mediator) 
-        { 
+
+        public CheckInventoryController(IMediator mediator)
+        {
             _mediator = mediator;
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CreateCheckInventory([FromBody] AddCheckInventoryCommand request)
@@ -26,15 +26,8 @@ namespace Captive.Commands.Controllers
             return Ok();
         }
 
-        [HttpPost("InitiateCheckInventories")]
-        public async Task<IActionResult> InititateCheckInventory([FromBody] InitiateCheckInventoryCommand request)
-        {
-            await _mediator.Send(request);
-            return Ok();
-        }
-
         [HttpPut("{checkInventoryId}")]
-        public async Task<IActionResult> UpdateCheckInventory([FromRoute]Guid checkInventoryId,  [FromBody]AddCheckInventoryCommand request)
+        public async Task<IActionResult> UpdateCheckInventory([FromRoute] Guid checkInventoryId, [FromBody] AddCheckInventoryCommand request)
         {
             request.Id = checkInventoryId;
             await _mediator.Send(request);
@@ -56,10 +49,25 @@ namespace Captive.Commands.Controllers
         }
 
         [HttpPost("ApplyCheckInventoryDetails")]
-        public async Task<IActionResult>ApplyCheckInventoryDetails([FromBody]ApplyCheckInventoryDetailsCommand command)
+        public async Task<IActionResult> ApplyCheckInventoryDetails([FromBody] ApplyCheckInventoryDetailsCommand command)
         {
             await _mediator.Send(command);
             return Ok();
+        }
+
+        [HttpPost("{bankId}/import")]
+        public async Task<IActionResult> ImportCheckInventory([FromRoute] Guid bankId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file provided.");
+
+            var result = await _mediator.Send(new ImportCheckInventoryCommand
+            {
+                BankId = bankId,
+                FileStream = file.OpenReadStream()
+            });
+
+            return Ok(result);
         }
     }
 }

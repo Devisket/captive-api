@@ -1,8 +1,9 @@
 ﻿
 namespace Captive.Data.Repository.Write
 {
-    public interface IWriteRepository<in T> where T : class
+    public interface IWriteRepository<T> where T : class
     {
+        IQueryable<T> GetAll();
 
         void UpdateRange(IEnumerable<T> range);
         void Update(T entity);

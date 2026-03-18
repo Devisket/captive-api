@@ -12,10 +12,10 @@ namespace Captive.Data.Models
         public int NumberOfPadding {  get; set; }
         public bool isRepeating {  get; set; }
         public bool IsActive { get; set; }
-        public Guid TagId { get; set; }
-        public Tag Tag { get; set; }
-        public string? JsonMappingData { get; set; } = string.Empty;
+        public bool IsDeprecated { get; set; }
+        public Guid BankId { get; set; }
         public string? AccountNumber { get; set; } = string.Empty;
         public ICollection<CheckInventoryDetail>? CheckInventoryDetails { get; set; }
+        public ICollection<CheckInventoryMapping> Mappings { get; set; } = new List<CheckInventoryMapping>();
     }
 }

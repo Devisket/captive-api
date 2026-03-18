@@ -14,6 +14,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<BankInfo> BankInfo => GetStandardRepository<BankInfo>();
         public IWriteRepository<BatchFile> BatchFiles => GetStandardRepository<BatchFile>();
         public IWriteRepository<CheckInventory> CheckInventory => GetStandardRepository<CheckInventory>();
+        public IWriteRepository<CheckInventoryMapping> CheckInventoryMappings => GetStandardRepository<CheckInventoryMapping>();
         public IWriteRepository<CheckInventoryDetail> CheckInventoryDetails => GetStandardRepository<CheckInventoryDetail>();
         public IWriteRepository<CheckOrders> CheckOrders => GetStandardRepository<CheckOrders>();
         public IWriteRepository<FormChecks> FormChecks => GetStandardRepository<FormChecks>();
@@ -23,8 +24,6 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<ProductConfiguration> ProductConfigurations => GetStandardRepository<ProductConfiguration>();
         public IWriteRepository<Product> ProductTypes => GetStandardRepository<Product>();
         public IWriteRepository<BankBranches> BankBranches => GetStandardRepository<BankBranches>();
-        public IWriteRepository<Tag> Tags => GetStandardRepository<Tag>();
-        public IWriteRepository<TagMapping> TagMappings => GetStandardRepository<TagMapping>();
         public IWriteRepository<T> GetStandardRepository<T>() where T : class => new WriteRepository<T>(_dbContext);
 
         public async Task Complete(CancellationToken cancellationToken = default)

@@ -106,17 +106,6 @@ namespace Captive.Commands.Extensions
                 }
             };
 
-            var tag = new List<Tag>()
-            {
-                new Tag
-                {
-                    Id = Guid.NewGuid(),
-                    isDefaultTag = true,
-                    SearchByBranch = true,
-                    SearchByProduct = true,
-                    SearchByFormCheck = true
-                }
-            };
             var checkInventory = new List<CheckInventory>()
             {
                 new CheckInventory
@@ -127,8 +116,7 @@ namespace Captive.Commands.Extensions
                     SeriesPatern = "ABCD",
                     WarningSeries = 500,
                     isRepeating = false,
-                    TagId = tag.First().Id,
-                    Tag = tag.First(),
+                    BankId = bankInfos[0].Id,
                     IsActive = true,
                 }
             };

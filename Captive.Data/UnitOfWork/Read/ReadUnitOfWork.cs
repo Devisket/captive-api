@@ -17,6 +17,7 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<BankBranches> IReadUnitOfWork.BankBranches => GetStandardRepository<BankBranches>();
         IReadRepository<CheckOrders> IReadUnitOfWork.CheckOrders => GetStandardRepository<CheckOrders>();
         IReadRepository<CheckInventory> IReadUnitOfWork.CheckInventory=> GetStandardRepository<CheckInventory>();
+        IReadRepository<CheckInventoryMapping> IReadUnitOfWork.CheckInventoryMappings => GetStandardRepository<CheckInventoryMapping>();
         IReadRepository<CheckInventoryDetail> IReadUnitOfWork.CheckInventoryDetails => GetStandardRepository<CheckInventoryDetail>();
         IReadRepository<FormChecks> IReadUnitOfWork.FormChecks => GetStandardRepository<FormChecks>();
         IReadRepository<FloatingCheckOrder> IReadUnitOfWork.FloatingCheckOrders=> GetStandardRepository<FloatingCheckOrder>();
@@ -25,8 +26,6 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();
         IReadRepository<Product> IReadUnitOfWork.Products => GetStandardRepository<Product>();
         IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
-        IReadRepository<Tag> IReadUnitOfWork.Tags => GetStandardRepository<Tag>();
-        IReadRepository<TagMapping> IReadUnitOfWork.TagsMapping => GetStandardRepository<TagMapping>();
 
         public IReadRepository<T> GetStandardRepository<T>() where T : class => new ReadRepository<T>(_dbContext);
 

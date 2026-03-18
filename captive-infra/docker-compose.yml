@@ -1,17 +1,15 @@
 services:
   mssql-server:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    user: root
     ports:
       - 1433:1433
     environment:
       SA_PASSWORD: Password1
+      MSSQL_SA_PASSWORD: Password1
       ACCEPT_EULA: Y
       MSSQL_PID: Developer
     volumes:
-      - ~/mssql_captive/data:/var/opt/mssql/data
-      - ~/mssql_captive/log:/var/opt/mssql/log
-      - ~/mssql_captive/secrets:/var/opt/mssql/secrets
+      - C:/captive:/var/opt/mssql/backup
     networks:
       - captive_network
 

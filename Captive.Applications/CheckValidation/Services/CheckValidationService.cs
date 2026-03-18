@@ -1,74 +1,64 @@
-﻿using Captive.Applications.Util;
+using Captive.Applications.Util;
 using Captive.Data.Enums;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
-using Captive.Model.Application;
 using Captive.Model.Dto;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace Captive.Applications.CheckValidation.Services
 {
-    
     public interface ICheckValidationService
     {
         Task<bool> HasConflictedSeries(
-            string startingSeries, 
-            string endingSeries, 
-            Guid branchId, 
-            Guid formcheckId, 
-            Guid productId, 
-            Guid tagId, 
+            string startingSeries,
+            string endingSeries,
+            Guid branchId,
+            Guid formcheckId,
+            Guid productId,
+            Guid checkInventoryId,
             CancellationToken cancellationToken);
         string HitWarningSeries(Captive.Data.Models.CheckInventory checkInventory, string startingSeries, string endingSeries);
         bool HitEndingSeries(Captive.Data.Models.CheckInventory checkInventory, string startingSeries, string endingSeries);
-        Task<Tag> GetTag(Guid bankId, Guid branchId, Guid productId, FormCheckType checkType, CancellationToken cancellationToken);
-        Task<Captive.Data.Models.CheckInventory> GetCheckInventory(Tag tag, Guid branchId, Guid productId, FormCheckType checkType, CancellationToken cancellationToken);
+        Task<Captive.Data.Models.CheckInventory> GetCheckInventoryDirect(Guid bankId, Guid branchId, Guid productId, FormCheckType checkType, string? accountNumber, CancellationToken cancellationToken);
     }
+
     public class CheckValidationService : ICheckValidationService
     {
         private readonly IReadUnitOfWork _readUow;
         private readonly IStringService _stringService;
 
-        public CheckValidationService(IReadUnitOfWork readUow, IStringService stringService) 
-        { 
+        public CheckValidationService(IReadUnitOfWork readUow, IStringService stringService)
+        {
             _readUow = readUow;
             _stringService = stringService;
         }
 
-        public async Task<bool> HasConflictedSeries(string startingSeries, string endingSeries, Guid branchId, Guid formcheckId, Guid productId, Guid tagId, CancellationToken cancellationToken)
+        public async Task<bool> HasConflictedSeries(string startingSeries, string endingSeries, Guid branchId, Guid formcheckId, Guid productId, Guid checkInventoryId, CancellationToken cancellationToken)
         {
             var checkInventory = await _readUow.CheckInventory
                 .GetAll()
-                .Include(x => x.Tag)
                 .Include(x => x.CheckInventoryDetails)
+                .Include(x => x.Mappings)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(
-                    x => x.TagId == tagId 
-                    && x.IsActive, cancellationToken
-                );
+                .FirstOrDefaultAsync(x => x.Id == checkInventoryId, cancellationToken);
 
             if (checkInventory == null)
                 throw new CaptiveException("Can't find the check inventory");
 
-            var tag = checkInventory.Tag;
-
-            if (checkInventory!.CheckInventoryDetails == null || !checkInventory.CheckInventoryDetails.Any())
+            if (checkInventory.CheckInventoryDetails == null || !checkInventory.CheckInventoryDetails.Any())
                 return false;
 
-            // Get both local and database records
+            var mapping = GetMappingData(checkInventory);
+
             var localQuery = checkInventory.CheckInventoryDetails.AsQueryable();
             var dbQuery = _readUow.CheckInventoryDetails.GetAll();
 
-            // Apply filters to both queries based on tag mapping
-            localQuery = ApplyFilters(localQuery, tag, branchId, formcheckId, productId);
-            dbQuery = ApplyFilters(dbQuery, tag, branchId, formcheckId, productId);
+            localQuery = ApplyFilters(localQuery, mapping, branchId, formcheckId, productId);
+            dbQuery = ApplyFilters(dbQuery, mapping, branchId, formcheckId, productId);
 
-            // Get records from both sources
             var localDetails = localQuery.ToList();
             var dbDetails = await dbQuery.ToListAsync(cancellationToken);
 
-            // Combine and deduplicate records
             var allDetails = localDetails
                 .Concat(dbDetails)
                 .DistinctBy(x => x.Id)
@@ -84,49 +74,16 @@ namespace Captive.Applications.CheckValidation.Services
                 (x.EndingNumber >= numberSeries.Item2 && x.StartingNumber <= numberSeries.Item2));
         }
 
-        private IQueryable<CheckInventoryDetail> ApplyFilters(IQueryable<CheckInventoryDetail> query, Tag tag, Guid branchId, Guid formcheckId, Guid productId)
+        private IQueryable<CheckInventoryDetail> ApplyFilters(IQueryable<CheckInventoryDetail> query, CheckInventoryMappingData mapping, Guid branchId, Guid formcheckId, Guid productId)
         {
-            // Branch + Product + FormCheck combination
-            if (tag.SearchByBranch && tag.SearchByProduct && tag.SearchByFormCheck)
-            {
-                return query.Where(x => 
-                    x.BranchId == branchId && 
-                    x.ProductId == productId && 
-                    x.FormCheckId == formcheckId);
-            }
-            // Branch + Product combination
-            else if (tag.SearchByBranch && tag.SearchByProduct)
-            {
-                return query.Where(x => 
-                    x.BranchId == branchId && 
-                    x.ProductId == productId);
-            }
-            // Branch + FormCheck combination
-            else if (tag.SearchByBranch && tag.SearchByFormCheck)
-            {
-                return query.Where(x => 
-                    x.BranchId == branchId && 
-                    x.FormCheckId == formcheckId);
-            }
-            // Product + FormCheck combination
-            else if (tag.SearchByProduct && tag.SearchByFormCheck)
-            {
-                return query.Where(x => 
-                    x.ProductId == productId && 
-                    x.FormCheckId == formcheckId);
-            }
-            // Single criteria
-            else
-            {
-                if (tag.SearchByBranch)
-                    query = query.Where(x => x.BranchId == branchId);
+            if (mapping.BranchIds.Any())
+                query = query.Where(x => x.BranchId == branchId);
 
-                if (tag.SearchByProduct)
-                    query = query.Where(x => x.ProductId == productId);
+            if (mapping.ProductIds.Any())
+                query = query.Where(x => x.ProductId == productId);
 
-                if (tag.SearchByFormCheck)
-                    query = query.Where(x => x.FormCheckId == formcheckId);
-            }
+            if (mapping.FormCheckType.Any())
+                query = query.Where(x => x.FormCheckId == formcheckId);
 
             return query;
         }
@@ -144,69 +101,54 @@ namespace Captive.Applications.CheckValidation.Services
         public bool HitEndingSeries(Captive.Data.Models.CheckInventory checkInventory, string startingSeries, string endingSeries)
         {
             var numberSeries = _stringService.ExtractNumber(checkInventory.SeriesPatern, startingSeries, endingSeries);
-
-            if (numberSeries.Item2 >= checkInventory.EndingSeries)
-                return true;
-
-            return false;
+            return numberSeries.Item2 >= checkInventory.EndingSeries;
         }
 
-        public async Task<Tag> GetTag(Guid bankId, Guid branchId, Guid productId, FormCheckType checkType, CancellationToken cancellationToken)
+        public async Task<Captive.Data.Models.CheckInventory> GetCheckInventoryDirect(Guid bankId, Guid branchId, Guid productId, FormCheckType checkType, string? accountNumber, CancellationToken cancellationToken)
         {
-            var tags = await _readUow.Tags.GetAll().Include(x => x.Mapping).Where(x => x.BankId == bankId).ToListAsync(cancellationToken);
+            var checkInventories = await _readUow.CheckInventory
+                .GetAll()
+                .Include(x => x.Mappings)
+                .Where(x => x.BankId == bankId && x.IsActive && !x.IsDeprecated)
+                .ToListAsync(cancellationToken);
 
-            if (tags == null || !tags.Any())
-                return null;
-
-            // Get all non-default tags
-            var nonDefaultTags = tags.Where(x => !x.isDefaultTag).ToList();
-            if (!nonDefaultTags.Any())
-                return tags.First();
-
-            var tagMappings = nonDefaultTags.Where(x => x.Mapping!= null && x.Mapping!.Any()).Select(tag => new { tag, tag.Mapping }).SelectMany(z => z.Mapping!, (parent, child) => new 
+            if (!string.IsNullOrEmpty(accountNumber))
             {
-                TagId = parent.tag.Id,
-                Tag = parent.tag,
-                Mappings = JsonConvert.DeserializeObject<TagMappingData>(child.TagMappingData)!
-            }).Select(z =>
-            new {
-                Tag = z.Tag,
-                BranchIds = z.Mappings.BranchIds,
-                ProductIds = z.Mappings.ProductIds,
-                FormCheckTypes = z.Mappings.FormCheckType,
-            });
-
-            var searchedTag = tagMappings.Where(mapping =>
-                mapping.BranchIds.Contains(branchId)
-                && mapping.ProductIds.Contains(productId)
-                && mapping.FormCheckTypes.Contains(checkType.ToString())).Select(x => x.Tag).FirstOrDefault();
-
-            // Priority 4: Default tag
-            return searchedTag ?? tags.Where(x => x.isDefaultTag).First();
-        }
-
-        public async Task<Data.Models.CheckInventory> GetCheckInventory(Tag tag, Guid branchId, Guid productId, FormCheckType checkType, CancellationToken cancellationToken)
-        {
-            var checkInventories = await _readUow.CheckInventory.GetAll().Where(x => x.TagId == tag.Id).ToListAsync(cancellationToken);
-
-            var query = checkInventories.Select(x => new { CheckInventory = x, CheckInventoryMappingData = JsonConvert.DeserializeObject<CheckInventoryMappingData>(x.JsonMappingData) }).AsQueryable();
-
-            if (tag.SearchByBranch)
-                query = query.Where(x => x.CheckInventoryMappingData.BranchIds.Contains(branchId));
-
-            if (tag.SearchByProduct)
-                query = query.Where(x => x.CheckInventoryMappingData.ProductIds.Contains(productId));
-
-            if (tag.SearchByFormCheck)
-                query = query.Where(x => x.CheckInventoryMappingData.FormCheckType.Contains(checkType.ToString()));
-
-            var checkInventory = query.FirstOrDefault();
-
-            if (checkInventory == null) {
-                throw new CaptiveException("Can't find the check inventory");
+                var accountMatch = checkInventories.FirstOrDefault(x => x.AccountNumber == accountNumber);
+                if (accountMatch != null)
+                    return accountMatch;
             }
 
-            return checkInventory!.CheckInventory;
+            var scored = checkInventories
+                .Where(x => string.IsNullOrEmpty(x.AccountNumber))
+                .Select(x => new { Inventory = x, Mapping = GetMappingData(x) })
+                .Where(c =>
+                    (!c.Mapping.BranchIds.Any() || c.Mapping.BranchIds.Contains(branchId)) &&
+                    (!c.Mapping.ProductIds.Any() || c.Mapping.ProductIds.Contains(productId)) &&
+                    (!c.Mapping.FormCheckType.Any() || c.Mapping.FormCheckType.Contains(checkType.ToString())))
+                .Select(c => new
+                {
+                    c.Inventory,
+                    Score = (c.Mapping.BranchIds.Any() ? 4 : 0) +
+                            (c.Mapping.ProductIds.Any() ? 2 : 0) +
+                            (c.Mapping.FormCheckType.Any() ? 1 : 0)
+                })
+                .OrderByDescending(c => c.Score)
+                .FirstOrDefault();
+
+            if (scored == null)
+                throw new CaptiveException("Can't find the check inventory");
+
+            return scored.Inventory;
+        }
+
+        private static CheckInventoryMappingData GetMappingData(Captive.Data.Models.CheckInventory checkInventory)
+        {
+            return new CheckInventoryMappingData(
+                checkInventory.Mappings.Where(m => m.BranchId.HasValue).Select(m => m.BranchId!.Value),
+                checkInventory.Mappings.Where(m => m.ProductId.HasValue).Select(m => m.ProductId!.Value),
+                checkInventory.Mappings.Where(m => m.FormCheckType != null).Select(m => m.FormCheckType!)
+            );
         }
     }
 }
