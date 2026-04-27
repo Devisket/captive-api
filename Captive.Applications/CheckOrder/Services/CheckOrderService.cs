@@ -145,15 +145,8 @@ namespace Captive.Applications.CheckOrder.Services
 
                     var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
                     
-                    var tag = await _checkValidationService.GetTag(orderFile.BatchFile!.BankInfoId, branch.Id, orderFile.ProductId, formCheck.FormCheckType, cancellationToken);
-
-                    if(tag == null)
-                    {
-                        validationResponse.LogType = Model.Enums.LogType.Error;
-                        validationResponse.LogMessage = $"Can't find Tag";
-                    }
-
-                    var checkInventory = await _readUow.CheckInventory.GetAll().AsNoTracking().FirstOrDefaultAsync(x => x.TagId == tag.Id && x.IsActive, cancellationToken);
+                    var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
+                        orderFile.BatchFile!.BankInfoId, branch.Id, orderFile.ProductId, formCheck.FormCheckType, checkOrder.AccountNo, cancellationToken);
 
                     if(checkInventory == null)
                     {
@@ -161,7 +154,7 @@ namespace Captive.Applications.CheckOrder.Services
                         validationResponse.LogMessage = $"Can't find check inventory";
                     }
 
-                    if (await _checkValidationService.HasConflictedSeries(checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id,orderFile.ProductId, tag.Id, cancellationToken))
+                    if (await _checkValidationService.HasConflictedSeries(checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id, orderFile.ProductId, checkInventory!.Id, cancellationToken))
                     {
                         checkOrder.IsValid = false;
                         checkOrder.ErrorMessage = $"Has conflicted series number!";

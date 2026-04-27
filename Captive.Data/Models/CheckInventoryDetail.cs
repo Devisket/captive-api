@@ -7,7 +7,6 @@ namespace Captive.Data.Models
         public Guid? BranchId { get; set; }
         public Guid? ProductId { get; set; }
         public Guid? FormCheckId { get; set; }
-        public Guid? TagId { get; set; } 
         public string? StartingSeries { get; set; }
         public string? EndingSeries { get; set; }
         public string? AccountNumber {  get; set; }

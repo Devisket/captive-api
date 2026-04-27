@@ -8,6 +8,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<BankInfo> BankInfo { get; }
         public IWriteRepository<BankBranches> BankBranches{ get; }
         public IWriteRepository<CheckInventory> CheckInventory { get; }
+        public IWriteRepository<CheckInventoryMapping> CheckInventoryMappings { get; }
         public IWriteRepository<CheckInventoryDetail> CheckInventoryDetails { get; }
         public IWriteRepository<CheckOrders> CheckOrders { get; }
         public IWriteRepository<FormChecks> FormChecks { get; }
@@ -17,8 +18,6 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<BatchFile> BatchFiles { get; }
         public IWriteRepository<Product> ProductTypes { get; }
         public IWriteRepository<ProductConfiguration> ProductConfigurations { get; }
-        public IWriteRepository<Tag> Tags{ get; }
-        public IWriteRepository<TagMapping> TagMappings { get; }
 
         Task Complete(CancellationToken cancellationToken = default);
     }

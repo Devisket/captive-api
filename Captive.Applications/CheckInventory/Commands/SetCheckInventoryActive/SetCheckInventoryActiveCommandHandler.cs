@@ -27,7 +27,7 @@ namespace Captive.Applications.CheckInventory.Commands.SetCheckInventoryActive
 
             checkInventory.IsActive = true;
 
-            var otherActiveCheckInventory = await _readUow.CheckInventory.GetAll().Where(x => x.TagId == checkInventory.TagId  && x.IsActive).FirstOrDefaultAsync(cancellationToken);
+            var otherActiveCheckInventory = await _readUow.CheckInventory.GetAll().Where(x => x.BankId == checkInventory.BankId && x.Id != checkInventory.Id && x.IsActive).FirstOrDefaultAsync(cancellationToken);
 
             if (otherActiveCheckInventory != null) { 
                 otherActiveCheckInventory.IsActive = false;

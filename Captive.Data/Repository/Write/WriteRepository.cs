@@ -10,6 +10,11 @@ namespace Captive.Data.Repository.Write
             _context = context;
         }
 
+        public IQueryable<T> GetAll()
+        {
+            return _context.Set<T>();
+        }
+
         public async Task AddAsync(T entity, CancellationToken cancellationToken)
         {
             await _context.Set<T>().AddAsync(entity, cancellationToken);

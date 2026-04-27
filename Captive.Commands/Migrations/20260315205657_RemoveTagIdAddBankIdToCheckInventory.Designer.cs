@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20260315205657_RemoveTagIdAddBankIdToCheckInventory")]
+    partial class RemoveTagIdAddBankIdToCheckInventory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,9 +162,6 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
 
                     b.Property<string>("JsonMappingData")
@@ -591,6 +591,74 @@ namespace Captive.Commands.Migrations
                     b.ToTable("seed", (string)null);
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BankId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CheckInventoryInitiated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLock")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SearchByAccount")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SearchByBranch")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SearchByFormCheck")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SearchByProduct")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TagName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isDefaultTag")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tag", (string)null);
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.TagMapping", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TagMappingData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("tag_mapping", (string)null);
+                });
+
             modelBuilder.Entity("Captive.Data.Models.BankBranches", b =>
                 {
                     b.HasOne("Captive.Data.Models.BankInfo", "BankInfo")
@@ -724,6 +792,17 @@ namespace Captive.Commands.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.TagMapping", b =>
+                {
+                    b.HasOne("Captive.Data.Models.Tag", "Tag")
+                        .WithMany("Mapping")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("Captive.Data.Models.BankInfo", b =>
                 {
                     b.Navigation("BankBranches");
@@ -765,6 +844,11 @@ namespace Captive.Commands.Migrations
 
                     b.Navigation("ProductConfiguration")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.Tag", b =>
+                {
+                    b.Navigation("Mapping");
                 });
 #pragma warning restore 612, 618
         }

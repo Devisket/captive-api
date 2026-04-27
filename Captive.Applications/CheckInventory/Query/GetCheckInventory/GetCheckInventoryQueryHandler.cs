@@ -1,7 +1,6 @@
-﻿using Captive.Data.UnitOfWork.Read;
+using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto;
 using Captive.Model.Response;
-using Captive.Utility;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,57 +8,65 @@ namespace Captive.Applications.CheckInventory.Query.GetCheckInventory
 {
     public class GetCheckInventoryQueryHandler : IRequestHandler<GetCheckInventoryQuery, CheckInventoryQueryResponse>
     {
-
         private readonly IReadUnitOfWork _readUow;
-        public GetCheckInventoryQueryHandler(IReadUnitOfWork readUow) {
+
+        public GetCheckInventoryQueryHandler(IReadUnitOfWork readUow)
+        {
             _readUow = readUow;
         }
+
         public async Task<CheckInventoryQueryResponse> Handle(GetCheckInventoryQuery request, CancellationToken cancellationToken)
         {
-            var skipRecord = ((request.CurrentPage - 1) * request.PageSize);
+            var skipRecord = (request.CurrentPage - 1) * request.PageSize;
 
-            var rawCheckInventories = await _readUow.CheckInventory.GetAll()
+            var query = _readUow.CheckInventory.GetAll()
                 .AsNoTracking()
-                .Where(x => x.TagId == request.TagId 
-                    && x.isRepeating == request.IsRepeating 
-                    && x.IsActive == request.IsActive)
-                .Select(x => CheckInventoryDto.ToDto(x))
-                .ToListAsync(cancellationToken);
+                .Include(x => x.Mappings)
+                .Where(x => x.BankId == request.BankId);
 
-            var checkInventories = rawCheckInventories.AsQueryable();
+            if (request.IsActive.HasValue)
+                query = query.Where(x => x.IsActive == request.IsActive.Value);
 
-            if (request.BranchIds != null && request.BranchIds.Any()) {
-                checkInventories = checkInventories.Where(x => x.MappingData.BranchIds.ContainsAny(request.BranchIds));
-            }
+            if (request.IsRepeating.HasValue)
+                query = query.Where(x => x.isRepeating == request.IsRepeating.Value);
 
-            if (request.ProductIds!= null && request.ProductIds.Any())
+            if (request.BranchIds != null && request.BranchIds.Any())
             {
-                checkInventories = checkInventories.Where(x => x.MappingData.ProductIds.ContainsAny(request.ProductIds));
+                var branchIds = request.BranchIds.ToList();
+                query = query.Where(x =>
+                    !x.Mappings.Any(m => m.BranchId.HasValue) ||
+                    x.Mappings.Any(m => m.BranchId.HasValue && branchIds.Contains(m.BranchId!.Value)));
             }
 
-            if (request.FormCheckType!= null && request.FormCheckType.Any())
+            if (request.ProductIds != null && request.ProductIds.Any())
             {
-                checkInventories = checkInventories.Where(x => x.MappingData.FormCheckType.ContainsAny(request.FormCheckType));
+                var productIds = request.ProductIds.ToList();
+                query = query.Where(x =>
+                    !x.Mappings.Any(m => m.ProductId.HasValue) ||
+                    x.Mappings.Any(m => m.ProductId.HasValue && productIds.Contains(m.ProductId!.Value)));
             }
 
-            var totalRecords = checkInventories.Count();
-
-            if (checkInventories == null ||  !checkInventories.Any()) {
-                return new CheckInventoryQueryResponse
-                {
-                    CheckInventories = new List<CheckInventoryDto>(),
-                    TotalCount = 0
-                };
+            if (request.FormCheckType != null && request.FormCheckType.Any())
+            {
+                var formCheckTypes = request.FormCheckType.ToList();
+                query = query.Where(x =>
+                    !x.Mappings.Any(m => m.FormCheckType != null) ||
+                    x.Mappings.Any(m => m.FormCheckType != null && formCheckTypes.Contains(m.FormCheckType)));
             }
 
-            var returnDto = checkInventories
+            var totalRecords = await query.CountAsync(cancellationToken);
+
+            if (totalRecords == 0)
+                return new CheckInventoryQueryResponse { CheckInventories = new List<CheckInventoryDto>(), TotalCount = 0 };
+
+            var entities = await query
                 .Skip(skipRecord)
                 .Take(request.PageSize)
-                .ToList();
+                .ToListAsync(cancellationToken);
 
             return new CheckInventoryQueryResponse
             {
-                CheckInventories = returnDto,
+                CheckInventories = entities.Select(CheckInventoryDto.ToDto).ToList(),
                 TotalCount = totalRecords
             };
         }
