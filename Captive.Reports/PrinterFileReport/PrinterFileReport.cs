@@ -25,7 +25,7 @@ namespace Captive.Reports.PrinterFileReport
 
                 var fileName = productCheckOrder.Key.CustomizeFileName ?? "PrinterFile";
 
-                var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"{fileName}{productCheckOrder.Key.FormCheckName.First()}A.txt");
+                var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}A.txt");
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {

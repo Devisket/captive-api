@@ -60,10 +60,10 @@ namespace Captive.Reports.BlockReport
                         {
                             blockNo++;
                             writer.WriteLine();
-                            writer.WriteLine($" ** BLOCK{blockNo}");
+                            writer.WriteLine($"        ** BLOCK {blockNo}");
                         }
 
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, blockNo, checkOrder.AccountNumberFormat);
+                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.AccountNumberFormat);
 
                         runningNo++;
 
@@ -82,53 +82,57 @@ namespace Captive.Reports.BlockReport
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, int blockNo, string? accountNumberFormat)
+        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, string? accountNumberFormat)
         {
             var accNo = checkOrder.AccountNo;
 
             if(!string.IsNullOrEmpty(accountNumberFormat))
                 accNo = Regex.Replace(checkOrder.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
 
-            writer.WriteLine($"\t  {blockNo} {branch.BRSTNCode}\t{accNo}\t\t{startingSeries.PadLeft(10, '0')} \t{endingSeries.PadLeft(10,'0')}");
+            writer.WriteLine($"            {branch.BRSTNCode}    {accNo.PadRight(12)}    {startingSeries.PadLeft(10, '0')}    {endingSeries.PadLeft(10, '0')}");
         }
 
         private void RenderHeader(StreamWriter writer, string bankShortName, string productDescription, string formCheckDescription, int page)
         {
             writer.WriteLine();
-            writer.WriteLine($"\t \t Page No.{page}");
-            writer.WriteLine($"\t \t {DateTime.Now.ToString("dd/MM/yyyy")}");
-            writer.WriteLine($"\t \t \t \t  {bankShortName.ToUpper()} - SUMMARY OF BLOCK - {formCheckDescription.ToUpper()} Check");
-            writer.WriteLine($"\t \t \t \t \t \t \t \t    {productDescription.ToUpper()} Check");
-            writer.Write("\n \n");
-            writer.WriteLine("  BLOCK RT_NO\t\tACCT_NO\t\t\tSTART_NO.\tEND_NO.\t\tDELIVER_TO");
-            writer.Write("\n \n");
+            writer.WriteLine($"         Page No. {page}");
+            writer.WriteLine($"         {DateTime.Now.ToString("MM/dd/yyyy")}");
+            writer.WriteLine();
+            writer.WriteLine($"                         {bankShortName.ToUpper()} - SUMMARY OF BLOCK - {formCheckDescription.ToUpper()}");
+            writer.WriteLine($"                        {productDescription.ToUpper()}");
+            writer.WriteLine();
+            writer.WriteLine("            BLOCK RT_NO  ACCT_NO         START_NO.     END_NO.");
             writer.WriteLine();
         }
 
         private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName, DateTime deliveryDate)
         {
             writer.WriteLine();
+            bool isFirst = true;
             foreach (var item in formcheckType)
             {
-                writer.Write($"\t {item.Item1}: {item.Item2}");
-
-                if (item.Equals(formcheckType.First()))
+                if (isFirst)
                 {
-                    writer.Write($"\t\t\t\t\t\t {fileName}");
-                    writer.Write($"\t\t\t\t\t\t DLV: {deliveryDate.ToString("MMM-dd")} ({deliveryDate.ToString("ddd")})");
+                    writer.WriteLine($"        {item.Item1} = {item.Item2}                         {fileName}                                       DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
+                    isFirst = false;
                 }
-
-                writer.Write('\n');
+                else
+                {
+                    writer.WriteLine($"        {item.Item1} = {item.Item2}");
+                }
             }
 
-            writer.WriteLine($"\t Prepared By:");
-            writer.WriteLine($"\t Updated By:");
-            writer.WriteLine($"\t Time Start: {DateTime.Now.TimeOfDay}");
-            writer.WriteLine($"\t Time Finished:{DateTime.Now.AddMinutes(3).TimeOfDay}\t\t\t\t\t\t RECHECKED BY:");
-            writer.WriteLine($"\t File Rcvd:");
-            writer.WriteLine($"\n\n");
-            writer.WriteLine($"\f");
-            writer.Write("\n \n");
+            writer.WriteLine();
+            writer.WriteLine();
+            writer.WriteLine($"        Prepared By  :                                   RECHECKED By :   ");
+            writer.WriteLine($"        Updated By   :  ");
+            writer.WriteLine($"        Time Start   :  {DateTime.Now:HH:mm}");
+            writer.WriteLine($"        Time Finished:  {DateTime.Now.AddMinutes(3):HH:mm}");
+            writer.WriteLine($"        File Recvd   :  ");
+            writer.WriteLine();
+            writer.WriteLine();
+            writer.WriteLine();
+            writer.WriteLine("\f");
         }
     }
 }
