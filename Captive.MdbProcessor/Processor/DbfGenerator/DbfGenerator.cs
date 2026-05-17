@@ -111,7 +111,7 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
 
                 var deliverTo = checkOrder.CheckOrder.DeliverTo ?? string.Empty;
 
-                command.Parameters.AddWithValue("@batchNo", orderFile.FileName);
+                command.Parameters.AddWithValue("@batchNo", orderFile.FileName.Split('.').First());
                 command.Parameters.AddWithValue("@block", 0);
                 command.Parameters.AddWithValue("@rtNo", checkOrder.CheckOrder.BRSTN);
                 command.Parameters.AddWithValue("@branch", $"{checkOrder.BankBranch.BranchName} BRANCH({checkOrder.BankBranch.BranchCode})");

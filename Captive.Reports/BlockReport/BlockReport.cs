@@ -32,7 +32,7 @@ namespace Captive.Reports.BlockReport
                 var productName = productCheckOrder.Key.ProductTypeName;
                 var formCheckName = productCheckOrder.Key.FormCheckName ?? string.Empty;
                 var bankShortName = branches.First().BankInfo.ShortName;
-                var fileName = productCheckOrder.First().OrderFileName;
+                var fileName = productCheckOrder.First().OrderFileName.Split('.').First();
 
 
                 List<Tuple<string, int>> formcheckList = new List<Tuple<string, int>>();
@@ -113,7 +113,7 @@ namespace Captive.Reports.BlockReport
             {
                 if (isFirst)
                 {
-                    writer.WriteLine($"        {item.Item1} = {item.Item2}                         {fileName}                                       DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
+                    writer.WriteLine($"        {item.Item1} = {item.Item2}                         {fileName}.txt                                       DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
                     isFirst = false;
                 }
                 else

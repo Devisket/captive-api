@@ -97,12 +97,12 @@ namespace Captive.Reports.PackingReport
 
         private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)
         {
-            var bankShortName = orderBranch.BankInfo.ShortName;
+            var bankName = orderBranch.BankInfo.BankName;
 
             writer.WriteLine($"  Page No.{pageNo}");
             writer.WriteLine($"  {DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
             writer.WriteLine("\t\t\t\t\t\t\t  CAPTIVE PRINTING CORPORATION");
-            writer.WriteLine($"\t\t\t\t\t\t\t  {bankShortName} - {formCheckName} Summary");
+            writer.WriteLine($"\t\t\t\t\t\t\t  {bankName} - {formCheckName} Checks Summary");
             writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\tQTY\tCT\tSTART #\t\tEND #");
 
             if (deliverTo != null)
@@ -117,31 +117,12 @@ namespace Captive.Reports.PackingReport
             writer.WriteLine("\f");
         }
 
-        private string FormatAccountNumber(string accountNumber, string format)
+        private string FormatAccountNumber(string accountNumber, string accountNumberFormat)
         {
-            if (string.IsNullOrEmpty(accountNumber) || string.IsNullOrEmpty(format))
-                return accountNumber;
+            if (!string.IsNullOrEmpty(accountNumberFormat))
+                accountNumber = Regex.Replace(accountNumber, $"{accountNumberFormat}", @"$1-$2-$3");
 
-            var segments = format.Split('-');
-            var result = new List<string>();
-            var currentIndex = 0;
-
-            foreach (var segment in segments)
-            {
-                var segmentLength = segment.Length;
-                if (currentIndex + segmentLength <= accountNumber.Length)
-                {
-                    result.Add(accountNumber.Substring(currentIndex, segmentLength));
-                    currentIndex += segmentLength;
-                }
-                else if (currentIndex < accountNumber.Length)
-                {
-                    result.Add(accountNumber.Substring(currentIndex));
-                    break;
-                }
-            }
-
-            return string.Join("-", result);
+            return accountNumber;
         }
     }
 }

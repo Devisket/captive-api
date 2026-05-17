@@ -45,6 +45,8 @@ namespace Captive.Reports.PrinterFileReport
 
             var nextStartSeries = GetNextStartingSeries(seriesPattern, endingSeries, noOfPadding);
 
+            var formattedAccountNumber = FormatAccountNumber(checkOrder.AccountNo, accountNumberFormat);
+
             writer.WriteLine(5);
             writer.WriteLine(checkOrder.BRSTN);
             writer.WriteLine(checkOrder.AccountNo);
@@ -54,12 +56,8 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(checkOrder.BRSTN.Substring(0, 5));
             writer.WriteLine(string.Format(" {0}", checkOrder.BRSTN.Substring(5, 4)));
 
-            var accNo = checkOrder.AccountNo;
 
-            if (!string.IsNullOrEmpty(accountNumberFormat))
-                accNo = Regex.Replace(checkOrder.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
-
-            writer.WriteLine(accNo);
+            writer.WriteLine(formattedAccountNumber);
             writer.WriteLine(concodes == null ? checkOrder.AccountName : concodes[0]);
             writer.WriteLine("SN");
             writer.WriteLine(string.Empty);
@@ -111,6 +109,15 @@ namespace Captive.Reports.PrinterFileReport
             }
 
             return numerical.ToString().PadLeft(noOfPadding,'0');
+        }
+
+
+        private string FormatAccountNumber(string accountNumber, string? accountNumberFormat)
+        {
+            if (!string.IsNullOrEmpty(accountNumberFormat))
+                accountNumber = Regex.Replace(accountNumber, $"{accountNumberFormat}", @"$1-$2-$3");
+
+            return accountNumber;
         }
     }
 }
