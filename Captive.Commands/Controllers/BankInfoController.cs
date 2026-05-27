@@ -2,6 +2,7 @@
 using Captive.Applications.Bank.Command.CreateBankInfo;
 using Captive.Applications.Bank.Command.DeleteBankBranch;
 using Captive.Applications.Bank.Command.DeleteBankInfo;
+using Captive.Applications.Bank.Command.ImportBankBranches;
 using Captive.Applications.Bank.Query.GetBankBranches.Model;
 using Captive.Data.Enums;
 using MediatR;
@@ -100,6 +101,21 @@ namespace Captive.Commands.Controllers
             });
 
             return NoContent();
+        }
+
+        [HttpPost("{bankId}/branch/import")]
+        public async Task<IActionResult> ImportBranches([FromRoute] Guid bankId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file provided.");
+
+            var result = await _mediator.Send(new ImportBankBranchesCommand
+            {
+                BankId = bankId,
+                FileStream = file.OpenReadStream()
+            });
+
+            return Ok(result);
         }
     }
 }

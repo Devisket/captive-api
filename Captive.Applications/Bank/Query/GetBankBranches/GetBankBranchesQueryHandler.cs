@@ -29,6 +29,7 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
                     Id = x.Id,
                     BranchName = x.BranchName,
                     BrstnCode = x.BRSTNCode,
+                    BranchCode = x.BranchCode,
                     BranchAddress1 = x.BranchAddress1,
                     BranchAddress2 = x.BranchAddress2,
                     BranchAddress3 = x.BranchAddress3,

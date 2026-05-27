@@ -42,10 +42,12 @@ namespace Captive.Processing.Processor.MDBFileProcessor
                 + password +
                 ";Mode=Share Exclusive;Persist Security Info=True;";
 
-            // Important part - using mdw file
-            strConnectionString += "Jet OLEDB:System Database=" +
-                    Environment.GetEnvironmentVariable("APPDATA") +
-                    @"\Microsoft\Access\system.mdw";
+            // Only include workgroup file if it exists on this machine
+            var mdwPath = Path.Combine(
+                Environment.GetEnvironmentVariable("APPDATA") ?? string.Empty,
+                @"Microsoft\Access\system.mdw");
+            if (File.Exists(mdwPath))
+                strConnectionString += $"Jet OLEDB:System Database={mdwPath};";
 
             using (var connection = new OleDbConnection(strConnectionString))
             {
