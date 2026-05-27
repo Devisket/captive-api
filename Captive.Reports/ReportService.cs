@@ -59,6 +59,7 @@ namespace Captive.Reports
                         EndSeries = check.EndingSeries ?? string.Empty,
                         SeriesPattern = check.CheckInventory!.SeriesPatern,
                         AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,
+                        ProductSequence = formCheck.Product.ProductSequence,
                     });
                 }
             }

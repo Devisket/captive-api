@@ -17,6 +17,7 @@ using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.TextFileProcessor;
 using Captive.Reports;
 using Captive.Reports.BlockReport;
+using Captive.Reports.HashTotalReport;
 using Captive.Reports.PackingReport;
 using Captive.Reports.PrinterFileReport;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,7 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IReportGenerator, ReportGenerator>();
             services.AddScoped<IBlockReport, BlockReport>();
             services.AddScoped<IPackingReport, PackingReport>();
+            services.AddScoped<IHashTotalReport, HashTotalReport>();
             services.AddSignalR();
             services.AddScoped<IBatchService, BatchService>();
             services.AddScoped<IExcelFileProcessor, ExcelFileProcessor>();

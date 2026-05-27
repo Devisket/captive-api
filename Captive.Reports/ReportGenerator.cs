@@ -6,6 +6,7 @@ using Captive.Reports.PrinterFileReport;
 using System.IO.Compression;
 using Captive.Reports.BlockReport;
 using Captive.Reports.PackingReport;
+using Captive.Reports.HashTotalReport;
 using Captive.Model.Dto;
 using Captive.Model.Notifications;
 using Captive.Messaging.Interfaces;
@@ -26,6 +27,7 @@ namespace Captive.Reports
         private readonly IProducer<GenerateBarcodeMessage> _producerGenerateBarcode;
         private readonly IProducer<DbfGenerateMessage> _producerGenerateDbf;
         private readonly IOrderFileNotifier _orderFileNotifier;
+        private readonly IHashTotalReport _hashTotalReport;
 
         public ReportGenerator(
             IReadUnitOfWork readUow,
@@ -36,7 +38,8 @@ namespace Captive.Reports
             IPackingReport packingReport,
             IProducer<GenerateBarcodeMessage> producerGenerateBarcode,
             IProducer<DbfGenerateMessage> producerGenerateDbf,
-            IOrderFileNotifier orderFileNotifier
+            IOrderFileNotifier orderFileNotifier,
+            IHashTotalReport hashTotalReport
             )
         {
             _readUow = readUow;
@@ -48,6 +51,7 @@ namespace Captive.Reports
             _producerGenerateBarcode = producerGenerateBarcode;
             _producerGenerateDbf = producerGenerateDbf;
             _orderFileNotifier = orderFileNotifier;
+            _hashTotalReport = hashTotalReport;
         }
 
         public async Task OnGenerateReport(Guid batchFileId, CancellationToken cancellationToken)
@@ -91,7 +95,8 @@ namespace Captive.Reports
             await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Packing Report", cancellationToken);
             await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
 
-            //Generate HashTotal
+            await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Hash Total Report", cancellationToken);
+            await _hashTotalReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
 
             //CreateZipFile(batchFile, filePath, archiveDir);
 

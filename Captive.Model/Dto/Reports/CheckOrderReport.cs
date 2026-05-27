@@ -28,5 +28,6 @@ namespace Captive.Model.Dto.Reports
         public required string FileInitial { get; set; }
         public required BankBranches BankBranch { get; set; }
         public BankBranches? DeliverTo { get; set; }
+        public int ProductSequence { get; set; }
     }
 }

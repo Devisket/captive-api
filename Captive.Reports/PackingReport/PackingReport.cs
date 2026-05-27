@@ -119,10 +119,27 @@ namespace Captive.Reports.PackingReport
 
         private string FormatAccountNumber(string accountNumber, string accountNumberFormat)
         {
-            if (!string.IsNullOrEmpty(accountNumberFormat))
-                accountNumber = Regex.Replace(accountNumber, $"{accountNumberFormat}", @"$1-$2-$3");
+            if (string.IsNullOrEmpty(accountNumberFormat))
+                return accountNumber;
 
-            return accountNumber;
+            var digits = new string(accountNumber.Where(char.IsDigit).ToArray());
+            var result = new System.Text.StringBuilder();
+            var digitIndex = 0;
+
+            foreach (var ch in accountNumberFormat)
+            {
+                if (ch == '0')
+                {
+                    if (digitIndex < digits.Length)
+                        result.Append(digits[digitIndex++]);
+                }
+                else
+                {
+                    result.Append(ch);
+                }
+            }
+
+            return result.ToString();
         }
     }
 }
