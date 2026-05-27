@@ -76,24 +76,6 @@ namespace Captive.Applications.Batch.Services
                     return;
                 }
 
-                await UpdateJob(job, BatchJobStatus.Running, 5, "Validating inventory", cancellationToken);
-
-                if (!forceProcess)
-                {
-                    var warnings = await _checkInventoryService.GetInventoryWarnings(orderFiles, cancellationToken);
-                    if (warnings.Count > 0)
-                    {
-                        job.Status = BatchJobStatus.AwaitingConfirmation;
-                        job.Warnings = JsonConvert.SerializeObject(warnings);
-                        job.Progress = 5;
-                        job.CurrentStep = "Awaiting confirmation";
-                        job.UpdatedAt = DateTime.UtcNow;
-                        await _writeUow.Complete(cancellationToken);
-                        await BroadcastJob(job);
-                        return;
-                    }
-                }
-
                 int totalFiles = orderFiles.Count;
                 int perFileProgress = totalFiles > 0 ? 70 / totalFiles : 70;
 
@@ -108,6 +90,19 @@ namespace Captive.Applications.Batch.Services
 
                     int progress = 10 + ((i + 1) * perFileProgress / 2);
                     await UpdateJob(job, BatchJobStatus.Running, progress, stepDetail, cancellationToken);
+                }
+
+                // Check inventory warnings right before applying — interrupt here if needed
+                var inventoryWarnings = await _checkInventoryService.GetInventoryWarnings(orderFiles, cancellationToken);
+                if (inventoryWarnings.Count > 0)
+                {
+                    job.Warnings = JsonConvert.SerializeObject(inventoryWarnings);
+                    await UpdateJob(job, BatchJobStatus.AwaitingConfirmation, job.Progress, "Awaiting confirmation", cancellationToken);
+
+                    bool confirmed = await WaitForUserConfirmation(job.Id, cancellationToken);
+                    if (!confirmed) return;
+
+                    await UpdateJob(job, BatchJobStatus.Running, job.Progress, "Applying inventory", cancellationToken);
                 }
 
                 await UpdateJob(job, BatchJobStatus.Running, 45, "Applying inventory", cancellationToken);
@@ -143,6 +138,22 @@ namespace Captive.Applications.Batch.Services
                 if (job2 != null)
                     await UpdateJob(job2, BatchJobStatus.Failed, job2.Progress, job2.CurrentStep, cancellationToken, ex.Message);
             }
+        }
+
+        private async Task<bool> WaitForUserConfirmation(Guid jobId, CancellationToken cancellationToken)
+        {
+            var deadline = DateTime.UtcNow.AddMinutes(30);
+            while (!cancellationToken.IsCancellationRequested && DateTime.UtcNow < deadline)
+            {
+                await Task.Delay(1000, cancellationToken);
+                var latest = await _writeUow.BatchJobs.GetAll()
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == jobId, cancellationToken);
+
+                if (latest == null || latest.Status == BatchJobStatus.Failed) return false;
+                if (latest.ForceProcess) return true;
+            }
+            return false;
         }
 
         private async Task UpdateJob(BatchJob job, BatchJobStatus status, int progress, string? currentStep, CancellationToken cancellationToken, string? errorMessage = null)

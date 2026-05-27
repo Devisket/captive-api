@@ -1,4 +1,5 @@
-﻿using Captive.Applications.Batch.Commands.ConfirmBatchProcess;
+﻿using Captive.Applications.Batch.Commands.CancelBatchProcess;
+using Captive.Applications.Batch.Commands.ConfirmBatchProcess;
 using Captive.Applications.Batch.Commands.CreateBatchFile;
 using Captive.Applications.Batch.Commands.DeleteBatchFile;
 using Captive.Applications.Batch.Commands.ProcessBatch;
@@ -58,6 +59,13 @@ namespace Captive.Commands.Controllers
         {
             var response = await _mediator.Send(new ConfirmBatchProcessCommand { BatchId = batchId });
             return Ok(response);
+        }
+
+        [HttpPost("{batchId}/process/cancel")]
+        public async Task<IActionResult> CancelBatchProcess([FromRoute] Guid batchId)
+        {
+            await _mediator.Send(new CancelBatchProcessCommand { BatchId = batchId });
+            return Ok();
         }
 
     }
