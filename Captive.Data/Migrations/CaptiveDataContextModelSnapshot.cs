@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Captive.Commands.Migrations
+namespace Captive.Data.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
     partial class CaptiveDataContextModelSnapshot : ModelSnapshot
@@ -159,10 +159,12 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("ForceProcess")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
                     b.Property<int>("Progress")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
@@ -206,9 +208,6 @@ namespace Captive.Commands.Migrations
 
                     b.Property<bool>("IsDeprecated")
                         .HasColumnType("bit");
-
-                    b.Property<string>("JsonMappingData")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumberOfPadding")
                         .HasColumnType("int");
@@ -283,6 +282,38 @@ namespace Captive.Commands.Migrations
                     b.HasIndex("CheckOrderId");
 
                     b.ToTable("check_inventory_detail", (string)null);
+                });
+
+            modelBuilder.Entity("Captive.Data.Models.CheckInventoryMapping", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CheckInventoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FormCheckType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("CheckInventoryId");
+
+                    b.HasIndex("FormCheckType");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("check_inventory_mapping", (string)null);
                 });
 
             modelBuilder.Entity("Captive.Data.Models.CheckOrders", b =>
@@ -685,6 +716,17 @@ namespace Captive.Commands.Migrations
                     b.Navigation("CheckOrder");
                 });
 
+            modelBuilder.Entity("Captive.Data.Models.CheckInventoryMapping", b =>
+                {
+                    b.HasOne("Captive.Data.Models.CheckInventory", "CheckInventory")
+                        .WithMany("Mappings")
+                        .HasForeignKey("CheckInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CheckInventory");
+                });
+
             modelBuilder.Entity("Captive.Data.Models.CheckOrders", b =>
                 {
                     b.HasOne("Captive.Data.Models.OrderFile", "OrderFile")
@@ -795,6 +837,8 @@ namespace Captive.Commands.Migrations
             modelBuilder.Entity("Captive.Data.Models.CheckInventory", b =>
                 {
                     b.Navigation("CheckInventoryDetails");
+
+                    b.Navigation("Mappings");
                 });
 
             modelBuilder.Entity("Captive.Data.Models.CheckOrders", b =>

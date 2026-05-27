@@ -5,20 +5,20 @@ using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using MediatR;
 
-namespace Captive.Applications.Batch.Commands.ProcessBatch
+namespace Captive.Applications.Batch.Commands.ConfirmBatchProcess
 {
-    public class ProcessBatchCommandHandler : IRequestHandler<ProcessBatchCommand, ProcessBatchCommandResponse>
+    public class ConfirmBatchProcessCommandHandler : IRequestHandler<ConfirmBatchProcessCommand, ConfirmBatchProcessCommandResponse>
     {
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IProducer<BatchProcessMessage> _producer;
 
-        public ProcessBatchCommandHandler(IWriteUnitOfWork writeUow, IProducer<BatchProcessMessage> producer)
+        public ConfirmBatchProcessCommandHandler(IWriteUnitOfWork writeUow, IProducer<BatchProcessMessage> producer)
         {
             _writeUow = writeUow;
             _producer = producer;
         }
 
-        public async Task<ProcessBatchCommandResponse> Handle(ProcessBatchCommand request, CancellationToken cancellationToken)
+        public async Task<ConfirmBatchProcessCommandResponse> Handle(ConfirmBatchProcessCommand request, CancellationToken cancellationToken)
         {
             var job = new BatchJob
             {
@@ -26,7 +26,7 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
                 BatchId = request.BatchId,
                 Status = BatchJobStatus.Pending,
                 Progress = 0,
-                ForceProcess = false,
+                ForceProcess = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
             };
@@ -38,10 +38,10 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
             {
                 JobId = job.Id,
                 BatchId = request.BatchId,
-                ForceProcess = false,
+                ForceProcess = true,
             });
 
-            return new ProcessBatchCommandResponse { JobId = job.Id };
+            return new ConfirmBatchProcessCommandResponse { JobId = job.Id };
         }
     }
 }

@@ -16,5 +16,7 @@ namespace Captive.Model.Dto
         public ICollection<CheckOrderDto>? CheckOrders { get; set; }
 
         public string? ErrorMessage {  get; set; }
+
+        public string? StatusDetail { get; set; }
     }
 }

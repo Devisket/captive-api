@@ -16,6 +16,7 @@ namespace Captive.Data.UnitOfWork.Write
         public IWriteRepository<OrderFileLog> OrderFileLogs { get; }
         public IWriteRepository<OrderFile> OrderFiles { get; }
         public IWriteRepository<BatchFile> BatchFiles { get; }
+        public IWriteRepository<BatchJob> BatchJobs { get; }
         public IWriteRepository<Product> ProductTypes { get; }
         public IWriteRepository<ProductConfiguration> ProductConfigurations { get; }
 

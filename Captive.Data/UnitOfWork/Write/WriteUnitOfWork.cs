@@ -13,6 +13,7 @@ namespace Captive.Data.UnitOfWork.Write
         }
         public IWriteRepository<BankInfo> BankInfo => GetStandardRepository<BankInfo>();
         public IWriteRepository<BatchFile> BatchFiles => GetStandardRepository<BatchFile>();
+        public IWriteRepository<BatchJob> BatchJobs => GetStandardRepository<BatchJob>();
         public IWriteRepository<CheckInventory> CheckInventory => GetStandardRepository<CheckInventory>();
         public IWriteRepository<CheckInventoryMapping> CheckInventoryMappings => GetStandardRepository<CheckInventoryMapping>();
         public IWriteRepository<CheckInventoryDetail> CheckInventoryDetails => GetStandardRepository<CheckInventoryDetail>();

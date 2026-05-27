@@ -31,12 +31,39 @@ namespace Captive.Orchestrator.Services.GenerateBarcodeService
         public async Task GenerateBarcode(Guid bankId, Guid batchId, string barcodeServiceName, IEnumerable<CheckOrderBarcodeDto> checkOrders)
         {
             var barcodeImplementation = _barcodeFactory.GetBarcodeImplementation(barcodeServiceName);
+            var checkOrderList = checkOrders.ToList();
+            int total = checkOrderList.Count;
+            var allUpdates = new List<UpdateCheckOrderBarcodeDto>();
 
-            var checkOrderToUpdate = await barcodeImplementation.GenerateBarcode(bankId, batchId, checkOrders);
+            for (int i = 0; i < checkOrderList.Count; i++)
+            {
+                await NotifyBarcodeProgress(batchId, i + 1, total);
+                var results = await barcodeImplementation.GenerateBarcode(bankId, batchId, new[] { checkOrderList[i] });
+                allUpdates.AddRange(results);
+            }
 
-            await UpdateBarcodeValues(bankId, batchId, checkOrderToUpdate);
+            await UpdateBarcodeValues(bankId, batchId, allUpdates);
 
             await GenerateReport(batchId);
+        }
+
+        private async Task NotifyBarcodeProgress(Guid batchId, int current, int total)
+        {
+            var baseUri = _configuration["Endpoints:CaptiveCommands"];
+            if (string.IsNullOrEmpty(baseUri))
+                return;
+
+            try
+            {
+                var requestUri = $"{baseUri}/api/report/BatchProgress/{batchId}";
+                var json = System.Text.Json.JsonSerializer.Serialize($"Generating barcodes ({current} of {total})");
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                await _httpClient.PostAsync(requestUri, content);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to report barcode progress for batch {BatchId}", batchId);
+            }
         }
 
         private async Task GenerateReport(Guid batchId)

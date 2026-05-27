@@ -1,68 +1,38 @@
-﻿using Captive.Applications.CheckInventory.Services;
-using Captive.Applications.CheckOrder.Services;
 using Captive.Applications.Orderfiles.Services;
-using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
-using Captive.Reports;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.CheckOrder.Command.ProcessCheckOrder
 {
     public class ProcessCheckOrderCommandHandler : IRequestHandler<ProcessCheckOrderCommand, ProcessCheckOrderCommandResponse>
     {
         private readonly IWriteUnitOfWork _writeUow;
-        private readonly IReadUnitOfWork _readUow;
-        private readonly ICheckOrderService _checkOrderService;
-        private readonly ICheckInventoryService _checkInventoryService;
-        private readonly IReportGenerator _reportGenerator;
         private readonly IOrderFileService _orderFileService;
-        private readonly IProducer<DbfGenerateMessage> _producer;
+        private readonly IProducer<CheckOrderProcessMessage> _producer;
 
-        public ProcessCheckOrderCommandHandler(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckOrderService checkOrderService, ICheckInventoryService checkInventoryService, IReportGenerator reportGenerator, IOrderFileService orderFileService, IProducer<DbfGenerateMessage> producer)
+        public ProcessCheckOrderCommandHandler(
+            IWriteUnitOfWork writeUow,
+            IOrderFileService orderFileService,
+            IProducer<CheckOrderProcessMessage> producer)
         {
             _writeUow = writeUow;
-            _readUow = readUow;
-            _checkOrderService = checkOrderService;
-            _checkInventoryService = checkInventoryService;
-            _reportGenerator = reportGenerator;
             _orderFileService = orderFileService;
             _producer = producer;
         }
 
         public async Task<ProcessCheckOrderCommandResponse> Handle(ProcessCheckOrderCommand request, CancellationToken cancellationToken)
         {
-            var returnObj = new ProcessCheckOrderCommandResponse { };
-            var orderFile = await _readUow.OrderFiles
-                .GetAll()
-                .Include(x => x.BatchFile)
-                    .ThenInclude(x => x.BankInfo)
-                .Include(x => x.FloatingCheckOrders)
-                .Include(x => x.Product)
-                .FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
+            await _orderFileService.UpdateOrderFileStatus(request.OrderFileId, Data.Enums.OrderFilesStatus.Processing, cancellationToken);
+            await _writeUow.Complete(cancellationToken);
 
-            if (orderFile == null)
-                throw new SystemException($"Order file ID {request.OrderFileId} doesn't exist");
-
-            await _checkOrderService.CreateCheckOrder(orderFile, cancellationToken);
-
-            var logDto = await _checkInventoryService.ApplyCheckInventory(orderFile, cancellationToken);
-
-            if (!String.IsNullOrEmpty(logDto.LogMessage))
+            _producer.ProduceMessage(new CheckOrderProcessMessage
             {
-                returnObj.LogMessage = logDto.LogMessage;
-                returnObj.LogType = logDto.LogType;
-            }
+                OrderFileId = request.OrderFileId,
+            });
 
-            await _orderFileService.UpdateOrderFileStatus(orderFile.Id, Data.Enums.OrderFilesStatus.GeneratingReport, cancellationToken);
-
-            await _writeUow.Complete();
-
-            await _reportGenerator.GenerateBarcode(orderFile.BatchFile!.BankInfo, orderFile.BatchFileId, cancellationToken);
-
-            return returnObj;
+            return new ProcessCheckOrderCommandResponse();
         }
     }
 }

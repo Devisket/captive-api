@@ -25,6 +25,7 @@ namespace Captive.Data
             modelBuilder.BuildCheckInventoryDetailModel();
             modelBuilder.BuildCheckInventoryMappingModel();
             modelBuilder.BuildFloatingCheckOrdersModel();
+            modelBuilder.BuildBatchJobModel();
 
             base.OnModelCreating(modelBuilder);
         }

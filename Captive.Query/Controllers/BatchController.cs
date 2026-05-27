@@ -1,5 +1,6 @@
 ﻿using Captive.Applications.Batch.Query.GetAllBatch;
 using Captive.Applications.Batch.Query.GetBatchById;
+using Captive.Applications.Batch.Query.GetBatchJobStatus;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +38,13 @@ namespace Captive.Queries.Controllers
                 BatchId = batchId
             });
 
+            return Ok(response);
+        }
+
+        [HttpGet("{batchId}/job")]
+        public async Task<IActionResult> GetBatchJobStatus([FromRoute] Guid batchId)
+        {
+            var response = await _mediator.Send(new GetBatchJobStatusQuery { BatchId = batchId });
             return Ok(response);
         }
     }

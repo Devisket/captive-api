@@ -24,6 +24,8 @@ using Captive.Applications.Orderfiles.Services;
 using Captive.Applications.Batch.Services;
 using Captive.Applications.CheckValidation.Services;
 using Captive.Applications.CheckInventory.Services;
+using Captive.Commands.BackgroundServices;
+using Captive.Model.Notifications;
 
 namespace Captive.Commands.Extensions
 {
@@ -62,6 +64,12 @@ namespace Captive.Commands.Extensions
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
             services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
             services.AddScoped<IProducer<GenerateBarcodeMessage>, GenerateBarcodeProducerMessage>();
+            services.AddScoped<IProducer<BatchProcessMessage>, BatchProcessProducerMessage>();
+            services.AddScoped<IOrderFileNotifier, OrderFileSignalRNotifier>();
+            services.AddScoped<IBatchProcessingOrchestratorService, BatchProcessingOrchestratorService>();
+            services.AddHostedService<BatchProcessConsumerService>();
+            services.AddScoped<IProducer<CheckOrderProcessMessage>, CheckOrderProcessProducerMessage>();
+            services.AddHostedService<CheckOrderProcessConsumerService>();
             services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<IReportService, ReportService>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DatabasePipeline<,>));

@@ -7,6 +7,7 @@ using System.IO.Compression;
 using Captive.Reports.BlockReport;
 using Captive.Reports.PackingReport;
 using Captive.Model.Dto;
+using Captive.Model.Notifications;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using Captive.Data.UnitOfWork.Write;
@@ -24,6 +25,7 @@ namespace Captive.Reports
         private readonly IPackingReport _packingReport;
         private readonly IProducer<GenerateBarcodeMessage> _producerGenerateBarcode;
         private readonly IProducer<DbfGenerateMessage> _producerGenerateDbf;
+        private readonly IOrderFileNotifier _orderFileNotifier;
 
         public ReportGenerator(
             IReadUnitOfWork readUow,
@@ -33,7 +35,8 @@ namespace Captive.Reports
             IBlockReport blockReport,
             IPackingReport packingReport,
             IProducer<GenerateBarcodeMessage> producerGenerateBarcode,
-            IProducer<DbfGenerateMessage> producerGenerateDbf
+            IProducer<DbfGenerateMessage> producerGenerateDbf,
+            IOrderFileNotifier orderFileNotifier
             )
         {
             _readUow = readUow;
@@ -44,6 +47,7 @@ namespace Captive.Reports
             _packingReport = packingReport;
             _producerGenerateBarcode = producerGenerateBarcode;
             _producerGenerateDbf = producerGenerateDbf;
+            _orderFileNotifier = orderFileNotifier;
         }
 
         public async Task OnGenerateReport(Guid batchFileId, CancellationToken cancellationToken)
@@ -78,12 +82,20 @@ namespace Captive.Reports
 
             var filePath = ConstructReportFolder(outputDir, batchFile.BankInfo, checkOrders,batchFile.BatchName);
 
+            await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Printer File Report", cancellationToken);
             await _exportPrinterFile.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+
+            await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Block Report", cancellationToken);
             await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+
+            await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Packing Report", cancellationToken);
             await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+
+            //Generate HashTotal
 
             //CreateZipFile(batchFile, filePath, archiveDir);
 
+            await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating DBF File", cancellationToken);
             _producerGenerateDbf.ProduceMessage(new DbfGenerateMessage
             {
                 BatchId = batchFileId

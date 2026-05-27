@@ -1,4 +1,5 @@
-﻿using Captive.Applications.Batch.Commands.CreateBatchFile;
+﻿using Captive.Applications.Batch.Commands.ConfirmBatchProcess;
+using Captive.Applications.Batch.Commands.CreateBatchFile;
 using Captive.Applications.Batch.Commands.DeleteBatchFile;
 using Captive.Applications.Batch.Commands.ProcessBatch;
 using Captive.Applications.Batch.Commands.ValidateBatch;
@@ -49,6 +50,13 @@ namespace Captive.Commands.Controllers
         public async Task<IActionResult> ProcessBatch([FromRoute] Guid batchId)
         {
             var response = await _mediator.Send(new ProcessBatchCommand { BatchId = batchId });
+            return Ok(response);
+        }
+
+        [HttpPost("{batchId}/process/confirm")]
+        public async Task<IActionResult> ConfirmBatchProcess([FromRoute] Guid batchId)
+        {
+            var response = await _mediator.Send(new ConfirmBatchProcessCommand { BatchId = batchId });
             return Ok(response);
         }
 

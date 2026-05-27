@@ -4,6 +4,7 @@ using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Model.Dto;
+using Captive.Model.Notifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace Captive.Applications.CheckInventory.Services
@@ -11,6 +12,7 @@ namespace Captive.Applications.CheckInventory.Services
     public interface ICheckInventoryService
     {
         Task<LogDto> ApplyCheckInventory(OrderFile orderFile, CancellationToken cancellationToken);
+        Task<List<string>> GetInventoryWarnings(IEnumerable<OrderFile> orderFiles, CancellationToken cancellationToken);
     }
 
     public class CheckInventoryService : ICheckInventoryService
@@ -19,13 +21,15 @@ namespace Captive.Applications.CheckInventory.Services
         private readonly IReadUnitOfWork _readUow;
         private readonly ICheckValidationService _checkValidationService;
         private readonly IStringService _stringService;
+        private readonly IOrderFileNotifier _orderFileNotifier;
 
-        public CheckInventoryService(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckValidationService checkValidationService, IStringService stringService)
+        public CheckInventoryService(IWriteUnitOfWork writeUow, IReadUnitOfWork readUow, ICheckValidationService checkValidationService, IStringService stringService, IOrderFileNotifier orderFileNotifier)
         {
             _writeUow = writeUow;
             _readUow = readUow;
             _checkValidationService = checkValidationService;
             _stringService = stringService;
+            _orderFileNotifier = orderFileNotifier;
         }
 
         public async Task<LogDto> ApplyCheckInventory(OrderFile orderFile, CancellationToken cancellationToken)
@@ -43,8 +47,14 @@ namespace Captive.Applications.CheckInventory.Services
                 .OrderBy(x => x.AccountNo)
                 .ToArray();
 
-            foreach (var checkOrder in checkOrders)
+            int total = checkOrders.Length;
+            for (int idx = 0; idx < checkOrders.Length; idx++)
             {
+                var checkOrder = checkOrders[idx];
+                await _orderFileNotifier.NotifyOrderFileProgress(
+                    orderFile.BatchFileId, orderFile.Id,
+                    $"Applying inventory ({idx + 1} of {total})",
+                    cancellationToken);
                 var orderFormCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
 
                 var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
@@ -178,6 +188,77 @@ namespace Captive.Applications.CheckInventory.Services
                 query = query.Where(x => x.FormCheckId == checkOrder.FormCheckId);
 
             return query;
+        }
+
+        // Read-only scan — no writes to DB. Returns warning messages for any order file
+        // whose projected series would hit the WarningSeries threshold.
+        public async Task<List<string>> GetInventoryWarnings(IEnumerable<OrderFile> orderFiles, CancellationToken cancellationToken)
+        {
+            var warnings = new List<string>();
+
+            foreach (var orderFile in orderFiles)
+            {
+                var bankId = orderFile.BatchFile!.BankInfoId;
+
+                var checkOrders = await _readUow.CheckOrders.GetAll()
+                    .AsNoTracking()
+                    .Where(x => x.OrderFileId == orderFile.Id)
+                    .OrderBy(x => x.AccountNo)
+                    .ToArrayAsync(cancellationToken);
+
+                foreach (var checkOrder in checkOrders)
+                {
+                    var orderFormCheck = await _readUow.FormChecks.GetAll()
+                        .AsNoTracking()
+                        .FirstAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
+
+                    var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
+                        bankId,
+                        checkOrder.BranchId,
+                        checkOrder.ProductId,
+                        orderFormCheck.FormCheckType,
+                        checkOrder.AccountNo,
+                        cancellationToken);
+
+                    if (checkInventory == null) continue;
+
+                    var mapping = new CheckInventoryMappingData(
+                        checkInventory.Mappings.Where(m => m.BranchId.HasValue).Select(m => m.BranchId!.Value),
+                        checkInventory.Mappings.Where(m => m.ProductId.HasValue).Select(m => m.ProductId!.Value),
+                        checkInventory.Mappings.Where(m => m.FormCheckType != null).Select(m => m.FormCheckType!)
+                    );
+
+                    var dbQuery = _readUow.CheckInventoryDetails.GetAll();
+                    dbQuery = ApplyFilters(dbQuery, mapping, checkOrder);
+
+                    var lastDetail = dbQuery
+                        .Where(x => x.CheckInventoryId == checkInventory.Id)
+                        .OrderByDescending(x => x.EndingNumber)
+                        .FirstOrDefault();
+
+                    var startingSeriesNumber = checkInventory.StartingSeries + 1;
+                    if (lastDetail != null)
+                        startingSeriesNumber = lastDetail.EndingNumber + 1;
+
+                    var endingSeriesNumber = (startingSeriesNumber + orderFormCheck.Quantity) - 1;
+
+                    var series = _stringService.ConvertToSeries(
+                        checkInventory.SeriesPatern,
+                        checkInventory.NumberOfPadding,
+                        startingSeriesNumber,
+                        endingSeriesNumber);
+
+                    var warningMsg = _checkValidationService.HitWarningSeries(checkInventory, series.Item1, series.Item2);
+                    if (!string.IsNullOrEmpty(warningMsg))
+                    {
+                        var detail = $"Account {checkOrder.AccountNo}: {warningMsg}";
+                        if (!warnings.Contains(detail))
+                            warnings.Add(detail);
+                    }
+                }
+            }
+
+            return warnings;
         }
     }
 }

@@ -1,9 +1,18 @@
-﻿using Captive.Data;
+﻿using Captive.Applications.Batch.Services;
+using Captive.Applications.CheckInventory.Services;
+using Captive.Applications.CheckOrder.Services;
+using Captive.Applications.CheckValidation.Services;
+using Captive.Applications.FormsChecks.Services;
+using Captive.Applications.Orderfiles.Services;
+using Captive.Applications.Util;
+using Captive.Data;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
+using Captive.Messaging;
+using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using Captive.Messaging.Producers.Messages;
-using Captive.Messaging;
+using Captive.Model.Notifications;
 using Captive.Processing.Processor.ExcelFileProcessor;
 using Captive.Processing.Processor.TextFileProcessor;
 using Captive.Reports;
@@ -13,14 +22,6 @@ using Captive.Reports.PrinterFileReport;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using System.Reflection;
-using Captive.Messaging.Interfaces;
-using Captive.Applications.CheckOrder.Services;
-using Captive.Applications.FormsChecks.Services;
-using Captive.Applications.Util;
-using Captive.Applications.Batch.Services;
-using Captive.Applications.CheckValidation.Services;
-using Captive.Applications.CheckInventory.Services;
-using Captive.Applications.Orderfiles.Services;
 
 namespace Captive.Queries.Extensions
 {
@@ -59,9 +60,12 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
             services.AddScoped<IProducer<FileUploadMessage>, FileUploadProducerMessage>();
             services.AddScoped<IProducer<GenerateBarcodeMessage>, GenerateBarcodeProducerMessage>();
+            services.AddScoped<IProducer<BatchProcessMessage>, BatchProcessProducerMessage>();
+            services.AddScoped<IProducer<CheckOrderProcessMessage>, CheckOrderProcessProducerMessage>();
             services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<IOrderFileService, OrderFileService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IOrderFileNotifier, OrderFileSignalRNotifier>();
 
             var assembly = Assembly.Load("Captive.Applications");
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));

@@ -16,6 +16,7 @@ namespace Captive.Data.UnitOfWork.Read
         public IReadRepository<OrderFile> OrderFiles { get; }
         public IReadRepository<OrderFileLog> OrderFileLogs { get; }
         public IReadRepository<BatchFile> BatchFiles { get; }
+        public IReadRepository<BatchJob> BatchJobs { get; }
         public IReadRepository<Product> Products { get; }
         public IReadRepository<ProductConfiguration> ProductConfigurations{ get; }
     }

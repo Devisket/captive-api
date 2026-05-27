@@ -1,4 +1,3 @@
-﻿using Captive.Model.Dto;
 using MediatR;
 
 namespace Captive.Applications.Batch.Commands.ProcessBatch
@@ -7,7 +6,9 @@ namespace Captive.Applications.Batch.Commands.ProcessBatch
     {
         public Guid BatchId { get; set; }
     }
-    public class ProcessBatchCommandResponse : LogDto
+
+    public class ProcessBatchCommandResponse
     {
+        public Guid JobId { get; set; }
     }
 }

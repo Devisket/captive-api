@@ -24,6 +24,7 @@ namespace Captive.Data.UnitOfWork.Read
         IReadRepository<OrderFile> IReadUnitOfWork.OrderFiles => GetStandardRepository<OrderFile>();
         IReadRepository<OrderFileLog> IReadUnitOfWork.OrderFileLogs => GetStandardRepository<OrderFileLog>();
         IReadRepository<BatchFile> IReadUnitOfWork.BatchFiles => GetStandardRepository<BatchFile>();
+        IReadRepository<BatchJob> IReadUnitOfWork.BatchJobs => GetStandardRepository<BatchJob>();
         IReadRepository<Product> IReadUnitOfWork.Products => GetStandardRepository<Product>();
         IReadRepository<ProductConfiguration> IReadUnitOfWork.ProductConfigurations => GetStandardRepository<ProductConfiguration>();
 
