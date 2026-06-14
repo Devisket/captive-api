@@ -66,8 +66,8 @@ namespace Captive.Applications.Batch.Services
                     .Include(x => x.FloatingCheckOrders)
                     .Include(x => x.Product)
                         .ThenInclude(x => x.BankInfo)
-                    .OrderBy(x => x.Product.ProductSequence)
                     .Where(x => x.BatchFileId == batchId)
+                    .OrderBy(x => x.Product.ProductSequence)
                     .ToListAsync(cancellationToken);
 
                 if (orderFiles == null || orderFiles.Count == 0)
