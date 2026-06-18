@@ -106,11 +106,20 @@ namespace Captive.Applications.CheckValidation.Services
 
         public async Task<Captive.Data.Models.CheckInventory> GetCheckInventoryDirect(Guid bankId, Guid branchId, Guid productId, FormCheckType checkType, string? accountNumber, CancellationToken cancellationToken)
         {
-            var checkInventories = await _readUow.CheckInventory
+            // Load any not-yet-tracked matching inventories into the change tracker.
+            // For entities already tracked (e.g. modified CurrentSeries from a prior iteration),
+            // EF identity resolution keeps their current in-memory state intact.
+            await _readUow.CheckInventory
                 .GetAll()
                 .Include(x => x.Mappings)
                 .Where(x => x.BankId == bankId && x.IsActive && !x.IsDeprecated)
-                .ToListAsync(cancellationToken);
+                .LoadAsync(cancellationToken);
+
+            // Read from local cache so pending in-session changes (e.g. CurrentSeries updates)
+            // are visible without requiring a SaveChanges/commit first.
+            var checkInventories = _readUow.CheckInventory.GetAllLocal()
+                .Where(x => x.BankId == bankId && x.IsActive && !x.IsDeprecated)
+                .ToList();
 
             if (!string.IsNullOrEmpty(accountNumber))
             {
