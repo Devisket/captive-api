@@ -85,12 +85,7 @@ namespace Captive.Applications.CheckInventory.Services
                     continue;
                 }
 
-                var startingSeriesNumber = checkInventory.StartingSeries + 1;
-
-                var lastCheck = GetLastCheckDetail(checkInventory, checkOrder);
-
-                if (lastCheck != null)
-                    startingSeriesNumber = lastCheck.EndingNumber + 1;
+                var startingSeriesNumber = checkInventory.CurrentSeries + 1;
 
                 var endingSeriesNumber = (startingSeriesNumber + orderFormCheck.Quantity) - 1;
 
@@ -137,43 +132,15 @@ namespace Captive.Applications.CheckInventory.Services
                         CreatedDateTime = DateTime.UtcNow,
                     }, cancellationToken);
 
+                    checkInventory.CurrentSeries = endingSeriesNumber;
                     startingSeriesNumber = endingSeriesNumber + 1;
                     endingSeriesNumber = (startingSeriesNumber + orderFormCheck.Quantity) - 1;
-                    checkInventory.CurrentSeries = startingSeriesNumber;
+
+                    _writeUow.CheckInventory.Update(checkInventory);
                 }
             }
 
             return logDto;
-        }
-
-        private CheckInventoryDetail? GetLastCheckDetail(Captive.Data.Models.CheckInventory checkInventory, CheckOrders checkOrder)
-        {
-            var mapping = new CheckInventoryMappingData(
-                checkInventory.Mappings.Where(m => m.BranchId.HasValue).Select(m => m.BranchId!.Value),
-                checkInventory.Mappings.Where(m => m.ProductId.HasValue).Select(m => m.ProductId!.Value),
-                checkInventory.Mappings.Where(m => m.FormCheckType != null).Select(m => m.FormCheckType!)
-            );
-
-            var localQuery = _readUow.CheckInventoryDetails.GetAllLocal();
-            var dbQuery = _readUow.CheckInventoryDetails.GetAll();
-
-            localQuery = ApplyFilters(localQuery, mapping, checkOrder);
-            dbQuery = ApplyFilters(dbQuery, mapping, checkOrder);
-
-            var lastLocal = localQuery
-                .Where(x => x.CheckInventoryId == checkInventory.Id)
-                .OrderByDescending(x => x.EndingNumber)
-                .FirstOrDefault();
-
-            var lastDb = dbQuery
-                .Where(x => x.CheckInventoryId == checkInventory.Id)
-                .OrderByDescending(x => x.EndingNumber)
-                .FirstOrDefault();
-
-            if (lastLocal == null) return lastDb;
-            if (lastDb == null) return lastLocal;
-
-            return lastLocal.EndingNumber > lastDb.EndingNumber ? lastLocal : lastDb;
         }
 
         private IQueryable<CheckInventoryDetail> ApplyFilters(IQueryable<CheckInventoryDetail> query, CheckInventoryMappingData mapping, CheckOrders checkOrder)

@@ -61,6 +61,7 @@ namespace Captive.Applications.CheckInventory.Query.ExportActiveCheckInventories
                     SeriesPattern = inv.SeriesPatern,
                     NumberOfPadding = inv.NumberOfPadding,
                     StartingSeries = inv.StartingSeries,
+                    CurrentSeries = inv.CurrentSeries,
                     EndingSeries = inv.EndingSeries == long.MaxValue ? null : inv.EndingSeries,
                     WarningSeries = inv.WarningSeries,
                     IsRepeating = inv.isRepeating,

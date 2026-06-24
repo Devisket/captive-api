@@ -15,6 +15,7 @@ namespace Captive.Applications.CheckInventory.Commands.ImportCheckInventory
         public string SeriesPattern { get; set; } = string.Empty;
         public int NumberOfPadding { get; set; } = 4;
         public long StartingSeries { get; set; }
+        public long? CurrentSeries { get; set; }
         public long? EndingSeries { get; set; }
         public long? WarningSeries { get; set; }
         public bool IsRepeating { get; set; } = false;

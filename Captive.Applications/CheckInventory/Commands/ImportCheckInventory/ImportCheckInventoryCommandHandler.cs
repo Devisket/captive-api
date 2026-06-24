@@ -97,7 +97,7 @@ namespace Captive.Applications.CheckInventory.Commands.ImportCheckInventory
                         StartingSeries = startingSeries,
                         EndingSeries = endingSeries,
                         WarningSeries = warningSeries,
-                        CurrentSeries = startingSeries,
+                        CurrentSeries = row.CurrentSeries ?? startingSeries,
                         isRepeating = row.IsRepeating,
                         IsActive = true,
                         IsDeprecated = false,
