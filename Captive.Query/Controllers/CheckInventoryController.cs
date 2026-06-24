@@ -1,3 +1,4 @@
+using Captive.Applications.CheckInventory.Query.ExportActiveCheckInventories;
 using Captive.Applications.CheckInventory.Query.GetCheckInventory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,13 @@ namespace Captive.Queries.Controllers
             query.BankId = bankId;
             var response = await _mediator.Send(query);
             return Ok(response);
+        }
+
+        [HttpGet("export")]
+        public async Task<ActionResult> ExportActiveCheckInventories([FromRoute] Guid bankId)
+        {
+            var bytes = await _mediator.Send(new ExportActiveCheckInventoriesQuery { BankId = bankId });
+            return File(bytes, "text/csv", "check-inventory-active.csv");
         }
     }
 }
