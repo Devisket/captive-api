@@ -44,8 +44,8 @@ namespace Captive.Applications.Batch.Query.GetBatchById
                     FilePath = x.FilePath,
                     Status = x.Status.ToString(),
                     IsValidated = x.IsValidated,
-                    PersonalQuantity = x.PersonalQuantity,
-                    CommercialQuantity = x.CommercialQuantity,
+                    PersonalQuantity = x.PersonalOrderQuantity,
+                    CommercialQuantity = x.CommercialOrderQuantity,
                     CheckOrders = x.FloatingCheckOrders != null && x.FloatingCheckOrders.Any() ? x.FloatingCheckOrders.Select(c => new CheckOrderDto
                     {
                         Id = c.Id,

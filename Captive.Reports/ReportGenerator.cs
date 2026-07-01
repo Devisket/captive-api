@@ -110,9 +110,12 @@ namespace Captive.Reports
 
         private string ConstructReportFolder(string outputDir, BankInfo bankInfo, ICollection<CheckOrders> checkOrders, string batchName)
         {
-            var filePath = outputDir.Replace("bankShortName", bankInfo.ShortName);
-            filePath = filePath.Replace("currentDate", DateTime.UtcNow.ToString("MM-dd-yyyy"));
-            filePath = filePath.Replace("batchName", batchName);
+            var dateDir = outputDir.Replace("bankShortName", bankInfo.ShortName);
+            dateDir = dateDir.Replace("currentDate", DateTime.UtcNow.ToString("MM-dd-yyyy"));
+            dateDir = dateDir.Substring(0, dateDir.IndexOf("batchName", StringComparison.Ordinal));
+
+            var folderName = GetBatchFolderName(dateDir, batchName);
+            var filePath = Path.Combine(dateDir, folderName);
 
             if (!Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath);
@@ -135,6 +138,43 @@ namespace Captive.Reports
             }
 
             return filePath;
+        }
+
+        // Labels each batch's report folder with a trailing letter (A, B, C, ...) so multiple
+        // batches generated for the same bank/date remain distinguishable. Re-generating a report
+        // for the same batch reuses its existing lettered folder instead of allocating a new one.
+        private static string GetBatchFolderName(string dateDir, string batchName)
+        {
+            if (!Directory.Exists(dateDir))
+                return $"{batchName}_A";
+
+            var existingFolders = Directory.GetDirectories(dateDir)
+                .Select(Path.GetFileName)
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToList();
+
+            var existingFolderForBatch = existingFolders
+                .FirstOrDefault(x => x!.StartsWith($"{batchName}_", StringComparison.OrdinalIgnoreCase));
+
+            if (existingFolderForBatch != null)
+                return existingFolderForBatch;
+
+            return $"{batchName}_{GetNextBatchLetter(existingFolders.Count)}";
+        }
+
+        private static string GetNextBatchLetter(int existingFolderCount)
+        {
+            var ordinal = existingFolderCount + 1;
+            var letters = string.Empty;
+
+            while (ordinal > 0)
+            {
+                var remainder = (ordinal - 1) % 26;
+                letters = (char)('A' + remainder) + letters;
+                ordinal = (ordinal - 1) / 26;
+            }
+
+            return letters;
         }
 
         private async Task<BatchFile> GetBatchFile(Guid batchFileId, CancellationToken cancellationToken)

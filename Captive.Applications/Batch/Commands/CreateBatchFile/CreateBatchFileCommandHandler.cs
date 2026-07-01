@@ -56,9 +56,9 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
 
             var lastBatch = bankInfo.BatchFiles?.Where(x => x.CreatedDate < DateTime.UtcNow).OrderByDescending(x => x.OrderNumber).FirstOrDefault();
 
-            if (lastBatch != null) 
+            if (lastBatch != null)
                 orderNumber = lastBatch.OrderNumber + 1;
-            
+
             return orderNumber;
         }
     }

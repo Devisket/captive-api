@@ -44,6 +44,10 @@ namespace Captive.Applications.Orderfiles.Command.ValidateOrderFile
             // Update quantities first
             orderFile.PersonalQuantity = tupleObj.Item2;
             orderFile.CommercialQuantity = tupleObj.Item3;
+
+            orderFile.PersonalOrderQuantity = tupleObj.Item5;
+            orderFile.CommercialOrderQuantity = tupleObj.Item6;
+
             _writeUow.OrderFiles.Update(orderFile);
 
             // Update status through the service to trigger SignalR notifications

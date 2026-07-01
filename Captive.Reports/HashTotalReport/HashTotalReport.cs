@@ -30,7 +30,7 @@ namespace Captive.Reports.HashTotalReport
 
             using var writer = new StreamWriter(outputFile, false);
 
-            writer.WriteLine($"H  {DateTime.Now:MMddyyyy}");
+            writer.WriteLine($"H{DateTime.Now:MMddyyyy}");
 
             foreach (var record in ordered)
             {
@@ -49,7 +49,7 @@ namespace Captive.Reports.HashTotalReport
                 totalCount++;
             }
 
-            writer.WriteLine($"T  {sumAcctNo.ToString().PadLeft(15, '0')}  {totalCount.ToString().PadLeft(6, '0')}");
+            writer.WriteLine($"T{sumAcctNo.ToString().PadLeft(15, '0')}{totalCount.ToString().PadLeft(6, '0')}");
         }
     }
 }

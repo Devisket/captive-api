@@ -12,7 +12,9 @@ namespace Captive.Data.Models
         public string? ErrorMessage { get; set; }
         public bool IsValidated { get; set; }
         public int PersonalQuantity { get; set; }
+        public int PersonalOrderQuantity { get; set; }
         public int CommercialQuantity { get; set; }
+        public int CommercialOrderQuantity { get; set; }
         public ICollection<FloatingCheckOrder>? FloatingCheckOrders { get; set; }
         public ICollection<CheckOrders>? CheckOrders { get; set; }
         public ICollection<OrderFileLog>? OrderFileLogs { get; set; }

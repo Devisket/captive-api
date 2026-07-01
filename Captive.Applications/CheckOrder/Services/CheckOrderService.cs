@@ -40,9 +40,11 @@ namespace Captive.Applications.CheckOrder.Services
                 }
               );
         }
-        public async Task<Tuple<FloatingCheckOrder[],int,int, LogDto>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
+        public async Task<Tuple<FloatingCheckOrder[],int,int, LogDto, int, int>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken)
         {
             int personalQuantity = 0, commercialQuantity = 0;
+
+            int personalOrderQuantity = 0, commercialOrderQuantity = 0;
 
             var orderFile = await _readUow.OrderFiles.GetAll()
                 .Include(x => x.Product)
@@ -80,6 +82,9 @@ namespace Captive.Applications.CheckOrder.Services
 
                 personalQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? ((checkOrder.Quantity * formCheck.Quantity) + personalQuantity) : personalQuantity;
                 commercialQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? ((checkOrder.Quantity * formCheck.Quantity) + commercialQuantity): commercialQuantity;
+
+                personalOrderQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Personal ? ((checkOrder.Quantity) + personalOrderQuantity) : personalOrderQuantity;
+                commercialOrderQuantity = formCheck.FormCheckType == Data.Enums.FormCheckType.Commercial ? ((checkOrder.Quantity) + commercialOrderQuantity) : commercialOrderQuantity;
 
                 //Check for duplication
                 if (await HasDuplicate(orderFile.BatchFileId, orderFileId, checkOrder.AccountNo, cancellationToken))
@@ -184,7 +189,7 @@ namespace Captive.Applications.CheckOrder.Services
                 checkOrder.ErrorMessage = string.Empty;
             }
 
-            return new Tuple<FloatingCheckOrder[], int, int, LogDto>(floatingCheckOrders, personalQuantity, commercialQuantity, validationResponse);
+            return new Tuple<FloatingCheckOrder[], int, int, LogDto, int, int>(floatingCheckOrders, personalQuantity, commercialQuantity, validationResponse, personalOrderQuantity, commercialOrderQuantity);
         }
         private async Task<bool> HasDuplicate(Guid batchId, Guid orderFileId, string accNo, CancellationToken cancellationToken)
         {

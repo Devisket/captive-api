@@ -7,7 +7,7 @@ namespace Captive.Applications.CheckOrder.Services
     public interface ICheckOrderService
     {
         void UpdateCheckOrder(CheckOrderDto checkOrderDto);
-        Task<Tuple<FloatingCheckOrder[], int, int, LogDto>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken);
+        Task<Tuple<FloatingCheckOrder[], int, int, LogDto, int, int>> ValidateCheckOrder(Guid orderFileId, CancellationToken cancellationToken);
         Task CreateCheckOrder(OrderFile orderFile, CancellationToken cancellationToken);
     }
 }
