@@ -103,7 +103,8 @@ namespace Captive.Reports
             await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating DBF File", cancellationToken);
             _producerGenerateDbf.ProduceMessage(new DbfGenerateMessage
             {
-                BatchId = batchFileId
+                BatchId = batchFileId,
+                outputFolder = filePath
             });
 
         }

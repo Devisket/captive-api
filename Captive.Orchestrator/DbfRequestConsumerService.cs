@@ -43,7 +43,7 @@ namespace Captive.Orchestrator
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
                     var dbfGenerateMessage = JsonConvert.DeserializeObject<DbfGenerateMessage>(message);
-                    await _dbfService.GenerateDbfFile(dbfGenerateMessage.BatchId);
+                    await _dbfService.GenerateDbfFile(dbfGenerateMessage.BatchId, dbfGenerateMessage.outputFolder);
                 }
                 catch (Exception ex)
                 {

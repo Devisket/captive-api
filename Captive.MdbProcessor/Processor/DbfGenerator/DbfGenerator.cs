@@ -11,7 +11,7 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
 {
     public interface IDbfGenerator
     {
-        Task GenerateDbf(List<OrderFile> orderFiles, CancellationToken cancellationToken);
+        Task GenerateDbf(List<OrderFile> orderFiles, string outputDirectory, CancellationToken cancellationToken);
     }
     public class DbfGenerator : IDbfGenerator
     {
@@ -26,7 +26,7 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
             _writeUow = writeUow;
         }
 
-        public async Task GenerateDbf(List<OrderFile> orderFiles, CancellationToken cancellationToken)
+        public async Task GenerateDbf(List<OrderFile> orderFiles, string outputDirectory, CancellationToken cancellationToken)
         {
             var bankInfo = orderFiles.First().BatchFile.BankInfo;
 
@@ -34,11 +34,9 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
             {
                 foreach (var orderFile in orderFiles) 
                 {
-                    var fileDirectory = CreateDirectory(bankInfo.ShortName, orderFiles.First().BatchFile.BatchName);
-
                     var productNames = orderFile.Product.ProductName;
 
-                    fileDirectory = Path.Combine(fileDirectory, productNames);
+                    var fileDirectory = Path.Combine(outputDirectory, productNames);
 
                     if (!Directory.Exists(fileDirectory)) 
                     { 
@@ -46,7 +44,7 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
                     }
 
                     // Delete existing DBF file if it exists
-                    var dbfFilePath = Path.Combine(fileDirectory, "dbf_file.dbf");
+                    var dbfFilePath = Path.Combine(outputDirectory, "dbf_file.dbf");
                     if (File.Exists(dbfFilePath))
                     {
                         File.Delete(dbfFilePath);

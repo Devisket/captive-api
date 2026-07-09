@@ -3,5 +3,6 @@
     public class GenerateDbfRequest
     {
         public Guid batchId { get; set; }
+        public string? outputDirectory { get; set; }
     }
 }

@@ -29,5 +29,6 @@ namespace Captive.Model.Dto.Reports
         public required BankBranches BankBranch { get; set; }
         public BankBranches? DeliverTo { get; set; }
         public int ProductSequence { get; set; }
+        public int FormCheckQuantity { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace Captive.Orchestrator.Services.DbfService
 {
     public interface IDbfService 
     {
-        Task GenerateDbfFile(Guid batchId);
+        Task GenerateDbfFile(Guid batchId, string outputDirectory);
     }
     public  class DbfService : IDbfService
     {
@@ -16,11 +16,12 @@ namespace Captive.Orchestrator.Services.DbfService
             _configuration = configuration;
         }
 
-        public async Task GenerateDbfFile(Guid batchId)
+        public async Task GenerateDbfFile(Guid batchId, string outputDirectory)
         {
             var reqBody = new
             {
-                batchId
+                batchId, 
+                outputDirectory
             };
 
             var baseUri = string.Concat(_configuration["Endpoints:MdbApi"], "/api/processor/GenerateDbf");

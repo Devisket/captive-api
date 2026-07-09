@@ -41,7 +41,7 @@ namespace Captive.Reports.BlockReport
                 {
                     var checkTypeInitial = checkType.Key == FormCheckType.Personal ? "A" : "B";
 
-                    formcheckList.Add(new Tuple<string, int>(checkTypeInitial, checkType.Count()));
+                    formcheckList.Add(new Tuple<string, int>(checkTypeInitial, checkType.Count() * productCheckOrder.First().FormCheckQuantity ));
                 }
 
                 var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"Block{formCheckName?.First()}.txt");
@@ -67,7 +67,7 @@ namespace Captive.Reports.BlockReport
 
                         runningNo++;
 
-                        if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1)
+                        if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1 || (checkOrder == productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries).Last()))
                             RenderFooter(writer, formcheckList, fileName, batchFile.DeliveryDate);
                     }
                     Console.WriteLine();

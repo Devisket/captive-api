@@ -95,7 +95,7 @@ namespace Captive.MdbAPI.Controllers
                 throw new SystemException($"Order file for batchID:{request.batchId} doens't exist");
             }
 
-            await _dbfGenerator.GenerateDbf(orderFiles, cancellationToken);
+            await _dbfGenerator.GenerateDbf(orderFiles, request.outputDirectory, cancellationToken);
 
             return Ok();
         }
