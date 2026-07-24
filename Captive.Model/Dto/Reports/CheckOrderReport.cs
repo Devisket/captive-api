@@ -24,6 +24,7 @@ namespace Captive.Model.Dto.Reports
         public string? AccountNumberFormat { get; set; }
         public string? BarcodeValue {  get; set; }
         public FormCheckType FormCheckType { get; set; }
+        public int FormTypeSequence { get; set; }
         public string? OrderFileName { get; set; }
         public required string FileInitial { get; set; }
         public required BankBranches BankBranch { get; set; }

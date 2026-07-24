@@ -18,6 +18,7 @@ namespace Captive.Reports.HashTotalReport
 
             var ordered = checkDto
                 .OrderBy(x => x.ProductSequence)
+                .ThenBy(x => x.FormTypeSequence)
                 .ThenBy(x => x.BankBranch.BRSTNCode)
                 .ThenBy(x => x.CheckOrder.AccountNo)
                 .ThenBy(x => x.StartSeries)

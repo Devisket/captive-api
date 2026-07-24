@@ -1,4 +1,5 @@
-﻿using Captive.Data.Models;
+﻿using Captive.Data.Enums;
+using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
 using Captive.Model.Dto.Reports;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ namespace Captive.Reports
                         FormType = formCheck.FormType,
                         CheckOrder = checkOrder,
                         FormCheckType = formCheck.FormCheckType,
+                        FormTypeSequence = formCheck.FormCheckType == FormCheckType.Personal ? 1 : 2,
                         BankBranch = branch,
                         NoOfPadding = check.CheckInventory!.NumberOfPadding,
                         CheckInventoryId = check.Id,
@@ -61,7 +63,7 @@ namespace Captive.Reports
                         AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,
                         ProductSequence = formCheck.Product.ProductSequence,
                         FormCheckQuantity = formCheck.Quantity
-                    });
+                    }); 
                 }
             }
 
