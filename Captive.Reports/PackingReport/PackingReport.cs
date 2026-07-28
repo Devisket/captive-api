@@ -71,12 +71,26 @@ namespace Captive.Reports.PackingReport
 
             writer.Write($"  {accNo}");
 
-            if (!String.IsNullOrEmpty(checkData.AccountName))
+            // Second line rendered underneath AccountName1 (if any)
+            var overflowName = string.Empty;
+
+            if (!String.IsNullOrEmpty(checkData.AccountName1))
             {
 
                 RegexOptions options = RegexOptions.None;
                 Regex regex = new Regex("[ ]{2,}", options);
-                var accountName = regex.Replace(checkData.AccountName, " ");
+                var accountName = regex.Replace(checkData.AccountName1, " ").Trim();
+
+                if (!String.IsNullOrEmpty(checkData.AccountName2))
+                {
+                    // AccountName2 takes the second line; AccountName1 is cut at 50
+                    overflowName = regex.Replace(checkData.AccountName2, " ").Trim();
+                }
+                else if (accountName.Length > 50)
+                {
+                    // No AccountName2 - wrap the remainder of AccountName1 to the second line
+                    overflowName = accountName.Substring(50).Trim();
+                }
 
                 // Ensure account name is exactly 50 characters
                 if (accountName.Length > 50)
@@ -84,6 +98,9 @@ namespace Captive.Reports.PackingReport
                     accountName = accountName.Substring(0, 50);
                 }
                 accountName = accountName.PadRight(50);
+
+                if (overflowName.Length > 50)
+                    overflowName = overflowName.Substring(0, 50);
 
                 writer.Write($"  {accountName}");
             }
@@ -93,6 +110,13 @@ namespace Captive.Reports.PackingReport
             writer.Write("  \t1");
             writer.Write($"\t{formCheckType}");
             writer.Write($"\t{checkDto.StartSeries.PadLeft(10,'0')}  \t{checkDto.EndSeries.PadLeft(10,'0')}\n");
+
+            if (!String.IsNullOrEmpty(overflowName))
+            {
+                // Align under the ACCOUNT_NAME column: 2 leading spaces + account no + 2 spaces
+                var namePadding = new string(' ', 2 + accNo.Length + 2);
+                writer.Write($"{namePadding}{overflowName}\n");
+            }
         }
 
         private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)

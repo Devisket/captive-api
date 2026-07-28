@@ -10,6 +10,8 @@ namespace Captive.Data.Models
         public required string AccountName { get; set; }
         public string? AccountName1 { get; set; }
         public string? AccountName2 { get; set; }
+        public string? AccountName3 { get; set; }
+        public string? AccountName4 { get; set; }
         public string? Concode { get; set; }
         public string? DeliverTo { get; set; }
         public string? PreStartingSeries { get; set; }

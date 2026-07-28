@@ -55,14 +55,23 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(checkOrder.BRSTN.Substring(0, 5));
             writer.WriteLine(string.Format(" {0}", checkOrder.BRSTN.Substring(5, 4)));
 
-
             writer.WriteLine(formattedAccountNumber);
-            writer.WriteLine(concodes == null ? checkOrder.AccountName : concodes[0]);
+            writer.WriteLine(concodes == null ? checkOrder.AccountName1 : concodes[0]);
             writer.WriteLine("SN");
             writer.WriteLine(string.Empty);
             writer.WriteLine(concodes != null && concodes.Count() > 1 ? concodes[1] : string.Empty);
             writer.WriteLine("C");
             writer.WriteLine("XXXX");
+            
+            if (!string.IsNullOrEmpty(checkOrder.AccountName2))
+                writer.WriteLine(checkOrder.AccountName2);
+
+            if (!string.IsNullOrEmpty(checkOrder.AccountName3))
+                writer.WriteLine(checkOrder.AccountName3);
+
+            if (!string.IsNullOrEmpty(checkOrder.AccountName4))
+                writer.WriteLine(checkOrder.AccountName4);
+
             writer.WriteLine(concodes != null && concodes.Count() > 2 ? concodes[2] : string.Empty);
             writer.WriteLine(branch.BranchName);
             writer.WriteLine(branch.BranchAddress1);

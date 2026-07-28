@@ -14,6 +14,10 @@ namespace Captive.Data.Models
         public string? PreStartingSeries {  get; set; }
         public string? PreEndingSeries {  get; set; }
         public string? OrderNo {  get; set; }
+        public string? AccountName1 { get;set; }
+        public string? AccountName2 { get; set; }
+        public string? AccountName3 { get; set; }
+        public string? AccountName4 { get; set; }
         public int Quantity {  get; set; }
         public Guid OrderFileId { get; set; }
         public OrderFile OrderFile { get; set; }
