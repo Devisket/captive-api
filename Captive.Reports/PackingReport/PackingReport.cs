@@ -43,7 +43,7 @@ namespace Captive.Reports.PackingReport
                         var subTotal = 0;
                         var firstData = filBranch.First();
 
-                        RenderHeader(writer, formCheckName, pageNo, firstData.BankBranch, filBranch.Key.OrderFileName, firstData.DeliverTo);
+                        RenderHeader(writer, formCheckName, productName, pageNo, firstData.BankBranch, filBranch.Key.OrderFileName, firstData.DeliverTo);
 
                         foreach (var checkOrder in filBranch.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
                         {
@@ -119,14 +119,14 @@ namespace Captive.Reports.PackingReport
             }
         }
 
-        private void RenderHeader(StreamWriter writer, string formCheckName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)
+        private void RenderHeader(StreamWriter writer, string formCheckName, string productName, int pageNo, BankBranches orderBranch, string orderFileName, BankBranches? deliverTo)
         {
             var bankName = orderBranch.BankInfo.BankName;
 
             writer.WriteLine($"  Page No.{pageNo}");
             writer.WriteLine($"  {DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
             writer.WriteLine("\t\t\t\t\t\t\t  CAPTIVE PRINTING CORPORATION");
-            writer.WriteLine($"\t\t\t\t\t\t\t  {bankName} - {formCheckName} Checks Summary");
+            writer.WriteLine($"\t\t\t\t\t\t\t  {bankName} {productName} - {formCheckName} Checks Summary");
             writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\tQTY\tCT\tSTART #\t\tEND #");
 
             if (deliverTo != null)

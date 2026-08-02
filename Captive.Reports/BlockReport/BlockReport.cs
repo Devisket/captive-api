@@ -67,12 +67,12 @@ namespace Captive.Reports.BlockReport
 
                         runningNo++;
 
-                        if ((blockNo % 8) == 0 && (runningNo % 4) == 0 && pageNo == 1 || (checkOrder == productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries).Last()))
+                        if (((blockNo % 8) == 0 && (runningNo % 4) == 0 || (checkOrder == productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries).Last())) && pageNo == 1)
                             RenderFooter(writer, formcheckList, fileName, batchFile.DeliveryDate);
                     }
                     Console.WriteLine();
 
-                    if (blockNo <= 4)
+                    if (blockNo <= 4 && pageNo == 1)
                         RenderFooter(writer, formcheckList,fileName, batchFile.DeliveryDate);
 
                     runningNo = 0;
@@ -113,7 +113,7 @@ namespace Captive.Reports.BlockReport
             {
                 if (isFirst)
                 {
-                    writer.WriteLine($"        {item.Item1} = {item.Item2}                         {fileName}.txt                                       DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
+                    writer.WriteLine($"        {item.Item1} = {item.Item2}                                                                DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
                     isFirst = false;
                 }
                 else

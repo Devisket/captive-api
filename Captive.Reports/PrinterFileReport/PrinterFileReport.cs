@@ -59,10 +59,7 @@ namespace Captive.Reports.PrinterFileReport
             writer.WriteLine(concodes == null ? checkOrder.AccountName1 : concodes[0]);
             writer.WriteLine("SN");
             writer.WriteLine(string.Empty);
-            writer.WriteLine(concodes != null && concodes.Count() > 1 ? concodes[1] : string.Empty);
-            writer.WriteLine("C");
-            writer.WriteLine("XXXX");
-            
+
             if (!string.IsNullOrEmpty(checkOrder.AccountName2))
                 writer.WriteLine(checkOrder.AccountName2);
 
@@ -71,6 +68,9 @@ namespace Captive.Reports.PrinterFileReport
 
             if (!string.IsNullOrEmpty(checkOrder.AccountName4))
                 writer.WriteLine(checkOrder.AccountName4);
+
+            writer.WriteLine("C");
+            writer.WriteLine("XXXX");
 
             writer.WriteLine(concodes != null && concodes.Count() > 2 ? concodes[2] : string.Empty);
             writer.WriteLine(branch.BranchName);

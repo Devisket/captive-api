@@ -50,7 +50,7 @@ namespace Captive.Reports.HashTotalReport
                 totalCount++;
             }
 
-            writer.WriteLine($"T{sumAcctNo.ToString().PadLeft(15, '0')}{totalCount.ToString().PadLeft(6, '0')}");
+            writer.WriteLine($"T{sumAcctNo.ToString().PadLeft(16, '0')}{totalCount.ToString().PadLeft(6, '0')}");
         }
     }
 }
