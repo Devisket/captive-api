@@ -119,8 +119,8 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
                 command.Parameters.AddWithValue("@accName1", checkOrder.CheckOrder.AccountName1);
                 command.Parameters.AddWithValue("@accName2", checkOrder.CheckOrder.AccountName2);
                 command.Parameters.AddWithValue("@ckNoP", 0);
-                command.Parameters.AddWithValue("@ckNoB", checkOrder.StartSeries);
-                command.Parameters.AddWithValue("@ckNoE", checkOrder.EndSeries);
+                command.Parameters.AddWithValue("@ckNoB",  checkOrder.StartSeries.PadLeft(10,'0'));
+                command.Parameters.AddWithValue("@ckNoE", checkOrder.EndSeries.PadLeft(10,'0'));
                 command.Parameters.AddWithValue("@deliverTo", deliverTo);
 
                 command.ExecuteNonQuery();
