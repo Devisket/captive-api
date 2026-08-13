@@ -62,12 +62,8 @@ namespace Captive.Reports.PrinterFileReport
 
             if (!string.IsNullOrEmpty(checkOrder.AccountName2))
                 writer.WriteLine(checkOrder.AccountName2);
-
-            if (!string.IsNullOrEmpty(checkOrder.AccountName3))
-                writer.WriteLine(checkOrder.AccountName3);
-
-            if (!string.IsNullOrEmpty(checkOrder.AccountName4))
-                writer.WriteLine(checkOrder.AccountName4);
+            else
+                writer.WriteLine();
 
             writer.WriteLine("C");
             writer.WriteLine("XXXX");

@@ -41,7 +41,7 @@ namespace Captive.Reports.BlockReport
                 {
                     var checkTypeInitial = checkType.Key == FormCheckType.Personal ? "A" : "B";
 
-                    formcheckList.Add(new Tuple<string, int>(checkTypeInitial, productCheckOrder.First().FormCheckQuantity ));
+                    formcheckList.Add(new Tuple<string, int>(checkTypeInitial, checkType.First().FormCheckQuantity));
                 }
 
                 var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"Block{formCheckName?.First()}.txt");
@@ -113,7 +113,7 @@ namespace Captive.Reports.BlockReport
             {
                 if (isFirst)
                 {
-                    writer.WriteLine($"        {item.Item1} = {item.Item2}                                                                DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
+                    writer.WriteLine($"        {item.Item1} = {item.Item2}                         {fileName}                                     DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
                     isFirst = false;
                 }
                 else
