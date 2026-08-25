@@ -8,10 +8,19 @@ namespace Captive.Reports
 {
     public interface IReportService
     {
-        Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankId, CancellationToken cancellationToken);
-        Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId, CancellationToken cancellationToken);
-        Task<ICollection<CheckInventoryDetail>> GetCheckInventory(Guid checkOrderId, CancellationToken cancellationToken);
-
+        Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(
+            ICollection<CheckOrders> checkOrders,
+            Guid bankId,
+            CancellationToken cancellationToken
+        );
+        Task<ICollection<BankBranches>> GetAlLBranches(
+            Guid bankId,
+            CancellationToken cancellationToken
+        );
+        Task<ICollection<CheckInventoryDetail>> GetCheckInventory(
+            Guid checkOrderId,
+            CancellationToken cancellationToken
+        );
     }
 
     public class ReportService : IReportService
@@ -23,13 +32,19 @@ namespace Captive.Reports
             _readUow = readUow;
         }
 
-        public async Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(ICollection<CheckOrders> checkOrders, Guid bankId, CancellationToken cancellationToken)
+        public async Task<ICollection<CheckOrderReport>> ExtractCheckOrderDto(
+            ICollection<CheckOrders> checkOrders,
+            Guid bankId,
+            CancellationToken cancellationToken
+        )
         {
             var branches = await GetAlLBranches(bankId, cancellationToken);
 
             var returnDatas = new List<CheckOrderReport>();
 
-            var formChecks = await GetFormChecks(checkOrders.GroupBy(x => x.FormCheckId ?? Guid.Empty).Select(x => x.Key).ToList());
+            var formChecks = await GetFormChecks(
+                checkOrders.GroupBy(x => x.FormCheckId ?? Guid.Empty).Select(x => x.Key).ToList()
+            );
 
             foreach (var checkOrder in checkOrders)
             {
@@ -41,38 +56,45 @@ namespace Captive.Reports
 
                 foreach (var check in checkInventory)
                 {
-                    returnDatas.Add(new CheckOrderReport
-                    {
-                        ProductTypeName = formCheck.Product.ProductName,
-                        CustomizeFileName = formCheck.Product.CustomizeFileName,
-                        FormCheckName = formCheck.Description,
-                        FileInitial = formCheck.FileInitial,
-                        CheckType = formCheck.CheckType,
-                        FormType = formCheck.FormType,
-                        CheckOrder = checkOrder,
-                        FormCheckType = formCheck.FormCheckType,
-                        FormTypeSequence = formCheck.FormCheckType == FormCheckType.Personal ? 1 : 2,
-                        BankBranch = branch,
-                        NoOfPadding = check.CheckInventory!.NumberOfPadding,
-                        CheckInventoryId = check.Id,
-                        BarcodeValue = check.BarCodeValue,
-                        OrderFileName = checkOrder.OrderFile.FileName,
-                        StartSeries = check.StartingSeries ?? string.Empty,
-                        EndSeries = check.EndingSeries ?? string.Empty,
-                        SeriesPattern = check.CheckInventory!.SeriesPatern,
-                        AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,
-                        ProductSequence = formCheck.Product.ProductSequence,
-                        FormCheckQuantity = formCheck.Quantity
-                    }); 
+                    returnDatas.Add(
+                        new CheckOrderReport
+                        {
+                            ProductTypeName = formCheck.Product.ProductName,
+                            CustomizeFileName = formCheck.Product.CustomizeFileName,
+                            FormCheckName = formCheck.Description,
+                            FileInitial = formCheck.FileInitial,
+                            CheckType = formCheck.CheckType,
+                            FormType = formCheck.FormType,
+                            CheckOrder = checkOrder,
+                            FormCheckType = formCheck.FormCheckType,
+                            FormTypeSequence =
+                                formCheck.FormCheckType == FormCheckType.Personal ? 1 : 2,
+                            BankBranch = branch,
+                            NoOfPadding = check.CheckInventory!.NumberOfPadding,
+                            CheckInventoryId = check.Id,
+                            BarcodeValue = check.BarCodeValue,
+                            OrderFileName = checkOrder.OrderFile.FileName,
+                            StartSeries = check.StartingSeries ?? string.Empty,
+                            EndSeries = check.EndingSeries ?? string.Empty,
+                            SeriesPattern = check.CheckInventory!.SeriesPatern,
+                            AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,
+                            ProductSequence = formCheck.Product.ProductSequence,
+                            FormCheckQuantity = formCheck.Quantity * check.Quantity,
+                        }
+                    );
                 }
             }
 
             return returnDatas;
         }
 
-        public async Task<ICollection<BankBranches>> GetAlLBranches(Guid bankId, CancellationToken cancellationToken)
+        public async Task<ICollection<BankBranches>> GetAlLBranches(
+            Guid bankId,
+            CancellationToken cancellationToken
+        )
         {
-            var bankBranches = await _readUow.BankBranches.GetAll()
+            var bankBranches = await _readUow
+                .BankBranches.GetAll()
                 .Include(x => x.BankInfo)
                 .Where(x => x.BankInfoId == bankId)
                 .AsNoTracking()
@@ -81,9 +103,13 @@ namespace Captive.Reports
             return bankBranches;
         }
 
-        public async Task<ICollection<CheckInventoryDetail>> GetCheckInventory(Guid checkOrderId, CancellationToken cancellationToken)
+        public async Task<ICollection<CheckInventoryDetail>> GetCheckInventory(
+            Guid checkOrderId,
+            CancellationToken cancellationToken
+        )
         {
-            var checkInventory = await _readUow.CheckInventoryDetails.GetAll()
+            var checkInventory = await _readUow
+                .CheckInventoryDetails.GetAll()
                 .Include(x => x.CheckInventory)
                 .AsNoTracking()
                 .Where(x => x.CheckOrderId == checkOrderId)
@@ -94,7 +120,8 @@ namespace Captive.Reports
 
         private async Task<ICollection<FormChecks>> GetFormChecks(List<Guid> formCheckIds)
         {
-            var formCheck = await _readUow.FormChecks.GetAll()
+            var formCheck = await _readUow
+                .FormChecks.GetAll()
                 .Include(x => x.Product)
                 .AsNoTracking()
                 .Where(x => formCheckIds.Any(z => z == x.Id))

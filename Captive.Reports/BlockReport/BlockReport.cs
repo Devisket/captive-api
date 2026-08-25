@@ -1,11 +1,11 @@
-﻿using Captive.Data.Enums;
+﻿using System.Text.RegularExpressions;
+using Captive.Data.Enums;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
-using System.Text.RegularExpressions;
 
 namespace Captive.Reports.BlockReport
 {
-    public  class BlockReport : IBlockReport
+    public class BlockReport : IBlockReport
     {
         private IReportService _reportService;
 
@@ -14,18 +14,31 @@ namespace Captive.Reports.BlockReport
             _reportService = reportService;
         }
 
-        public async Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken)
+        public async Task GenerateReport(
+            BatchFile batchFile,
+            ICollection<CheckOrders> checkOrders,
+            string filePath,
+            CancellationToken cancellationToken
+        )
         {
-            var branches = await _reportService.GetAlLBranches(batchFile.BankInfoId, cancellationToken);
+            var branches = await _reportService.GetAlLBranches(
+                batchFile.BankInfoId,
+                cancellationToken
+            );
 
-            var checkDto = await _reportService.ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
+            var checkDto = await _reportService.ExtractCheckOrderDto(
+                checkOrders,
+                batchFile.BankInfoId,
+                cancellationToken
+            );
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
 
             var formCheckTypeCount = checkDto.GroupBy(x => x.FormCheckType);
 
-            int runningNo = 0, blockNo = 0, pageNo = 0;
-
+            int runningNo = 0,
+                blockNo = 0,
+                pageNo = 0;
 
             foreach (var productCheckOrder in productGroup)
             {
@@ -34,21 +47,37 @@ namespace Captive.Reports.BlockReport
                 var bankShortName = branches.First().BankInfo.ShortName;
                 var fileName = productCheckOrder.First().OrderFileName.Split('.').First();
 
-
                 List<Tuple<string, int>> formcheckList = new List<Tuple<string, int>>();
 
                 foreach (var checkType in formCheckTypeCount)
                 {
                     var checkTypeInitial = checkType.Key == FormCheckType.Personal ? "A" : "B";
 
-                    formcheckList.Add(new Tuple<string, int>(checkTypeInitial, checkType.First().FormCheckQuantity));
+                    formcheckList.Add(
+                        new Tuple<string, int>(
+                            checkTypeInitial,
+                            checkType.Sum(x => x.FormCheckQuantity)
+                        )
+                    );
                 }
 
-                var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"Block{formCheckName?.First()}.txt");
+                var productFilePath = Path.Combine(
+                    filePath,
+                    productCheckOrder.Key.ProductTypeName,
+                    $"Block{formCheckName?.First()}.txt"
+                );
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
-                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
+                    var printerFileName =
+                        $"{productCheckOrder.First().CustomizeFileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}";
+
+                    foreach (
+                        var checkOrder in productCheckOrder
+                            .OrderBy(x => x.BankBranch.BRSTNCode)
+                            .ThenBy(x => x.CheckOrder.AccountNo)
+                            .ThenBy(x => x.StartSeries)
+                    )
                     {
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0)
                         {
@@ -63,17 +92,49 @@ namespace Captive.Reports.BlockReport
                             writer.WriteLine($"        ** BLOCK {blockNo}");
                         }
 
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.AccountNumberFormat);
+                        RenderText(
+                            writer,
+                            checkOrder.CheckOrder,
+                            checkOrder.BankBranch,
+                            checkOrder.StartSeries,
+                            checkOrder.EndSeries,
+                            checkOrder.AccountNumberFormat
+                        );
 
                         runningNo++;
 
-                        if (((blockNo % 8) == 0 && (runningNo % 4) == 0 || (checkOrder == productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries).Last())) && pageNo == 1)
-                            RenderFooter(writer, formcheckList, fileName, batchFile.DeliveryDate);
+                        if (
+                            (
+                                (blockNo % 8) == 0 && (runningNo % 4) == 0
+                                || (
+                                    checkOrder
+                                    == productCheckOrder
+                                        .OrderBy(x => x.BankBranch.BRSTNCode)
+                                        .ThenBy(x => x.CheckOrder.AccountNo)
+                                        .ThenBy(x => x.StartSeries)
+                                        .Last()
+                                )
+                            )
+                            && pageNo == 1
+                        )
+                            RenderFooter(
+                                writer,
+                                formcheckList,
+                                fileName,
+                                printerFileName,
+                                batchFile.DeliveryDate
+                            );
                     }
                     Console.WriteLine();
 
                     if (blockNo <= 4 && pageNo == 1)
-                        RenderFooter(writer, formcheckList,fileName, batchFile.DeliveryDate);
+                        RenderFooter(
+                            writer,
+                            formcheckList,
+                            fileName,
+                            printerFileName,
+                            batchFile.DeliveryDate
+                        );
 
                     runningNo = 0;
                     blockNo = 0;
@@ -82,30 +143,53 @@ namespace Captive.Reports.BlockReport
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string? startingSeries, string? endingSeries, string? accountNumberFormat)
+        private void RenderText(
+            StreamWriter writer,
+            CheckOrders checkOrder,
+            BankBranches branch,
+            string? startingSeries,
+            string? endingSeries,
+            string? accountNumberFormat
+        )
         {
             var accNo = checkOrder.AccountNo;
 
-            if(!string.IsNullOrEmpty(accountNumberFormat))
+            if (!string.IsNullOrEmpty(accountNumberFormat))
                 accNo = Regex.Replace(checkOrder.AccountNo, $"{accountNumberFormat}", @"$1-$2-$3");
 
-            writer.WriteLine($"            {branch.BRSTNCode}    {accNo.PadRight(12)}    {startingSeries.PadLeft(10, '0')}    {endingSeries.PadLeft(10, '0')}");
+            writer.WriteLine(
+                $"            {branch.BRSTNCode}    {accNo.PadRight(12)}    {startingSeries.PadLeft(10, '0')}    {endingSeries.PadLeft(10, '0')}"
+            );
         }
 
-        private void RenderHeader(StreamWriter writer, string bankShortName, string productDescription, string formCheckDescription, int page)
+        private void RenderHeader(
+            StreamWriter writer,
+            string bankShortName,
+            string productDescription,
+            string formCheckDescription,
+            int page
+        )
         {
             writer.WriteLine();
             writer.WriteLine($"         Page No. {page}");
             writer.WriteLine($"         {DateTime.Now.ToString("MM/dd/yyyy")}");
             writer.WriteLine();
-            writer.WriteLine($"                         {bankShortName.ToUpper()} - SUMMARY OF BLOCK - {formCheckDescription.ToUpper()}");
+            writer.WriteLine(
+                $"                         {bankShortName.ToUpper()} - SUMMARY OF BLOCK - {formCheckDescription.ToUpper()}"
+            );
             writer.WriteLine($"                        {productDescription.ToUpper()}");
             writer.WriteLine();
             writer.WriteLine("            BLOCK RT_NO  ACCT_NO         START_NO.     END_NO.");
             writer.WriteLine();
         }
 
-        private void RenderFooter(StreamWriter writer, List<Tuple<string, int>> formcheckType, string fileName, DateTime deliveryDate)
+        private void RenderFooter(
+            StreamWriter writer,
+            List<Tuple<string, int>> formcheckType,
+            string fileName,
+            string printerFileName,
+            DateTime deliveryDate
+        )
         {
             writer.WriteLine();
             bool isFirst = true;
@@ -113,7 +197,9 @@ namespace Captive.Reports.BlockReport
             {
                 if (isFirst)
                 {
-                    writer.WriteLine($"        {item.Item1} = {item.Item2}                         {fileName}                                     DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})");
+                    writer.WriteLine(
+                        $"        {item.Item1} = {item.Item2}              {printerFileName}                         {fileName}                                     DLVR: {deliveryDate:MM-dd}({deliveryDate:ddd})"
+                    );
                     isFirst = false;
                 }
                 else
@@ -124,7 +210,9 @@ namespace Captive.Reports.BlockReport
 
             writer.WriteLine();
             writer.WriteLine();
-            writer.WriteLine($"        Prepared By  :                                   RECHECKED By :   ");
+            writer.WriteLine(
+                $"        Prepared By  :                                   RECHECKED By :   "
+            );
             writer.WriteLine($"        Updated By   :  ");
             writer.WriteLine($"        Time Start   :  {DateTime.Now:HH:mm}");
             writer.WriteLine($"        Time Finished:  {DateTime.Now.AddMinutes(3):HH:mm}");

@@ -5,18 +5,36 @@ namespace Captive.Reports.PrinterFileReport
     public class PrinterFileReport : IPrinterFileReport
     {
         private readonly IReportService _reportService;
+
         public PrinterFileReport(IReportService reportService)
         {
             _reportService = reportService;
         }
 
-        public async Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken)
+        public async Task GenerateReport(
+            BatchFile batchFile,
+            ICollection<CheckOrders> checkOrders,
+            string filePath,
+            CancellationToken cancellationToken
+        )
         {
-            var branches = await _reportService.GetAlLBranches(batchFile.BankInfoId, cancellationToken);
+            var branches = await _reportService.GetAlLBranches(
+                batchFile.BankInfoId,
+                cancellationToken
+            );
 
-            var checkDto = await _reportService.ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
+            var checkDto = await _reportService.ExtractCheckOrderDto(
+                checkOrders,
+                batchFile.BankInfoId,
+                cancellationToken
+            );
 
-            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.CustomizeFileName});
+            var productGroup = checkDto.GroupBy(x => new
+            {
+                x.ProductTypeName,
+                x.FormCheckName,
+                x.CustomizeFileName,
+            });
 
             foreach (var productCheckOrder in productGroup)
             {
@@ -24,27 +42,65 @@ namespace Captive.Reports.PrinterFileReport
 
                 var fileName = productCheckOrder.Key.CustomizeFileName ?? "PrinterFile";
 
-                var productFilePath = Path.Combine(filePath, productCheckOrder.Key.ProductTypeName, $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}A.txt");
+                var productFilePath = Path.Combine(
+                    filePath,
+                    productCheckOrder.Key.ProductTypeName,
+                    $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}.txt"
+                );
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
-                    foreach (var checkOrder in productCheckOrder.OrderBy(x => x.BankBranch.BRSTNCode).ThenBy(x => x.CheckOrder.AccountNo).ThenBy(x => x.StartSeries))
+                    foreach (
+                        var checkOrder in productCheckOrder
+                            .OrderBy(x => x.BankBranch.BRSTNCode)
+                            .ThenBy(x => x.CheckOrder.AccountNo)
+                            .ThenBy(x => x.StartSeries)
+                    )
                     {
-                        RenderText(writer, checkOrder.CheckOrder, checkOrder.BankBranch, checkOrder.SeriesPattern, checkOrder.StartSeries, checkOrder.EndSeries, checkOrder.CheckType, checkOrder.BarcodeValue, checkOrder.NoOfPadding, checkOrder.AccountNumberFormat);
+                        RenderText(
+                            writer,
+                            checkOrder.CheckOrder,
+                            checkOrder.BankBranch,
+                            checkOrder.SeriesPattern,
+                            checkOrder.StartSeries,
+                            checkOrder.EndSeries,
+                            checkOrder.CheckType,
+                            checkOrder.BarcodeValue,
+                            checkOrder.NoOfPadding,
+                            checkOrder.AccountNumberFormat
+                        );
                     }
                 }
             }
         }
 
-        private void RenderText(StreamWriter writer, CheckOrders checkOrder, BankBranches branch, string seriesPattern, string startingSeries, string endingSeries, string CheckType, string? checkBarcodeValue, int noOfPadding, string? accountNumberFormat)
+        private void RenderText(
+            StreamWriter writer,
+            CheckOrders checkOrder,
+            BankBranches branch,
+            string seriesPattern,
+            string startingSeries,
+            string endingSeries,
+            string CheckType,
+            string? checkBarcodeValue,
+            int noOfPadding,
+            string? accountNumberFormat
+        )
         {
-            var concodes = string.IsNullOrEmpty(checkOrder.Concode) ? null : checkOrder.Concode.Split(";");
+            var concodes = string.IsNullOrEmpty(checkOrder.Concode)
+                ? null
+                : checkOrder.Concode.Split(";");
 
-            var barcodeValues = !string.IsNullOrEmpty(checkBarcodeValue) ? checkBarcodeValue!.Split(';') : new string[] { };
+            var barcodeValues = !string.IsNullOrEmpty(checkBarcodeValue)
+                ? checkBarcodeValue!.Split(';')
+                : new string[] { };
 
             var nextStartSeries = GetNextStartingSeries(seriesPattern, endingSeries, noOfPadding);
 
-            var formattedAccountNumber = FormatAccountNumber(checkOrder.AccountNo, accountNumberFormat);
+            var formattedAccountNumber = FormatAccountNumber(
+                checkOrder.AccountNo,
+                accountNumberFormat
+            );
 
             writer.WriteLine(5);
             writer.WriteLine(checkOrder.BRSTN);
@@ -92,7 +148,6 @@ namespace Captive.Reports.PrinterFileReport
             }
         }
 
-
         private string GetNextStartingSeries(string pattern, string endingSeries, int noOfPadding)
         {
             var numerical = new long();
@@ -102,19 +157,17 @@ namespace Captive.Reports.PrinterFileReport
             {
                 numericalString = endingSeries.Replace(pattern, string.Empty);
             }
-            
+
             numerical = long.Parse(numericalString);
             numerical += 1;
 
-
-            if(!string.IsNullOrEmpty(pattern))
+            if (!string.IsNullOrEmpty(pattern))
             {
                 return string.Concat(pattern, numericalString.PadLeft(noOfPadding, '0'));
             }
 
-            return numerical.ToString().PadLeft(noOfPadding,'0');
+            return numerical.ToString().PadLeft(noOfPadding, '0');
         }
-
 
         private string FormatAccountNumber(string accountNumber, string? accountNumberFormat)
         {
