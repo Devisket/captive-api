@@ -34,7 +34,7 @@ namespace Captive.Reports.BlockReport
 
             var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
 
-            var formCheckTypeCount = checkDto.GroupBy(x => x.FormCheckType);
+            var formCheckTypeCount = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckType });
 
             int runningNo = 0,
                 blockNo = 0,
@@ -49,9 +49,9 @@ namespace Captive.Reports.BlockReport
 
                 List<Tuple<string, int>> formcheckList = new List<Tuple<string, int>>();
 
-                foreach (var checkType in formCheckTypeCount)
+                foreach (var checkType in formCheckTypeCount.Where(x => x.Key.ProductTypeName == productName))
                 {
-                    var checkTypeInitial = checkType.Key == FormCheckType.Personal ? "A" : "B";
+                    var checkTypeInitial = checkType.Key.FormCheckType == FormCheckType.Personal ? "A" : "B";
 
                     formcheckList.Add(
                         new Tuple<string, int>(

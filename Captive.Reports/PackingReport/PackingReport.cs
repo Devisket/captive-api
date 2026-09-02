@@ -7,6 +7,27 @@ namespace Captive.Reports.PackingReport
 {
     public class PackingReport : IPackingReport
     {
+        // ---- Fixed-width layout (spaces only, no tabs) -------------------------------
+        //          1         2         3         4         5         6         7
+        // 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+        //         ACCT_NO         ACCOUNT_NAME                QTY CT START #    END #
+        //         007-070-57616-0 ROYLYN ENRIQUEZ ASUNCION OR     1 A 0003319651 0003319700
+        // -----------------------------------------------------------------------------
+        private const string Indent = "        ";   // report starts at column 8
+        private const int AccountNoWidth = 15;      // cols 8..22 (+1 space  -> name at col 24)
+        private const int AccountNameWidth = 32;    // cols 24..55 (-> QTY at col 56)
+        private const int NameColumn = 24;          // start column of the ACCOUNT_NAME field
+        private const int PageWidth = 72;           // width used to centre the title lines
+
+        private static readonly string ColumnHeader =
+            Indent
+            + "ACCT_NO".PadRight(16)        // cols 8..23
+            + "ACCOUNT_NAME".PadRight(28)   // cols 24..51
+            + "QTY".PadRight(4)             // cols 52..55
+            + "CT".PadRight(3)              // cols 56..58
+            + "START #".PadRight(11)        // cols 59..69
+            + "END #";                      // cols 70..74
+
         private readonly IReportService _reportService;
 
         public PackingReport(IReportService reportService)
@@ -28,7 +49,7 @@ namespace Captive.Reports.PackingReport
                 var formCheckName = productData.Key.FormCheckName ?? string.Empty;
 
                 var formCheckType = productData.Key.FormCheckType;
-                
+
                 var initialFileName = formCheckType == Data.Enums.FormCheckType.Personal ? "A" : "B";
 
                 var productFilePath = Path.Combine(filePath, productData.Key.ProductTypeName, $"Packing{initialFileName}.txt");
@@ -37,6 +58,8 @@ namespace Captive.Reports.PackingReport
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
+                    writer.NewLine = "\r\n";
+
                     var pageNo = 1;
                     foreach (var filBranch in orderFileBranchGroupBy.OrderBy(x => x.Key.BRSTNCode))
                     {
@@ -66,56 +89,50 @@ namespace Captive.Reports.PackingReport
 
             var accNo = checkData.AccountNo;
 
-            if(!string.IsNullOrEmpty(accountNumberFormat))
+            if (!string.IsNullOrEmpty(accountNumberFormat))
                 accNo = FormatAccountNumber(checkData.AccountNo, accountNumberFormat);
 
-            writer.Write($"  {accNo}");
-
             // Second line rendered underneath AccountName1 (if any)
+            var accountName = string.Empty;
             var overflowName = string.Empty;
 
             if (!String.IsNullOrEmpty(checkData.AccountName1))
             {
-
                 RegexOptions options = RegexOptions.None;
                 Regex regex = new Regex("[ ]{2,}", options);
-                var accountName = regex.Replace(checkData.AccountName1, " ").Trim();
+                accountName = regex.Replace(checkData.AccountName1, " ").Trim();
 
                 if (!String.IsNullOrEmpty(checkData.AccountName2))
                 {
-                    // AccountName2 takes the second line; AccountName1 is cut at 50
+                    // AccountName2 takes the second line; AccountName1 is cut at the column width
                     overflowName = regex.Replace(checkData.AccountName2, " ").Trim();
                 }
-                else if (accountName.Length > 50)
+                else if (accountName.Length > AccountNameWidth)
                 {
                     // No AccountName2 - wrap the remainder of AccountName1 to the second line
-                    overflowName = accountName.Substring(50).Trim();
+                    overflowName = accountName.Substring(AccountNameWidth).Trim();
                 }
 
-                // Ensure account name is exactly 50 characters
-                if (accountName.Length > 50)
-                {
-                    accountName = accountName.Substring(0, 50);
-                }
-                accountName = accountName.PadRight(50);
+                if (accountName.Length > AccountNameWidth)
+                    accountName = accountName.Substring(0, AccountNameWidth);
 
-                if (overflowName.Length > 50)
-                    overflowName = overflowName.Substring(0, 50);
-
-                writer.Write($"  {accountName}");
+                if (overflowName.Length > AccountNameWidth)
+                    overflowName = overflowName.Substring(0, AccountNameWidth);
             }
-            else
-                writer.Write($"  {new string(' ', 50)}");
 
-            writer.Write("  \t1");
-            writer.Write($"\t{formCheckType}");
-            writer.Write($"\t{checkDto.StartSeries.PadLeft(10,'0')}  \t{checkDto.EndSeries.PadLeft(10,'0')}\n");
+            writer.WriteLine(
+                Indent
+                + accNo.PadRight(AccountNoWidth) + " "
+                + accountName.PadRight(AccountNameWidth)
+                + "1"
+                + " " + formCheckType
+                + " " + checkDto.StartSeries.PadLeft(10, '0')
+                + " " + checkDto.EndSeries.PadLeft(10, '0'));
 
             if (!String.IsNullOrEmpty(overflowName))
             {
-                // Align under the ACCOUNT_NAME column: 2 leading spaces + account no + 2 spaces
-                var namePadding = new string(' ', 2 + accNo.Length + 2);
-                writer.Write($"{namePadding}{overflowName}\n");
+                // Align under the ACCOUNT_NAME column
+                writer.WriteLine(new string(' ', NameColumn) + overflowName);
             }
         }
 
@@ -123,22 +140,48 @@ namespace Captive.Reports.PackingReport
         {
             var bankName = orderBranch.BankInfo.BankName;
 
-            writer.WriteLine($"  Page No.{pageNo}");
-            writer.WriteLine($"  {DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
-            writer.WriteLine("\t\t\t\t\t\t\t  CAPTIVE PRINTING CORPORATION");
-            writer.WriteLine($"\t\t\t\t\t\t\t  {bankName} {productName} - {formCheckName} Checks Summary");
-            writer.WriteLine($"  ACCT_NO \t\t  ACCOUNT_NAME \t\t\t\t\tQTY\tCT\tSTART #\t\tEND #");
+            writer.WriteLine($"{Indent}Page No.{pageNo}");
+            writer.WriteLine($"{Indent}{DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")}");
+            writer.WriteLine();
+            writer.WriteLine();
+            writer.WriteLine(Center("CAPTIVE PRINTING CORPORATION"));
+            writer.WriteLine(Center($"{bankName} {productName} - {formCheckName} Checks Summary"));
+            writer.WriteLine();
+            writer.WriteLine(ColumnHeader);
+            writer.WriteLine();
+            writer.WriteLine();
 
             if (deliverTo != null)
-                writer.WriteLine($"\n ** DELIVER TO {deliverTo.BRSTNCode} {deliverTo.BranchName}");
+            {
+                writer.WriteLine($"{Indent}** DELIVER TO {deliverTo.BRSTNCode} {deliverTo.BranchName}");
+                writer.WriteLine();
+            }
 
-            writer.WriteLine($"\n ** ORDERS OF BRSTN {orderBranch.BRSTNCode} {orderBranch.BranchName}({orderBranch.BranchCode ?? string.Empty})");
-            writer.WriteLine($"\n * Batch #: {orderFileName.Split('.').First().ToUpper()} \n");
+            writer.WriteLine($"{Indent}** ORDERS OF BRSTN {orderBranch.BRSTNCode} {orderBranch.BranchName}({orderBranch.BranchCode ?? string.Empty})");
+            writer.WriteLine();
+            writer.WriteLine($"{Indent}* Batch #: {orderFileName.Split('.').First().ToUpper()}");
+            writer.WriteLine();
         }
+
         private void RenderFooter(StreamWriter writer, int subTotal)
         {
-            writer.WriteLine($"\n *** SUB TOTAL: {subTotal}\n");
+            writer.WriteLine();
+            writer.WriteLine();
+            writer.WriteLine($"{Indent}*** SUB TOTAL: {subTotal}");
             writer.WriteLine("\f");
+            writer.WriteLine();
+            writer.WriteLine();
+            writer.WriteLine();
+        }
+
+        private static string Center(string text)
+        {
+            text = text.Trim();
+
+            if (text.Length >= PageWidth)
+                return text;
+
+            return new string(' ', (PageWidth - text.Length) / 2) + text;
         }
 
         private string FormatAccountNumber(string accountNumber, string accountNumberFormat)
