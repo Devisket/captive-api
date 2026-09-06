@@ -79,7 +79,7 @@ namespace Captive.Reports
                             SeriesPattern = check.CheckInventory!.SeriesPatern,
                             AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,
                             ProductSequence = formCheck.Product.ProductSequence,
-                            FormCheckQuantity = formCheck.Quantity * check.Quantity,
+                            FormCheckQuantity = check.Quantity,
                         }
                     );
                 }
