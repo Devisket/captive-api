@@ -11,6 +11,7 @@ namespace Captive.Model.Dto
         public required string FileType { get; set; }
         public required string Status { get; set; }
         public bool IsValidated { get; set; }
+        public bool IsCustom { get; set; }
         public int PersonalQuantity { get; set; }
         public int CommercialQuantity { get; set; }
         public ICollection<CheckOrderDto>? CheckOrders { get; set; }

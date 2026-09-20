@@ -1,0 +1,18 @@
+{
+  "_comment": "Deployed as appsettings.<Environment>.json into C:\\Captive\\apps\\MdbApi. This app runs in a 32-bit app pool and needs the 32-bit ACE OLEDB provider installed on the server.",
+
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=CHANGEME-SQLHOST;Database=CaptiveDB;User Id=CHANGEME;Password=CHANGEME;TrustServerCertificate=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "Processing": {
+    "FileProcessing": "C:/Captive/processing",
+    "OutputFile": "C:/Captive/output/bankShortName/currentDate/batchName/"
+  }
+}

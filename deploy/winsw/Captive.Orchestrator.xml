@@ -1,0 +1,70 @@
+<!--
+  WinSW service definition for Captive.Orchestrator.
+
+  WHY A WRAPPER: Captive.Orchestrator is a plain generic-host console app. It does
+  not call UseWindowsService(), so the Windows Service Control Manager cannot
+  drive it directly - sc.exe would start it and then fail with error 1053
+  ("did not respond to the start request in a timely fashion"). WinSW runs the
+  exe as a child process and speaks SCM on its behalf.
+
+  It also redirects stdout/stderr to rolling files, which is currently the only
+  place Orchestrator log output goes anywhere. Replace this with UseWindowsService()
+  plus Serilog when you are ready to change code.
+
+  Deploy-Captive.ps1 copies this file next to WinSW.exe as Captive.Orchestrator.xml
+  and substitutes the {{TOKENS}} below.
+-->
+<service>
+  <id>CaptiveOrchestrator</id>
+  <name>Captive Orchestrator</name>
+  <description>Captive RabbitMQ consumer: file processing, DBF requests and barcode generation.</description>
+
+  <executable>{{INSTALL_ROOT}}\apps\Orchestrator\Captive.Orchestrator.exe</executable>
+
+  <!--
+    Required. Program.cs calls .AddJsonFile("appsettings.json") with a relative
+    path, which resolves against the working directory. A Windows Service starts
+    in C:\Windows\System32 by default, where that file does not exist, and the
+    host would throw on startup.
+  -->
+  <workingdirectory>{{INSTALL_ROOT}}\apps\Orchestrator</workingdirectory>
+
+  <startmode>Automatic</startmode>
+
+  <!--
+    Delayed start: the Orchestrator opens RabbitMQ connections during startup.
+    On a cold boot the broker is usually not listening yet.
+  -->
+  <delayedAutoStart/>
+
+  <!-- Survive a broker restart or a transient network fault. -->
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <onfailure action="restart" delay="60 sec"/>
+  <resetfailure>1 hour</resetfailure>
+
+  <stoptimeout>30 sec</stoptimeout>
+  <stopparentprocessfirst>true</stopparentprocessfirst>
+
+  <logpath>{{INSTALL_ROOT}}\logs\Orchestrator</logpath>
+  <log mode="roll-by-size">
+    <!-- sizeThreshold is in KB. 51200 KB = 50 MB per file, 10 files kept. -->
+    <sizeThreshold>51200</sizeThreshold>
+    <keepFiles>10</keepFiles>
+  </log>
+
+  <env name="DOTNET_ENVIRONMENT" value="{{ENVIRONMENT}}"/>
+
+  <!--
+    Run under a domain account once C:\Captive paths become UNC shares, or when
+    the barcode COM component needs a loadable user profile. LocalSystem (the
+    default when this block is absent) has no network identity.
+
+    <serviceaccount>
+      <domain>YOURDOMAIN</domain>
+      <user>svc_captive</user>
+      <password>...</password>
+      <allowservicelogon>true</allowservicelogon>
+    </serviceaccount>
+  -->
+</service>

@@ -59,6 +59,24 @@ namespace Captive.Applications.Batch.Commands.ValidateBatch
 
                 var floatingChecks = tupleObj.Item1;
 
+                if (!floatingChecks.Any())
+                {
+                    // An uploaded file that is still being parsed has no check orders yet - leave it alone
+                    if (!orderFile.IsCustom && orderFile.Status == OrderFilesStatus.Processing)
+                        continue;
+
+                    orderFile.IsValidated = false;
+                    orderFile.ErrorMessage = logDto.LogMessage;
+                    orderFile.PersonalQuantity = 0;
+                    orderFile.CommercialQuantity = 0;
+                    orderFile.PersonalOrderQuantity = 0;
+                    orderFile.CommercialOrderQuantity = 0;
+                    _writeUow.OrderFiles.Update(orderFile);
+
+                    await _orderFileService.UpdateOrderFileStatus(orderFileId, OrderFilesStatus.Invalid, cancellationToken);
+                    continue;
+                }
+
                 _writeUow.FloatingCheckOrders.UpdateRange(floatingChecks);
 
                 // Update quantities first
@@ -73,6 +91,7 @@ namespace Captive.Applications.Batch.Commands.ValidateBatch
                 if (!floatingChecks.Any(x => !x.IsValid))
                 {
                     orderFile.IsValidated = true;
+                    orderFile.ErrorMessage = null;
                     await _orderFileService.UpdateOrderFileStatus(orderFileId, OrderFilesStatus.Valid, cancellationToken);
                 }
                 else

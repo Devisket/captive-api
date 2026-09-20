@@ -11,6 +11,7 @@ namespace Captive.Data.Models
         public DateTime ProcessDate { get; set; }
         public string? ErrorMessage { get; set; }
         public bool IsValidated { get; set; }
+        public bool IsCustom { get; set; }
         public int PersonalQuantity { get; set; }
         public int PersonalOrderQuantity { get; set; }
         public int CommercialQuantity { get; set; }

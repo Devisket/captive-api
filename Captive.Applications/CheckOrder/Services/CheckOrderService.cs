@@ -59,8 +59,13 @@ namespace Captive.Applications.CheckOrder.Services
             if (orderFile == null)
                 throw new SystemException($"Order file ID {orderFileId} doesn't exist");
 
-            if (orderFile.FloatingCheckOrders == null || !orderFile.FloatingCheckOrders.Any())
-                return null;
+            if (orderFile.FloatingCheckOrders == null || !orderFile.FloatingCheckOrders.Any(x => !x.IsOnHold))
+            {
+                validationResponse.LogType = Model.Enums.LogType.Error;
+                validationResponse.LogMessage = $"Order file {orderFile.FileName} has no check orders to validate.";
+
+                return new Tuple<FloatingCheckOrder[], int, int, LogDto, int, int>(Array.Empty<FloatingCheckOrder>(), 0, 0, validationResponse, 0, 0);
+            }
 
             var floatingCheckOrders = orderFile.FloatingCheckOrders.Where(x => !x.IsOnHold).ToArray();
 
@@ -227,8 +232,8 @@ namespace Captive.Applications.CheckOrder.Services
                     AccountNo = checkOrder.AccountNo,
                     BranchId = branch?.Id ?? Guid.Empty,
                     Quantity = checkOrder.Quantity,
+                    PreStartingSeries = checkOrder.PreStartingSeries,
                     PreEndingSeries = checkOrder.PreEndingSeries,
-                    PreStartingSeries = checkOrder.PreEndingSeries,
                     AccountName = string.Concat(checkOrder.AccountName1, checkOrder.AccountName2),
                     AccountName1 = checkOrder.AccountName1,
                     AccountName2 = checkOrder.AccountName2,
@@ -242,6 +247,7 @@ namespace Captive.Applications.CheckOrder.Services
                     OrderFileId = orderFile.Id,
                     ProductId = orderFile.ProductId,
                     BranchCode = checkOrder.BranchCode ?? string.Empty,
+                    OrderNo = checkOrder.OrderNo,
                 });
             }
 

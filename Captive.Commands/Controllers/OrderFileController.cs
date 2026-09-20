@@ -1,4 +1,5 @@
 ﻿using Captive.Applications.CheckOrder.Command.ProcessCheckOrder;
+using Captive.Applications.Orderfiles.Command.CreateCustomOrderFile;
 using Captive.Applications.Orderfiles.Command.DeleteOrderFile;
 using Captive.Applications.Orderfiles.Command.UpdateOrderFile;
 using Captive.Applications.Orderfiles.Command.ValidateOrderFile;
@@ -38,6 +39,16 @@ namespace Captive.Commands.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost("custom")]
+        public async Task<IActionResult> CreateCustomOrderFile([FromBody] CreateCustomOrderFileCommand request)
+        {
+            if (request.BankId == Guid.Empty || request.BatchId == Guid.Empty || request.ProductId == Guid.Empty)
+                return BadRequest("Bank, batch and product are required.");
+
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
 
         [HttpPost("{id}/updateStatus")]

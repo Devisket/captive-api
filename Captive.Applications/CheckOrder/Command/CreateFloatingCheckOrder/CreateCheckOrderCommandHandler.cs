@@ -48,8 +48,8 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                     existingFloatingCheckOrder.FormType = floatingCheckOrder.FormType;
                     existingFloatingCheckOrder.CheckType = floatingCheckOrder.CheckType;
                     existingFloatingCheckOrder.AccountNo = floatingCheckOrder.AccountNumber;
-                    existingFloatingCheckOrder.PreEndingSeries = floatingCheckOrder.StartingSeries;
-                    existingFloatingCheckOrder.PreStartingSeries = floatingCheckOrder.EndingSeries;
+                    existingFloatingCheckOrder.PreStartingSeries = floatingCheckOrder.StartingSeries;
+                    existingFloatingCheckOrder.PreEndingSeries = floatingCheckOrder.EndingSeries;
                     existingFloatingCheckOrder.Quantity = floatingCheckOrder.Quantity;
                     existingFloatingCheckOrder.DeliverTo = floatingCheckOrder.DeliverTo;
                     existingFloatingCheckOrder.IsValid = false;
@@ -73,8 +73,8 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
                         BranchCode = floatingCheckOrder.BranchCode,
                         AccountNo = floatingCheckOrder.AccountNumber,
                         OrderFileId = request.OrderFileId,
-                        PreEndingSeries = floatingCheckOrder.StartingSeries,
-                        PreStartingSeries = floatingCheckOrder.EndingSeries,
+                        PreStartingSeries = floatingCheckOrder.StartingSeries,
+                        PreEndingSeries = floatingCheckOrder.EndingSeries,
                         Quantity = floatingCheckOrder.Quantity,
                         DeliverTo = floatingCheckOrder.DeliverTo,
                     };

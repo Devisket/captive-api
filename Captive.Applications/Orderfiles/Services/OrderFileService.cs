@@ -62,6 +62,7 @@ namespace Captive.Applications.Orderfiles.Services
                 FileType = Path.GetExtension(orderFile.FileName).TrimStart('.'),
                 Status = status.ToString(),
                 IsValidated = orderFile.IsValidated,
+                IsCustom = orderFile.IsCustom,
                 PersonalQuantity = orderFile.PersonalQuantity,
                 CommercialQuantity = orderFile.CommercialQuantity,
                 ErrorMessage = string.IsNullOrEmpty(errorMessage) ? orderFile.ErrorMessage : errorMessage,

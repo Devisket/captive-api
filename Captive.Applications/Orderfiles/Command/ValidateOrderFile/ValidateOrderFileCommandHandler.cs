@@ -51,9 +51,17 @@ namespace Captive.Applications.Orderfiles.Command.ValidateOrderFile
             _writeUow.OrderFiles.Update(orderFile);
 
             // Update status through the service to trigger SignalR notifications
-            if (!floatingChecks.Any(x => !x.IsValid))
+            if (!floatingChecks.Any())
+            {
+                // Nothing to validate (e.g. a custom order file without check orders yet)
+                orderFile.IsValidated = false;
+                orderFile.ErrorMessage = logDto.LogMessage;
+                await _orderFileService.UpdateOrderFileStatus(request.OrderFileId, OrderFilesStatus.Invalid, cancellationToken);
+            }
+            else if (!floatingChecks.Any(x => !x.IsValid))
             {
                 orderFile.IsValidated = true;
+                orderFile.ErrorMessage = null;
                 await _orderFileService.UpdateOrderFileStatus(request.OrderFileId, OrderFilesStatus.Valid, cancellationToken);
             }
             else

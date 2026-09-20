@@ -1,0 +1,28 @@
+{
+  "_comment": "Deployed as appsettings.<Environment>.json into C:\\Captive\\apps\\Commands. Overrides appsettings.json. Replace every placeholder value before deploying.",
+
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=CHANGEME-SQLHOST;Database=CaptiveDB;User Id=CHANGEME;Password=CHANGEME;TrustServerCertificate=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "Rabbitmq": {
+    "Hostname": "CHANGEME-RABBITHOST",
+    "Username": "CHANGEME",
+    "Password": "CHANGEME",
+    "Port": "5672"
+  },
+  "AllowedHosts": "*",
+  "Processing": {
+    "FileProcessing": "C:/Captive/processing/bankShortName/currentDate/batchName/",
+    "OutputDirectory": "C:/Captive/Reports/output/bankShortName/currentDate/batchName/",
+    "ArchiveDirectory": "C:/Captive/archive/bankShortName/currentDate/batchName/"
+  },
+  "Endpoints": {
+    "MdbApi": "http://CHANGEME-SERVERHOST/mdbapi"
+  }
+}

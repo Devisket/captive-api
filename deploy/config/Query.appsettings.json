@@ -1,0 +1,14 @@
+{
+  "_comment": "Deployed as appsettings.<Environment>.json into C:\\Captive\\apps\\Query. NOTE: the repo appsettings.json points at 'mssql-server' (a Docker container name) which does not resolve outside Docker - this file must override it.",
+
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=CHANGEME-SQLHOST;Database=CaptiveDB;User Id=CHANGEME;Password=CHANGEME;TrustServerCertificate=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}

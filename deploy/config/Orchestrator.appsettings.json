@@ -1,0 +1,22 @@
+{
+  "_comment": "REPLACES appsettings.json in C:\\Captive\\apps\\Orchestrator - it is NOT an overlay. Program.cs appends .AddJsonFile(\"appsettings.json\") after the defaults, which makes appsettings.json the HIGHEST priority source. Environment variables and appsettings.<Environment>.json are silently ignored for this app. See deploy/README.md.",
+
+  "Rabbitmq": {
+    "Hostname": "CHANGEME-RABBITHOST",
+    "Username": "CHANGEME",
+    "Password": "CHANGEME",
+    "Port": "5672"
+  },
+  "Endpoints": {
+    "MdbApi": "http://CHANGEME-SERVERHOST/mdbapi",
+    "CaptiveCommands": "http://CHANGEME-SERVERHOST/commands",
+    "CaptiveQuery": "http://CHANGEME-SERVERHOST/query"
+  },
+  "BarcodeService": {
+    "Mtbc": "C:\\Captive\\apps\\BarcodeGenerator\\BarcodeGenerator.exe"
+  },
+  "Processing": {
+    "OutputDirectory": "C:/Captive/Reports/output/bankShortName/currentDate/batchName/",
+    "ArchiveDirectory": "C:/Captive/archive/bankShortName/currentDate/batchName/"
+  }
+}
