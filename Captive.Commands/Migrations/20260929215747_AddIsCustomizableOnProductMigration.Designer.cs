@@ -4,6 +4,7 @@ using Captive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Captive.Commands.Migrations
 {
     [DbContext(typeof(CaptiveDataContext))]
-    partial class CaptiveDataContextModelSnapshot : ModelSnapshot
+    [Migration("20260929215747_AddIsCustomizableOnProductMigration")]
+    partial class AddIsCustomizableOnProductMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,7 +248,7 @@ namespace Captive.Commands.Migrations
                     b.Property<Guid?>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CheckInventoryId")
+                    b.Property<Guid>("CheckInventoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CheckOrderId")
@@ -733,7 +736,8 @@ namespace Captive.Commands.Migrations
                     b.HasOne("Captive.Data.Models.CheckInventory", "CheckInventory")
                         .WithMany("CheckInventoryDetails")
                         .HasForeignKey("CheckInventoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Captive.Data.Models.CheckOrders", "CheckOrder")
                         .WithMany("CheckInventoryDetail")

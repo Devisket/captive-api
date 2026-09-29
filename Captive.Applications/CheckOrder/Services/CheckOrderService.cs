@@ -47,8 +47,7 @@ namespace Captive.Applications.CheckOrder.Services
             int personalOrderQuantity = 0, commercialOrderQuantity = 0;
 
             var orderFile = await _readUow.OrderFiles.GetAll()
-                .Include(x => x.Product)
-                .Include(x => x.BatchFile)
+                .Include(x => x.Product) 
                 .Include(x =>x.Product)
                     .ThenInclude(x =>x.ProductConfiguration)
                 .Include(x => x.FloatingCheckOrders).FirstOrDefaultAsync(x => x.Id == orderFileId, cancellationToken);
@@ -108,6 +107,7 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
+                //Validate Account number
                 if (String.IsNullOrEmpty(checkOrder.AccountNo))
                 {
                     checkOrder.IsValid = false;
@@ -115,6 +115,7 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
+                //Validate Quantity
                 if (checkOrder.Quantity <= 0)
                 {
                     checkOrder.IsValid = false;
@@ -122,21 +123,7 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
-                //if (string.IsNullOrEmpty(checkOrder.FormType))
-                //{
-                //    checkOrder.IsValid = false;
-                //    checkOrder.ErrorMessage = "Form type is empty.";
-                //    continue;
-                //}
-
-                //if (string.IsNullOrEmpty(checkOrder.CheckType))
-                //{
-                //    checkOrder.IsValid = false;
-                //    checkOrder.ErrorMessage = "Check type is empty.";
-                //    continue;
-                //}
-
-                //Validate branch's BRSTN
+                //Validate BRSTN
                 if (!brstns.Contains(checkOrder.BRSTN))
                 {
                     checkOrder.IsValid = false;
@@ -144,7 +131,8 @@ namespace Captive.Applications.CheckOrder.Services
                     continue;
                 }
 
-                if (!String.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
+                //Validate Check Inventory
+                if (String.IsNullOrEmpty(checkOrder.PreStartingSeries) && string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
                     if (string.IsNullOrEmpty(checkOrder.PreStartingSeries) || string.IsNullOrEmpty(checkOrder.PreEndingSeries)) 
                     {

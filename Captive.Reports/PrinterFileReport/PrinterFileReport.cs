@@ -45,7 +45,7 @@ namespace Captive.Reports.PrinterFileReport
                 var productFilePath = Path.Combine(
                     filePath,
                     productCheckOrder.Key.ProductTypeName,
-                    $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}.txt"
+                    $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName?.FirstOrDefault()}.txt"
                 );
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))

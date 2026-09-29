@@ -44,6 +44,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
                 productType.ProductName = request.ProductName;
                 productType.ProductSequence = request.ProductSequence;
                 productType.CustomizeFileName = request.CustomizeFileName;
+                productType.IsCustomizable = request.IsCustomizable;
 
                 _writeUow.ProductTypes.Update(productType);
             }
@@ -61,6 +62,7 @@ namespace Captive.Applications.Product.Command.CreateProductType
                     ProductName = request.ProductName,
                     ProductSequence = request.ProductSequence,
                     CustomizeFileName = request.CustomizeFileName,
+                    IsCustomizable = request.IsCustomizable,
                 }, cancellationToken);
             }
 

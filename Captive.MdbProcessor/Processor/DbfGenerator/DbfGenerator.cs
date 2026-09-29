@@ -157,7 +157,6 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
                         FormCheckType = formCheck.FormCheckType,
                         OrderFileName = checkOrder.OrderFile.FileName,
                         CheckTypeLetter = formCheck.FormCheckType == FormCheckType.Personal ? "A" : "B",
-                        CheckInventoryId = check.Id,
                         StartSeries = check.StartingSeries ?? string.Empty,
                         EndSeries = check.EndingSeries ?? string.Empty,
                         AccountNumberFormat = branches.First().BankInfo.AccountNumberFormat,

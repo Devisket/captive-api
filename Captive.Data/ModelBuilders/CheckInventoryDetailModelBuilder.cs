@@ -10,6 +10,7 @@ namespace Captive.Data.ModelBuilders
       var entity = modelBuilder.Entity<CheckInventoryDetail>();
       
       entity.Property(x => x.Quantity).IsRequired(true);
+      entity.Property(x => x.CheckInventoryId).IsRequired(false);
 
       entity.ToTable("check_inventory_detail");
 

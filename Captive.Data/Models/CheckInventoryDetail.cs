@@ -16,7 +16,7 @@ namespace Captive.Data.Models
         public required int Quantity { get; set; }
         public Guid? CheckOrderId { get; set; }
         public CheckOrders? CheckOrder{ get; set; }
-        public Guid CheckInventoryId { get; set; }
+        public Guid? CheckInventoryId { get; set; }
         public CheckInventory? CheckInventory {  get; set; }
         public DateTime CreatedDateTime { get; set; }
     }

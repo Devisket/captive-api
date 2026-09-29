@@ -57,14 +57,6 @@ namespace Captive.Applications.CheckInventory.Services
                     cancellationToken);
                 var orderFormCheck = await _readUow.FormChecks.GetAll().AsNoTracking().FirstAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
 
-                var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
-                    bankId,
-                    checkOrder.BranchId,
-                    checkOrder.ProductId,
-                    orderFormCheck.FormCheckType,
-                    checkOrder.AccountNo,
-                    cancellationToken);
-
                 if (!string.IsNullOrEmpty(checkOrder.PreStartingSeries) && !string.IsNullOrEmpty(checkOrder.PreEndingSeries))
                 {
                     await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
@@ -74,7 +66,7 @@ namespace Captive.Applications.CheckInventory.Services
                         CheckOrderId = checkOrder.Id,
                         StartingSeries = checkOrder.PreStartingSeries,
                         EndingSeries = checkOrder.PreEndingSeries,
-                        CheckInventoryId = checkInventory!.Id,
+                        CheckInventoryId = null,
                         Quantity = orderFormCheck!.Quantity,
                         BranchId = checkOrder.BranchId,
                         AccountNumber = checkOrder.AccountNo,
@@ -84,6 +76,14 @@ namespace Captive.Applications.CheckInventory.Services
 
                     continue;
                 }
+
+                var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
+                   bankId,
+                   checkOrder.BranchId,
+                   checkOrder.ProductId,
+                   orderFormCheck.FormCheckType,
+                   checkOrder.AccountNo,
+                   cancellationToken);
 
                 var startingSeriesNumber = checkInventory.CurrentSeries + 1;
 
@@ -175,9 +175,12 @@ namespace Captive.Applications.CheckInventory.Services
 
                 foreach (var checkOrder in checkOrders)
                 {
+                    if (!String.IsNullOrEmpty(checkOrder.PreStartingSeries) && !String.IsNullOrEmpty(checkOrder.PreStartingSeries))
+                        continue;
+
                     var orderFormCheck = await _readUow.FormChecks.GetAll()
-                        .AsNoTracking()
-                        .FirstAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
+                    .AsNoTracking()
+                    .FirstAsync(x => x.Id == checkOrder.FormCheckId, cancellationToken);
 
                     var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
                         bankId,
