@@ -112,7 +112,7 @@ namespace Captive.MdbProcessor.Processor.DbfGenerator
                 command.Parameters.AddWithValue("@batchNo", orderFile.FileName.Split('.').First());
                 command.Parameters.AddWithValue("@block", 0);
                 command.Parameters.AddWithValue("@rtNo", checkOrder.CheckOrder.BRSTN);
-                command.Parameters.AddWithValue("@branch", $"{checkOrder.BankBranch.BranchName} BRANCH({checkOrder.BankBranch.BranchCode})");
+                command.Parameters.AddWithValue("@branch", $"{checkOrder.BankBranch.BranchName}({checkOrder.BankBranch.BranchCode})");
                 command.Parameters.AddWithValue("@acctNo", checkOrder.CheckOrder.AccountNo);
                 command.Parameters.AddWithValue("@acctNoP", formattedAccNo);
                 command.Parameters.AddWithValue("@checkType", formCheckTypeString);

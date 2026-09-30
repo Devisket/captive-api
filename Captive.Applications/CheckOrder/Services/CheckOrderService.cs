@@ -132,51 +132,45 @@ namespace Captive.Applications.CheckOrder.Services
                 }
 
                 //Validate Check Inventory
-                if (String.IsNullOrEmpty(checkOrder.PreStartingSeries) && string.IsNullOrEmpty(checkOrder.PreEndingSeries))
-                {
-                    if (string.IsNullOrEmpty(checkOrder.PreStartingSeries) || string.IsNullOrEmpty(checkOrder.PreEndingSeries)) 
-                    {
-                        checkOrder.IsValid = false;
-                        checkOrder.ErrorMessage = $"One of the series is empty!";
-                        continue;
-                    }
+                //if (String.IsNullOrEmpty(checkOrder.PreStartingSeries) && string.IsNullOrEmpty(checkOrder.PreEndingSeries))
+                //{
 
-                    var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
+                //    var branch = _readUow.BankBranches.GetAll().AsNoTracking().Where(x => x.BRSTNCode == checkOrder.BRSTN && x.BankInfoId == orderFile.BatchFile.BankInfoId).First();
                     
-                    var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
-                        orderFile.BatchFile!.BankInfoId, branch.Id, orderFile.ProductId, formCheck.FormCheckType, checkOrder.AccountNo, cancellationToken);
+                //    var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
+                //        orderFile.BatchFile!.BankInfoId, branch.Id, orderFile.ProductId, formCheck.FormCheckType, checkOrder.AccountNo, cancellationToken);
 
-                    if(checkInventory == null)
-                    {
-                        validationResponse.LogType = Model.Enums.LogType.Error;
-                        validationResponse.LogMessage = $"Can't find check inventory";
-                    }
+                //    if(checkInventory == null)
+                //    {
+                //        validationResponse.LogType = Model.Enums.LogType.Error;
+                //        validationResponse.LogMessage = $"Can't find check inventory";
+                //    }
 
-                    if (await _checkValidationService.HasConflictedSeries(checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id, orderFile.ProductId, checkInventory!.Id, cancellationToken))
-                    {
-                        checkOrder.IsValid = false;
-                        checkOrder.ErrorMessage = $"Has conflicted series number!";
-                        continue;
-                    }
+                //    if (await _checkValidationService.HasConflictedSeries(checkOrder.PreStartingSeries, checkOrder.PreEndingSeries, branch.Id, formCheck.Id, orderFile.ProductId, checkInventory!.Id, cancellationToken))
+                //    {
+                //        checkOrder.IsValid = false;
+                //        checkOrder.ErrorMessage = $"Has conflicted series number!";
+                //        continue;
+                //    }
 
-                    if(_checkValidationService.HitEndingSeries(checkInventory!, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries))
-                    {
-                        checkOrder.IsValid = false;
-                        checkOrder.ErrorMessage = $"Out of series.";
-                        continue;
-                    }
+                //    if(_checkValidationService.HitEndingSeries(checkInventory!, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries))
+                //    {
+                //        checkOrder.IsValid = false;
+                //        checkOrder.ErrorMessage = $"Out of series.";
+                //        continue;
+                //    }
 
-                    var warningMessage = _checkValidationService.HitWarningSeries(checkInventory!, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries);
+                //    var warningMessage = _checkValidationService.HitWarningSeries(checkInventory!, checkOrder.PreStartingSeries, checkOrder.PreEndingSeries);
 
-                    if (String.IsNullOrEmpty(warningMessage)) 
-                    {
-                        validationResponse.LogType = Model.Enums.LogType.Warning;
-                        validationResponse.LogMessage = warningMessage;
-                    }
+                //    if (String.IsNullOrEmpty(warningMessage)) 
+                //    {
+                //        validationResponse.LogType = Model.Enums.LogType.Warning;
+                //        validationResponse.LogMessage = warningMessage;
+                //    }
 
-                    validationResponse.LogType = Model.Enums.LogType.Error;
-                    validationResponse.LogMessage = $"Starting series: {checkOrder.PreStartingSeries} and ending series: {checkOrder.PreEndingSeries} has conflicted series.";
-                }
+                //    validationResponse.LogType = Model.Enums.LogType.Error;
+                //    validationResponse.LogMessage = $"Starting series: {checkOrder.PreStartingSeries} and ending series: {checkOrder.PreEndingSeries} has conflicted series.";
+                //}
 
                 checkOrder.IsValid = true;
                 checkOrder.ErrorMessage = string.Empty;
