@@ -17,7 +17,7 @@ namespace Captive.Orchestrator
         private readonly IFileProcessOrchestratorService _fileOrchestrator;
 
         private IConnection _connection;
-        private IModel _channel;
+        private IChannel _channel;
 
         public FileProcessorConsumerService(IRabbitConnectionManager rabbitConnManager, IFileProcessOrchestratorService fileOrchestrator, ILoggerFactory loggerFactory)
         {
@@ -26,18 +26,18 @@ namespace Captive.Orchestrator
             _logger = loggerFactory.CreateLogger<FileProcessorConsumerService>();
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
-            _connection = _rabbitConnManager.GetRabbitMQConnection();
+            _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
 
-            _channel = _connection.CreateModel();
+            _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
-            _channel.QueueDeclare(queue: "CaptiveFileUpload", durable: false, exclusive: false, autoDelete: false, arguments:null);
+            await _channel.QueueDeclareAsync(queue: "CaptiveFileUpload", durable: true, exclusive: false, autoDelete: false, arguments: null, cancellationToken: stoppingToken);
 
-            var consumer = new EventingBasicConsumer(_channel);
+            var consumer = new AsyncEventingBasicConsumer(_channel);
 
-            consumer.Received += async (model, ea) => 
+            consumer.ReceivedAsync += async (model, ea) => 
             {
                 try
                 {
@@ -53,29 +53,25 @@ namespace Captive.Orchestrator
                     _logger.LogError(ex.Message);
                 }
 
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await _channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
-            consumer.Shutdown += OnConsumerShutdown;
-            consumer.Registered += OnConsumerRegistered;
-            consumer.Unregistered += OnConsumerUnregistered;
-            consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
+            // v7 consumers expose async events; ConsumerCancelled no longer exists (use UnregisteredAsync).
+            consumer.ShutdownAsync += OnConsumerShutdown;
+            consumer.RegisteredAsync += OnConsumerRegistered;
+            consumer.UnregisteredAsync += OnConsumerUnregistered;
 
-            _channel.BasicConsume("CaptiveFileUpload", false, consumer);
-
-            return Task.CompletedTask;
+            await _channel.BasicConsumeAsync("CaptiveFileUpload", false, consumer, stoppingToken);
         }
 
-        private void OnConsumerConsumerCancelled(object sender, ConsumerEventArgs e) { }
-        private void OnConsumerUnregistered(object sender, ConsumerEventArgs e) { }
-        private void OnConsumerRegistered(object sender, ConsumerEventArgs e) { }
-        private void OnConsumerShutdown(object sender, ShutdownEventArgs e) { }
-        private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e) { }
+        private Task OnConsumerUnregistered(object sender, ConsumerEventArgs e) => Task.CompletedTask;
+        private Task OnConsumerRegistered(object sender, ConsumerEventArgs e) => Task.CompletedTask;
+        private Task OnConsumerShutdown(object sender, ShutdownEventArgs e) => Task.CompletedTask;
 
         public override void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Dispose();
+            _connection?.Dispose();
             base.Dispose();
         }
     }

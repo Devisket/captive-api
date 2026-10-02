@@ -43,7 +43,6 @@ namespace Captive.Orchestrator
             builder.Services.AddHostedService<FileProcessorConsumerService>();
             builder.Services.AddHostedService<DbfRequestConsumerService>();
             builder.Services.AddHostedService<GenerateBarcodeConsumerService>();
-            builder.Services.AddHostedService<SampleConsumer>();
 
             IHost host = builder.Build();
 

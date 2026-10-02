@@ -21,7 +21,7 @@ namespace Captive.Commands.BackgroundServices
         private readonly ILogger<BatchProcessConsumerService> _logger;
 
         private IConnection? _connection;
-        private IModel? _channel;
+        private IChannel? _channel;
 
         public BatchProcessConsumerService(
             IServiceScopeFactory scopeFactory,
@@ -33,15 +33,16 @@ namespace Captive.Commands.BackgroundServices
             _logger = loggerFactory.CreateLogger<BatchProcessConsumerService>();
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = _rabbitConnManager.GetRabbitMQConnection();
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "CaptiveBatchProcess", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
+            _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
+            await _channel.QueueDeclareAsync(queue: "CaptiveBatchProcess", durable: true, exclusive: false, autoDelete: false, arguments: null, cancellationToken: stoppingToken);
 
-            var consumer = new EventingBasicConsumer(_channel);
+            var channel = _channel;
+            var consumer = new AsyncEventingBasicConsumer(channel);
 
-            consumer.Received += async (model, ea) =>
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 try
                 {
@@ -56,12 +57,10 @@ namespace Captive.Commands.BackgroundServices
                     _logger.LogError(ex, "Error processing batch job message");
                 }
 
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
-            _channel.BasicConsume("CaptiveBatchProcess", false, consumer);
-
-            return Task.CompletedTask;
+            await channel.BasicConsumeAsync("CaptiveBatchProcess", false, consumer, stoppingToken);
         }
 
         private async Task ProcessBatchJobAsync(BatchProcessMessage message, CancellationToken cancellationToken)
@@ -100,8 +99,8 @@ namespace Captive.Commands.BackgroundServices
 
         public override void Dispose()
         {
-            _channel?.Close();
-            _connection?.Close();
+            _channel?.Dispose();
+            _connection?.Dispose();
             base.Dispose();
         }
     }

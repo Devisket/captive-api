@@ -12,7 +12,7 @@ namespace Captive.Messaging
         public RabbitConnectionManager(IConnectionFactory connectionFactory, IConfiguration configuration)
         {
             _configuration = configuration;
-            
+
             _connectionFactory = new ConnectionFactory()
             {
                 HostName = _configuration["Rabbitmq:Hostname"],
@@ -22,9 +22,9 @@ namespace Captive.Messaging
             };
         }
 
-        public IConnection GetRabbitMQConnection()
+        public Task<IConnection> GetRabbitMQConnectionAsync(CancellationToken cancellationToken = default)
         {
-            return _connectionFactory.CreateConnection();
+            return _connectionFactory.CreateConnectionAsync(cancellationToken);
         }
     }
 }

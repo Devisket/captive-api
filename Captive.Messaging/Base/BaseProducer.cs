@@ -17,17 +17,17 @@ namespace Captive.Messaging.Base
 
         public async void ProduceMessage(T message)
         {
-            using (var con = _connectionFactory.GetRabbitMQConnection())
+            using (var con = await _connectionFactory.GetRabbitMQConnectionAsync())
             {
-                using (var channel = con.CreateModel())
+                using (var channel = await con.CreateChannelAsync())
                 {
-                    channel.QueueDeclare(queue: queueName, false, exclusive: false, autoDelete: false, arguments: null);
+                    await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
                     string queueMessage = JsonConvert.SerializeObject(message);
 
                     var body = Encoding.UTF8.GetBytes(queueMessage);
 
-                    await Task.Run(() => channel.BasicPublish(exchange: string.Empty, routingKey: queueName, basicProperties: null, body: body));
+                    await channel.BasicPublishAsync(exchange: string.Empty, routingKey: queueName, body: body);
                 }
             }
         }

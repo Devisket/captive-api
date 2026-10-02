@@ -4,6 +4,6 @@ namespace Captive.Messaging.Interfaces
 {
     public interface IRabbitConnectionManager
     {
-        IConnection GetRabbitMQConnection();
+        Task<IConnection> GetRabbitMQConnectionAsync(CancellationToken cancellationToken = default);
     }
 }

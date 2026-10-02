@@ -20,7 +20,7 @@ namespace Captive.Barcode.Services
         private readonly RabbitMQSettings _rabbitMQSettings;
         private readonly BarcodeServiceSettings _barcodeSettings;
         private IConnection? _connection;
-        private IModel? _channel;
+        private IChannel? _channel;
 
         public RabbitMQConsumerService(
             ILogger<RabbitMQConsumerService> logger,
@@ -94,17 +94,17 @@ namespace Captive.Barcode.Services
                     VirtualHost = _rabbitMQSettings.VirtualHost
                 };
 
-                _connection = factory.CreateConnection();
-                _channel = _connection.CreateModel();
+                _connection = await factory.CreateConnectionAsync();
+                _channel = await _connection.CreateChannelAsync();
 
                 // Declare exchange
-                _channel.ExchangeDeclare(
+                await _channel.ExchangeDeclareAsync(
                     exchange: _rabbitMQSettings.ExchangeName,
                     type: ExchangeType.Direct,
                     durable: _rabbitMQSettings.Durable);
 
                 // Declare queue
-                _channel.QueueDeclare(
+                await _channel.QueueDeclareAsync(
                     queue: _rabbitMQSettings.QueueName,
                     durable: _rabbitMQSettings.Durable,
                     exclusive: _rabbitMQSettings.Exclusive,
@@ -112,23 +112,23 @@ namespace Captive.Barcode.Services
                     arguments: null);
 
                 // Bind queue to exchange
-                _channel.QueueBind(
+                await _channel.QueueBindAsync(
                     queue: _rabbitMQSettings.QueueName,
                     exchange: _rabbitMQSettings.ExchangeName,
                     routingKey: _rabbitMQSettings.RoutingKey);
 
                 // Set QoS
-                _channel.BasicQos(prefetchSize: 0, prefetchCount: (ushort)_rabbitMQSettings.PrefetchCount, global: false);
+                await _channel.BasicQosAsync(prefetchSize: 0, prefetchCount: (ushort)_rabbitMQSettings.PrefetchCount, global: false);
 
                 // Create consumer
-                var consumer = new EventingBasicConsumer(_channel);
-                consumer.Received += async (model, ea) =>
+                var consumer = new AsyncEventingBasicConsumer(_channel);
+                consumer.ReceivedAsync += async (model, ea) =>
                 {
                     await ProcessMessage(ea);
                 };
 
                 // Start consuming
-                _channel.BasicConsume(
+                await _channel.BasicConsumeAsync(
                     queue: _rabbitMQSettings.QueueName,
                     autoAck: _rabbitMQSettings.AutoAck,
                     consumer: consumer);
@@ -159,7 +159,7 @@ namespace Captive.Barcode.Services
                 if (request == null)
                 {
                     _logger.LogError("Failed to deserialize message");
-                    _channel?.BasicNack(ea.DeliveryTag, false, false);
+                    if (_channel != null) await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
                     return;
                 }
 
@@ -177,7 +177,7 @@ namespace Captive.Barcode.Services
                 }
 
                 // Acknowledge message
-                _channel?.BasicAck(ea.DeliveryTag, false);
+                if (_channel != null) await _channel.BasicAckAsync(ea.DeliveryTag, false);
                 
                 _logger.LogInformation("Successfully processed request {RequestId} in {Duration}ms", 
                     request.RequestId, stopwatch.ElapsedMilliseconds);
@@ -201,7 +201,7 @@ namespace Captive.Barcode.Services
                 }
                 
                 // Reject message (don't requeue to avoid infinite loops)
-                _channel?.BasicNack(ea.DeliveryTag, false, false);
+                if (_channel != null) await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
             }
         }
 
@@ -272,13 +272,16 @@ namespace Captive.Barcode.Services
                 var responseJson = JsonConvert.SerializeObject(response);
                 var responseBody = Encoding.UTF8.GetBytes(responseJson);
 
-                var properties = _channel.CreateBasicProperties();
-                properties.CorrelationId = correlationId ?? response.CorrelationId;
-                properties.Persistent = true;
+                var properties = new BasicProperties
+                {
+                    CorrelationId = correlationId ?? response.CorrelationId,
+                    Persistent = true
+                };
 
-                _channel.BasicPublish(
+                await _channel.BasicPublishAsync(
                     exchange: "",
                     routingKey: replyToQueue,
+                    mandatory: false,
                     basicProperties: properties,
                     body: responseBody);
 
@@ -297,8 +300,8 @@ namespace Captive.Barcode.Services
             
             try
             {
-                _channel?.Close();
-                _connection?.Close();
+                if (_channel != null) await _channel.CloseAsync(cancellationToken);
+                if (_connection != null) await _connection.CloseAsync(cancellationToken);
             }
             catch (Exception ex)
             {

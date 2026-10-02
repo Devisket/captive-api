@@ -17,7 +17,7 @@ namespace Captive.Orchestrator
         private readonly IRabbitConnectionManager _rabbitConnManager;
         private readonly IDbfService _dbfService;
         private IConnection _connection;
-        private IModel _channel;
+        private IChannel _channel;
 
         public DbfRequestConsumerService(IRabbitConnectionManager rabbitConnManager, IFileProcessOrchestratorService fileOrchestrator, ILoggerFactory loggerFactory, IDbfService dbfService)
         {
@@ -26,17 +26,17 @@ namespace Captive.Orchestrator
             _dbfService = dbfService;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = _rabbitConnManager.GetRabbitMQConnection();
+            _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
 
-            _channel = _connection.CreateModel();
+            _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
-            _channel.QueueDeclare(queue: "DbfGenerate", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            await _channel.QueueDeclareAsync(queue: "DbfGenerate", durable: true, exclusive: false, autoDelete: false, arguments: null, cancellationToken: stoppingToken);
 
-            var consumer = new EventingBasicConsumer(_channel);
+            var consumer = new AsyncEventingBasicConsumer(_channel);
 
-            consumer.Received += async (model, ea) =>
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 try
                 {
@@ -50,12 +50,10 @@ namespace Captive.Orchestrator
                     _logger.LogError(ex.Message);
                 }
 
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await _channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
-            _channel.BasicConsume("DbfGenerate", false, consumer);
-
-            return Task.CompletedTask;
+            await _channel.BasicConsumeAsync("DbfGenerate", false, consumer, stoppingToken);
         }
     }
 }

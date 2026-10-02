@@ -26,7 +26,7 @@ namespace Captive.Commands.BackgroundServices
         private readonly ILogger<CheckOrderProcessConsumerService> _logger;
 
         private IConnection? _connection;
-        private IModel? _channel;
+        private IChannel? _channel;
 
         public CheckOrderProcessConsumerService(
             IServiceScopeFactory scopeFactory,
@@ -38,15 +38,16 @@ namespace Captive.Commands.BackgroundServices
             _logger = loggerFactory.CreateLogger<CheckOrderProcessConsumerService>();
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = _rabbitConnManager.GetRabbitMQConnection();
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "CaptiveCheckOrderProcess", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
+            _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
+            await _channel.QueueDeclareAsync(queue: "CaptiveCheckOrderProcess", durable: true, exclusive: false, autoDelete: false, arguments: null, cancellationToken: stoppingToken);
 
-            var consumer = new EventingBasicConsumer(_channel);
+            var channel = _channel;
+            var consumer = new AsyncEventingBasicConsumer(channel);
 
-            consumer.Received += async (model, ea) =>
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 try
                 {
@@ -61,12 +62,10 @@ namespace Captive.Commands.BackgroundServices
                     _logger.LogError(ex, "Error processing check order message");
                 }
 
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
-            _channel.BasicConsume("CaptiveCheckOrderProcess", false, consumer);
-
-            return Task.CompletedTask;
+            await channel.BasicConsumeAsync("CaptiveCheckOrderProcess", false, consumer, stoppingToken);
         }
 
         private async Task ProcessCheckOrderAsync(CheckOrderProcessMessage message, CancellationToken cancellationToken)
@@ -127,8 +126,8 @@ namespace Captive.Commands.BackgroundServices
 
         public override void Dispose()
         {
-            _channel?.Close();
-            _connection?.Close();
+            _channel?.Dispose();
+            _connection?.Dispose();
             base.Dispose();
         }
     }

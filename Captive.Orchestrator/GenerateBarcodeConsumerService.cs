@@ -16,7 +16,7 @@ namespace Captive.Orchestrator
         private ILogger<GenerateBarcodeConsumerService> _logger;
         private readonly IRabbitConnectionManager _rabbitConnManager;
         private IConnection _connection;
-        private IModel _channel;
+        private IChannel _channel;
         private readonly IGenerateBarcodeService _generateBarcodeService;
 
         public GenerateBarcodeConsumerService(
@@ -31,17 +31,17 @@ namespace Captive.Orchestrator
 
 
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = _rabbitConnManager.GetRabbitMQConnection();
+            _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
 
-            _channel = _connection.CreateModel();
+            _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
-            _channel.QueueDeclare(queue: "GenerateBarcode", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            await _channel.QueueDeclareAsync(queue: "GenerateBarcode", durable: true, exclusive: false, autoDelete: false, arguments: null, cancellationToken: stoppingToken);
 
-            var consumer = new EventingBasicConsumer(_channel);
+            var consumer = new AsyncEventingBasicConsumer(_channel);
 
-            consumer.Received += async (model, ea) =>
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 try
                 {
@@ -66,9 +66,7 @@ namespace Captive.Orchestrator
                 }
             };
 
-            _channel.BasicConsume("GenerateBarcode", true, consumer);
-
-            return Task.CompletedTask;
+            await _channel.BasicConsumeAsync("GenerateBarcode", true, consumer, stoppingToken);
         }
     }
 }
