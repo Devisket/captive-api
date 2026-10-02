@@ -29,11 +29,28 @@ namespace Captive.Commands.Controllers
             return Ok();
         }
 
+        [HttpPost("GenerationFailed/{batchId}")]
+        public async Task<IActionResult> ReportGenerationFailed([FromRoute] Guid batchId, [FromBody] ReportGenerationFailedRequest request)
+        {
+            await _mediator.Send(new ReportGenerationFailedCommand
+            {
+                BatchId = batchId,
+                ErrorMessage = request?.ErrorMessage,
+            });
+
+            return Ok();
+        }
+
         [HttpPost("BatchProgress/{batchId}")]
         public async Task<IActionResult> NotifyBatchProgress([FromRoute] Guid batchId, [FromBody] string statusDetail)
         {
             await _orderFileNotifier.NotifyBatchProgress(batchId, statusDetail);
             return Ok();
         }
+    }
+
+    public class ReportGenerationFailedRequest
+    {
+        public string? ErrorMessage { get; set; }
     }
 }

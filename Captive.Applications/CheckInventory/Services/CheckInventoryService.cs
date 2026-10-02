@@ -6,6 +6,7 @@ using Captive.Data.UnitOfWork.Write;
 using Captive.Model.Dto;
 using Captive.Model.Notifications;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Captive.Applications.CheckInventory.Services
 {
@@ -77,6 +78,14 @@ namespace Captive.Applications.CheckInventory.Services
                     continue;
                 }
 
+                // Only the starting series was provided (e.g. custom order file): generate the
+                // series from it instead of the check inventory.
+                if (!string.IsNullOrWhiteSpace(checkOrder.PreStartingSeries))
+                {
+                    await ApplyManualStartingSeries(orderFile, checkOrder, orderFormCheck, cancellationToken);
+                    continue;
+                }
+
                 var checkInventory = await _checkValidationService.GetCheckInventoryDirect(
                    bankId,
                    checkOrder.BranchId,
@@ -141,6 +150,59 @@ namespace Captive.Applications.CheckInventory.Services
             }
 
             return logDto;
+        }
+
+        /// <summary>
+        /// Generates the series of a check order from its manually provided starting series.
+        /// One detail is created per booklet (order quantity), each covering the form check quantity,
+        /// so the overall ending series = starting series + (order quantity x form check quantity) - 1.
+        /// </summary>
+        private async Task ApplyManualStartingSeries(OrderFile orderFile, CheckOrders checkOrder, Data.Models.FormChecks orderFormCheck, CancellationToken cancellationToken)
+        {
+            var startingSeries = checkOrder.PreStartingSeries!.Trim();
+            var match = Regex.Match(startingSeries, @"^(.*?)(\d+)$");
+
+            if (!match.Success || match.Groups[2].Value.Length > 18)
+                throw new CaptiveException($"Account No: {checkOrder.AccountNo} has an invalid starting series '{startingSeries}'. It must end with a number (e.g. A0000001).");
+
+            if (orderFormCheck.Quantity <= 0)
+                throw new CaptiveException($"Account No: {checkOrder.AccountNo} - form check {orderFormCheck.CheckType}/{orderFormCheck.FormType} has no check quantity configured.");
+
+            var prefix = match.Groups[1].Value;
+            var numberOfPadding = match.Groups[2].Value.Length;
+            var startingNumber = long.Parse(match.Groups[2].Value);
+            var lastNumber = startingNumber + ((long)checkOrder.Quantity * orderFormCheck.Quantity) - 1;
+
+            if (lastNumber.ToString().Length > numberOfPadding)
+                throw new CaptiveException($"Account No: {checkOrder.AccountNo} - the generated ending series exceeds {numberOfPadding} digits.");
+
+            for (int i = 0; i < checkOrder.Quantity; i++)
+            {
+                var bookletStart = startingNumber + ((long)i * orderFormCheck.Quantity);
+                var bookletEnd = bookletStart + orderFormCheck.Quantity - 1;
+                var series = _stringService.ConvertToSeries(prefix, numberOfPadding, bookletStart, bookletEnd);
+
+                await _writeUow.CheckInventoryDetails.AddAsync(new CheckInventoryDetail
+                {
+                    Id = Guid.Empty,
+                    ProductId = orderFile.ProductId,
+                    CheckOrderId = checkOrder.Id,
+                    StartingSeries = series.Item1,
+                    EndingSeries = series.Item2,
+                    CheckInventoryId = null,
+                    Quantity = orderFormCheck.Quantity,
+                    BranchId = checkOrder.BranchId,
+                    StartingNumber = bookletStart,
+                    EndingNumber = bookletEnd,
+                    AccountNumber = checkOrder.AccountNo,
+                    FormCheckId = orderFormCheck.Id,
+                    CreatedDateTime = DateTime.UtcNow,
+                }, cancellationToken);
+            }
+
+            // Keep the generated ending series on the check order (tracked entity, saved with the pipeline).
+            checkOrder.PreStartingSeries = startingSeries;
+            checkOrder.PreEndingSeries = _stringService.ConvertToSeries(prefix, numberOfPadding, startingNumber, lastNumber).Item2;
         }
 
         private IQueryable<CheckInventoryDetail> ApplyFilters(IQueryable<CheckInventoryDetail> query, CheckInventoryMappingData mapping, CheckOrders checkOrder)

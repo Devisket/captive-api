@@ -30,21 +30,82 @@ namespace Captive.Orchestrator.Services.GenerateBarcodeService
         
         public async Task GenerateBarcode(Guid bankId, Guid batchId, string barcodeServiceName, IEnumerable<CheckOrderBarcodeDto> checkOrders)
         {
-            var barcodeImplementation = _barcodeFactory.GetBarcodeImplementation(barcodeServiceName);
-            var checkOrderList = checkOrders.ToList();
-            int total = checkOrderList.Count;
-            var allUpdates = new List<UpdateCheckOrderBarcodeDto>();
-
-            for (int i = 0; i < checkOrderList.Count; i++)
+            try
             {
-                await NotifyBarcodeProgress(batchId, i + 1, total);
-                var results = await barcodeImplementation.GenerateBarcode(bankId, batchId, new[] { checkOrderList[i] });
-                allUpdates.AddRange(results);
+                var barcodeImplementation = _barcodeFactory.GetBarcodeImplementation(barcodeServiceName);
+                var checkOrderList = checkOrders.ToList();
+                int total = checkOrderList.Count;
+                var allUpdates = new List<UpdateCheckOrderBarcodeDto>();
+
+                for (int i = 0; i < checkOrderList.Count; i++)
+                {
+                    await NotifyBarcodeProgress(batchId, i + 1, total);
+                    var results = await barcodeImplementation.GenerateBarcode(bankId, batchId, new[] { checkOrderList[i] });
+                    allUpdates.AddRange(results);
+                }
+
+                await UpdateBarcodeValues(bankId, batchId, allUpdates);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Barcode generation failed for batch {BatchId}", batchId);
+                await NotifyGenerationFailed(batchId, $"Barcode generation failed: {ex.Message}");
+                throw;
             }
 
-            await UpdateBarcodeValues(bankId, batchId, allUpdates);
-
             await GenerateReport(batchId);
+        }
+
+        /// <summary>Reads the "Message" of Captive.Commands' ErrorResponse, falling back to the raw body / status code.</summary>
+        private static string ExtractErrorMessage(string? content, System.Net.HttpStatusCode statusCode)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+                return statusCode.ToString();
+
+            try
+            {
+                var token = Newtonsoft.Json.Linq.JToken.Parse(content);
+                var message = token.Type == Newtonsoft.Json.Linq.JTokenType.Object
+                    ? (string?)(token["Message"] ?? token["message"])
+                    : null;
+                if (!string.IsNullOrWhiteSpace(message))
+                    return message;
+            }
+            catch (JsonException)
+            {
+                // Not JSON - use the raw content
+            }
+
+            return content.Length > 500 ? content.Substring(0, 500) : content;
+        }
+
+        /// <summary>
+        /// Tells Captive.Commands that generation failed so the order files stuck in
+        /// GeneratingReport are moved to Error and the frontend is updated.
+        /// </summary>
+        private async Task NotifyGenerationFailed(Guid batchId, string errorMessage)
+        {
+            var baseUri = _configuration["Endpoints:CaptiveCommands"];
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                _logger.LogError("CaptiveCommands endpoint configuration is missing; cannot report failure for batch {BatchId}", batchId);
+                return;
+            }
+
+            try
+            {
+                var requestUri = $"{baseUri}/api/report/GenerationFailed/{batchId}";
+                var json = JsonConvert.SerializeObject(new { ErrorMessage = errorMessage });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(requestUri, content);
+
+                if (!response.IsSuccessStatusCode)
+                    _logger.LogError("Failed to report generation failure for batch {BatchId}. Status: {StatusCode}", batchId, response.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to report generation failure for batch {BatchId}", batchId);
+            }
         }
 
         private async Task NotifyBarcodeProgress(Guid batchId, int current, int total)
@@ -75,7 +136,24 @@ namespace Captive.Orchestrator.Services.GenerateBarcodeService
 
             var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 
-            await _httpClient.PostAsync(requestUri, content);
+            HttpResponseMessage response;
+            try
+            {
+                response = await _httpClient.PostAsync(requestUri, content);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Report generation request failed for batch {BatchId}", batchId);
+                await NotifyGenerationFailed(batchId, $"Report generation failed: {ex.Message}");
+                throw;
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Report generation failed for batch {BatchId}. Status: {StatusCode}, Error: {Error}", batchId, response.StatusCode, errorContent);
+                await NotifyGenerationFailed(batchId, $"Report generation failed: {ExtractErrorMessage(errorContent, response.StatusCode)}");
+            }
         }
 
 
@@ -119,7 +197,7 @@ namespace Captive.Orchestrator.Services.GenerateBarcodeService
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
                     _logger.LogError($"Failed to update barcode values. Status: {response.StatusCode}, Error: {errorContent}");
-                    throw new HttpRequestException($"Failed to update barcode values. Status: {response.StatusCode}, Error: {errorContent}");
+                    throw new HttpRequestException($"Failed to update barcode values: {ExtractErrorMessage(errorContent, response.StatusCode)}");
                 }
             }
             catch (Exception ex)
