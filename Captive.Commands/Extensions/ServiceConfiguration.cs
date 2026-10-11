@@ -60,6 +60,7 @@ namespace Captive.Commands.Extensions
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddScoped<IBatchService, BatchService>();
             services.AddScoped<ICheckInventoryService, CheckInventoryService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddSignalR();
             services.AddScoped<ICheckValidationService, CheckValidationService>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();

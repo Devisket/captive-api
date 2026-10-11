@@ -1,5 +1,4 @@
 using Captive.Applications.CheckInventory.Commands.AddCheckInventory;
-using Captive.Applications.CheckInventory.Commands.AddCheckInventoryDetails;
 using Captive.Applications.CheckInventory.Commands.DeleteCheckInventory;
 using Captive.Applications.CheckInventory.Commands.ImportCheckInventory;
 using Captive.Applications.CheckInventory.Commands.SetCheckInventoryActive;
@@ -45,13 +44,6 @@ namespace Captive.Commands.Controllers
         public async Task<IActionResult> SetCheckInventoryAsActive([FromRoute] Guid checkInventoryId)
         {
             await _mediator.Send(new SetCheckInventoryActiveCommand() { CheckInventoryId = checkInventoryId });
-            return Ok();
-        }
-
-        [HttpPost("ApplyCheckInventoryDetails")]
-        public async Task<IActionResult> ApplyCheckInventoryDetails([FromBody] ApplyCheckInventoryDetailsCommand command)
-        {
-            await _mediator.Send(command);
             return Ok();
         }
 

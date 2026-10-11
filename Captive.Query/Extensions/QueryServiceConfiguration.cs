@@ -57,6 +57,7 @@ namespace Captive.Queries.Extensions
             services.AddScoped<IStringService, StringService>();
             services.AddScoped<ICheckValidationService, CheckValidationService>();
             services.AddScoped<ICheckInventoryService,CheckInventoryService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
             services.AddScoped<IProducer<DbfGenerateMessage>, DbfProducerMessage>();
