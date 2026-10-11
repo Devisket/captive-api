@@ -1,6 +1,7 @@
 ﻿using Captive.Orchestrator.Services.GenerateBarcodeService;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,16 +18,16 @@ namespace Captive.Orchestrator
         private readonly IRabbitConnectionManager _rabbitConnManager;
         private IConnection _connection;
         private IChannel _channel;
-        private readonly IGenerateBarcodeService _generateBarcodeService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public GenerateBarcodeConsumerService(
-            IRabbitConnectionManager rabbitConnManager, 
+            IRabbitConnectionManager rabbitConnManager,
             ILogger<GenerateBarcodeConsumerService> logger,
-            IGenerateBarcodeService generateBarcodeService)
+            IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _rabbitConnManager = rabbitConnManager;
-            _generateBarcodeService = generateBarcodeService;
+            _scopeFactory = scopeFactory;
         }
 
 
@@ -56,7 +57,9 @@ namespace Captive.Orchestrator
                     }
                     else
                     {
-                        await _generateBarcodeService.GenerateBarcode(deserializedMessage.BankId, deserializedMessage.BatchId, deserializedMessage.BarcodeService, deserializedMessage.CheckOrderBarcode);
+                        using var scope = _scopeFactory.CreateScope();
+                        var generateBarcodeService = scope.ServiceProvider.GetRequiredService<IGenerateBarcodeService>();
+                        await generateBarcodeService.GenerateBarcode(deserializedMessage.BankId, deserializedMessage.BatchId, deserializedMessage.BarcodeService, deserializedMessage.CheckOrderBarcode);
                     }
                 }
                 catch (Exception ex)

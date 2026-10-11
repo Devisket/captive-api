@@ -1,61 +1,134 @@
 {
     "version": "0.2.0",
     "configurations": [
+        // ---------------------------------------------------------------
+        // Run only (no build). Used by the compounds below, which build
+        // the solution once before starting everything.
+        // ---------------------------------------------------------------
         {
             "name": "Captive.Commands",
-            "type": "dotnet",
+            "type": "coreclr",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/Captive.Commands/Captive.Commands.csproj",
-            "launchConfigurationId": "TargetFramework=;Captive.Commands",
-            "preLaunchTask": "build",
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
+            "program": "${workspaceFolder}/Captive.Commands/bin/Debug/net8.0/Captive.Commands.dll",
+            "cwd": "${workspaceFolder}/Captive.Commands",
+            "launchSettingsProfile": "Captive.Commands",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "1-run", "order": 1 }
+        },
+        {
+            "name": "Captive.Queries",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/Captive.Query/bin/Debug/net8.0/Captive.Queries.dll",
+            "cwd": "${workspaceFolder}/Captive.Query",
+            "launchSettingsProfile": "Captive.Queries",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "1-run", "order": 2 }
         },
         {
             "name": "Captive.MdbAPI",
-            "type": "dotnet",
+            "type": "coreclr",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/Captive.MdbAPI/Captive.MdbAPI.csproj",
-            "launchConfigurationId": "TargetFramework=;Captive.MdbAPI",
-            "preLaunchTask": "build",
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
-        },
-        {
-            "name": "Captive.Query",
-            "type": "dotnet",
-            "request": "launch",
-            "projectPath": "${workspaceFolder}/Captive.Query/Captive.Queries.csproj",
-            "launchConfigurationId": "TargetFramework=;Captive.Query",
-            "preLaunchTask": "build",
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
+            "program": "${workspaceFolder}/Captive.MdbAPI/bin/Debug/net8.0-windows/Captive.MdbAPI.dll",
+            "cwd": "${workspaceFolder}/Captive.MdbAPI",
+            "launchSettingsProfile": "Captive.MdbAPI",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "1-run", "order": 3 }
         },
         {
             "name": "Captive.Orchestrator",
-            "type": "dotnet",
+            "type": "coreclr",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/Captive.Orchestrator/Captive.Orchestrator.csproj",
-            "launchConfigurationId": "TargetFramework=;Captive.Orchestrator",
-            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Captive.Orchestrator/bin/Debug/net8.0/Captive.Orchestrator.dll",
+            "cwd": "${workspaceFolder}/Captive.Orchestrator",
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "1-run", "order": 4 }
+        },
+
+        // ---------------------------------------------------------------
+        // Build & run a single project.
+        // ---------------------------------------------------------------
+        {
+            "name": "Build & Run: Captive.Commands",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build: Captive.Commands",
+            "program": "${workspaceFolder}/Captive.Commands/bin/Debug/net8.0/Captive.Commands.dll",
+            "cwd": "${workspaceFolder}/Captive.Commands",
+            "launchSettingsProfile": "Captive.Commands",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "2-build-run", "order": 1 }
+        },
+        {
+            "name": "Build & Run: Captive.Queries",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build: Captive.Queries",
+            "program": "${workspaceFolder}/Captive.Query/bin/Debug/net8.0/Captive.Queries.dll",
+            "cwd": "${workspaceFolder}/Captive.Query",
+            "launchSettingsProfile": "Captive.Queries",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "2-build-run", "order": 2 }
+        },
+        {
+            "name": "Build & Run: Captive.MdbAPI",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build: Captive.MdbAPI",
+            "program": "${workspaceFolder}/Captive.MdbAPI/bin/Debug/net8.0-windows/Captive.MdbAPI.dll",
+            "cwd": "${workspaceFolder}/Captive.MdbAPI",
+            "launchSettingsProfile": "Captive.MdbAPI",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "2-build-run", "order": 3 }
+        },
+        {
+            "name": "Build & Run: Captive.Orchestrator",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build: Captive.Orchestrator",
+            "program": "${workspaceFolder}/Captive.Orchestrator/bin/Debug/net8.0/Captive.Orchestrator.dll",
+            "cwd": "${workspaceFolder}/Captive.Orchestrator",
+            "env": {
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "presentation": { "group": "2-build-run", "order": 4 }
         }
     ],
     "compounds": [
         {
-            "name": "All Services",
+            "name": "All Services (build once + run)",
+            "preLaunchTask": "build",
             "configurations": [
                 "Captive.Commands",
+                "Captive.Queries",
                 "Captive.MdbAPI",
-                "Captive.Query",
                 "Captive.Orchestrator"
             ],
-            "stopAll": true
+            "stopAll": true,
+            "presentation": { "group": "0-all", "order": 1 }
+        },
+        {
+            "name": "All Services (run only, no build)",
+            "configurations": [
+                "Captive.Commands",
+                "Captive.Queries",
+                "Captive.MdbAPI",
+                "Captive.Orchestrator"
+            ],
+            "stopAll": true,
+            "presentation": { "group": "0-all", "order": 2 }
         }
     ]
 }

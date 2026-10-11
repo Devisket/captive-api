@@ -1,6 +1,7 @@
 ﻿using Captive.Orchestrator.Services.FileProcessOrchestrator.cs;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,15 +15,15 @@ namespace Captive.Orchestrator
     {
         private ILogger<FileProcessorConsumerService> _logger;
         private readonly IRabbitConnectionManager _rabbitConnManager;
-        private readonly IFileProcessOrchestratorService _fileOrchestrator;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         private IConnection _connection;
         private IChannel _channel;
 
-        public FileProcessorConsumerService(IRabbitConnectionManager rabbitConnManager, IFileProcessOrchestratorService fileOrchestrator, ILoggerFactory loggerFactory)
+        public FileProcessorConsumerService(IRabbitConnectionManager rabbitConnManager, IServiceScopeFactory scopeFactory, ILoggerFactory loggerFactory)
         {
             _rabbitConnManager = rabbitConnManager;
-            _fileOrchestrator = fileOrchestrator;
+            _scopeFactory = scopeFactory;
             _logger = loggerFactory.CreateLogger<FileProcessorConsumerService>();
         }
 
@@ -46,7 +47,9 @@ namespace Captive.Orchestrator
 
                     var fileUpload = JsonConvert.DeserializeObject<FileUploadMessage>(message);
 
-                    await _fileOrchestrator.ProcessFile(fileUpload);
+                    using var scope = _scopeFactory.CreateScope();
+                    var fileOrchestrator = scope.ServiceProvider.GetRequiredService<IFileProcessOrchestratorService>();
+                    await fileOrchestrator.ProcessFile(fileUpload);
                    
                 }
                 catch (Exception ex) { 

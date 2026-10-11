@@ -1,7 +1,7 @@
 ﻿using Captive.Orchestrator.Services.DbfService;
-using Captive.Orchestrator.Services.FileProcessOrchestrator.cs;
 using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -15,15 +15,15 @@ namespace Captive.Orchestrator
     {
         private ILogger<DbfRequestConsumerService> _logger;
         private readonly IRabbitConnectionManager _rabbitConnManager;
-        private readonly IDbfService _dbfService;
+        private readonly IServiceScopeFactory _scopeFactory;
         private IConnection _connection;
         private IChannel _channel;
 
-        public DbfRequestConsumerService(IRabbitConnectionManager rabbitConnManager, IFileProcessOrchestratorService fileOrchestrator, ILoggerFactory loggerFactory, IDbfService dbfService)
+        public DbfRequestConsumerService(IRabbitConnectionManager rabbitConnManager, ILoggerFactory loggerFactory, IServiceScopeFactory scopeFactory)
         {
             _logger = loggerFactory.CreateLogger<DbfRequestConsumerService>();
             _rabbitConnManager = rabbitConnManager;
-            _dbfService = dbfService;
+            _scopeFactory = scopeFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -43,7 +43,9 @@ namespace Captive.Orchestrator
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
                     var dbfGenerateMessage = JsonConvert.DeserializeObject<DbfGenerateMessage>(message);
-                    await _dbfService.GenerateDbfFile(dbfGenerateMessage.BatchId, dbfGenerateMessage.outputFolder);
+                    using var scope = _scopeFactory.CreateScope();
+                    var dbfService = scope.ServiceProvider.GetRequiredService<IDbfService>();
+                    await dbfService.GenerateDbfFile(dbfGenerateMessage.BatchId, dbfGenerateMessage.outputFolder);
                 }
                 catch (Exception ex)
                 {

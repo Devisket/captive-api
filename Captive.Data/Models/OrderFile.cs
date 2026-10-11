@@ -12,6 +12,7 @@ namespace Captive.Data.Models
         public string? ErrorMessage { get; set; }
         public bool IsValidated { get; set; }
         public bool IsCustom { get; set; }
+        public bool IsSplitGeneration{  get; set; }
         public int PersonalQuantity { get; set; }
         public int PersonalOrderQuantity { get; set; }
         public int CommercialQuantity { get; set; }
@@ -19,7 +20,6 @@ namespace Captive.Data.Models
         public ICollection<FloatingCheckOrder>? FloatingCheckOrders { get; set; }
         public ICollection<CheckOrders>? CheckOrders { get; set; }
         public ICollection<OrderFileLog>? OrderFileLogs { get; set; }
-
         public Guid BatchFileId { get; set; }
         public BatchFile? BatchFile { get; set; }
         

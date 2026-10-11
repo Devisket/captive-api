@@ -24,11 +24,12 @@ namespace Captive.Orchestrator
                 .AddJsonFile("appsettings.json");
             builder.Services.AddSingleton<IConnectionFactory, ConnectionFactory>();
             builder.Services.AddSingleton<IRabbitConnectionManager, RabbitConnectionManager>();
+            builder.Services.AddScoped<ICheckOrderService, CheckOrderService>();
             builder.Services.AddScoped<IFileProcessOrchestratorService, FileProcessOrchestratorService>();
             builder.Services.AddScoped<IDbfService,DbfService>();
             builder.Services.AddScoped<IGenerateBarcodeService, GenerateBarcodeService>();  
 
-            builder.Services.AddScoped<ICheckOrderService, CheckOrderService>();
+            
             
             // Register HttpClient
             builder.Services.AddHttpClient();
