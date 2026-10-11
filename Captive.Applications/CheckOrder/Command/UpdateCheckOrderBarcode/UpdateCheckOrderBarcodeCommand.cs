@@ -7,6 +7,6 @@ namespace Captive.Applications.CheckOrder.Command.UpdateCheckOrderBarcode
     {
 
         public Guid BatchId { get; set; }
-        public IEnumerable<UpdateCheckOrderBarcodeDto> CheckordersToUpdate { get; set; }
+        public IEnumerable<UpdateCheckOrderBarcodeDto>? CheckOrdersToUpdate { get; set; }
     }
 }

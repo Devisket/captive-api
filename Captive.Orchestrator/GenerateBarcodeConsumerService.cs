@@ -13,11 +13,8 @@ namespace Captive.Orchestrator
 {
     public class GenerateBarcodeConsumerService : BackgroundService
     {
-
         private ILogger<GenerateBarcodeConsumerService> _logger;
         private readonly IRabbitConnectionManager _rabbitConnManager;
-        private IConnection _connection;
-        private IChannel _channel;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public GenerateBarcodeConsumerService(
@@ -30,13 +27,11 @@ namespace Captive.Orchestrator
             _scopeFactory = scopeFactory;
         }
 
-
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
+            var _connection = await _rabbitConnManager.GetRabbitMQConnectionAsync(stoppingToken);
 
-            _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
+            var _channel = await _connection.CreateChannelAsync(cancellationToken: stoppingToken);
 
             await _channel.QueueDeclareAsync(queue: "GenerateBarcode", durable: true, exclusive: false, autoDelete: false, arguments: null, cancellationToken: stoppingToken);
 

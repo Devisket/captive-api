@@ -2,6 +2,7 @@
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace Captive.Applications.CheckOrder.Command.UpdateCheckOrderBarcode
 
         public async Task<Unit> Handle(UpdateCheckOrderBarcodeCommand request, CancellationToken cancellationToken)
         {
+
+            if(request.CheckOrdersToUpdate.IsNullOrEmpty())
+                throw new Exception("Check orders to update is empty.");
+
             var checkOrders = await _readUow.CheckOrders
                 .GetAll()
                 .Include(x => x.OrderFile)
@@ -37,9 +42,9 @@ namespace Captive.Applications.CheckOrder.Command.UpdateCheckOrderBarcode
                 return Unit.Value;
             }
 
-            foreach (var checkOrder in checkOrders.Where(x => request.CheckordersToUpdate.Any(z => z.CheckOrderId == x.Id)))
+            foreach (var checkOrder in checkOrders.Where(x => request.CheckOrdersToUpdate.Any(z => z.CheckOrderId == x.Id)))
             {
-                var barCodeUpdates = request.CheckordersToUpdate.Where(x => x.CheckOrderId == checkOrder.Id);
+                var barCodeUpdates = request.CheckOrdersToUpdate.Where(x => x.CheckOrderId == checkOrder.Id);
 
                 var consolidatedBarCodes = string.Join(';', barCodeUpdates.Select(x => x.BarcodeValue));
 

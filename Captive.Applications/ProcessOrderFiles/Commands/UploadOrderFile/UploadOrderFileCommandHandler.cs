@@ -21,12 +21,14 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
         private readonly ILogger<UploadOrderFileCommandHandler> _logger;
 
         private readonly IProducer<FileUploadMessage> _producer;
+        private readonly IProductService _productService;
 
         public UploadOrderFileCommandHandler(
             IReadUnitOfWork readUow,
             IWriteUnitOfWork writeUow,
             IProducer<FileUploadMessage> producer,
             IConfiguration configuration,
+            IProductService productService,
             ILogger<UploadOrderFileCommandHandler> logger)
         {
             _readUow = readUow;
@@ -34,6 +36,7 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
             _producer = producer;
             _configuration = configuration;
             _logger = logger;
+            _productService = productService;
         }
 
         public async Task<Unit> Handle(UploadOrderFileCommand request, CancellationToken cancellationToken)
@@ -78,26 +81,31 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
             return Unit.Value;
         }
 
-        private async Task<List<OrderFile>> ProcessFiles(Guid batchId, IEnumerable<IFormFile> files, string directoryPath, CancellationToken cancellationToken)
+        private async Task<List<OrderFile>> ProcessFiles(Guid batchId, IEnumerable<IFormFile> files,  string directoryPath, CancellationToken cancellationToken)
         {
-            var rootPath = Path.Combine(_configuration["Processing:FileProcessing"], directoryPath);
+            var uploadDir = _configuration["Processing:FileProcessing"];
+
+            if (string.IsNullOrEmpty(uploadDir))
+                throw new Exception("File processing upload directory is not defined");
+
+            var rootPath = Path.Combine(uploadDir, directoryPath);
 
             List<OrderFile> result = new List<OrderFile>();
 
             foreach (var file in files) 
             {
-                var productConfiguration = await GetProductId(file.FileName, cancellationToken);
+                var productConfiguration = await _productService.GetProductConfigurationByFileName(file.FileName, cancellationToken);
 
                 var savedFile = await SaveFile(file, productConfiguration, rootPath, cancellationToken);
 
-                var orderFile = await CreateOrderFileRecord(batchId, productConfiguration.ProductId, savedFile, directoryPath, cancellationToken);
+                var orderFile = await CreateOrderFileRecord(batchId, productConfiguration.Product, savedFile, directoryPath, cancellationToken);
 
                 result.Add(orderFile);
             }
             return result;
         }
 
-        private async Task<OrderFile> CreateOrderFileRecord(Guid batchId, Guid productId,  string fileName, string batchDirectory, CancellationToken cancellationToken )
+        private async Task<OrderFile> CreateOrderFileRecord(Guid batchId, Captive.Data.Models.Product product,  string fileName, string batchDirectory, CancellationToken cancellationToken )
         {
             var relativePath = batchDirectory.Split("processing")[1];
 
@@ -108,7 +116,8 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                 FileName = fileName,
                 FilePath = Path.Combine(relativePath, fileName),
                 Status = Data.Enums.OrderFilesStatus.Processing,
-                ProductId = productId,
+                ProductId = product.Id,
+                Product = product,
                 IsValidated = false,
                 ProcessDate = DateTime.UtcNow,
             };
@@ -140,13 +149,12 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
         {
             var rootPath = _configuration["Processing:FileProcessing"];
 
+            if (string.IsNullOrEmpty(rootPath))
+                throw new Exception("File processing directory is not defined");
+
             rootPath = rootPath.Replace("bankShortName", bankShortName);
             rootPath = rootPath.Replace("currentDate", DateTime.UtcNow.ToString("MM-dd-yyyy"));
             rootPath = rootPath.Replace("batchName", batchName);
-
-
-            if (string.IsNullOrEmpty(rootPath))
-                throw new Exception("File processing directory is not defined");
 
             Directory.CreateDirectory(rootPath);
 
@@ -163,16 +171,6 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
 
                 return fileBytes;
             }
-        }      
-
-        private async Task<ProductConfiguration> GetProductId(string fileName, CancellationToken cancellationToken)
-        {
-            var productConfiguration = await _readUow.ProductConfigurations.GetAll().FirstOrDefaultAsync(x => fileName.Contains(x.FileName), cancellationToken);
-
-            if (productConfiguration == null)
-                throw new Exception($"File name {fileName} has no product configuration");
-
-            return productConfiguration;
         }
     }
 }

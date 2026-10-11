@@ -63,6 +63,7 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
                 Id = Guid.NewGuid(),
                 BatchFileId = batch.Id,
                 ProductId = product.Id,
+                Product = product,
                 FileName = fileName,
                 FilePath = string.Empty,
                 // Pending = ready for validation (uploaded files reach this state once parsed)
@@ -74,7 +75,7 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
 
             await _writeUow.OrderFiles.AddAsync(orderFile, cancellationToken);
 
-            var floatingCheckOrders = checkOrders.Select(x => ToFloatingCheckOrder(x, orderFile.Id)).ToArray();
+            var floatingCheckOrders = checkOrders.Select(x => ToFloatingCheckOrder(x, orderFile)).ToArray();
 
             if (floatingCheckOrders.Any())
                 await _writeUow.FloatingCheckOrders.AddRange(floatingCheckOrders, cancellationToken);
@@ -125,7 +126,7 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
             return errors;
         }
 
-        private static FloatingCheckOrder ToFloatingCheckOrder(CheckOrderDto dto, Guid orderFileId)
+        private static FloatingCheckOrder ToFloatingCheckOrder(CheckOrderDto dto, OrderFile orderFile)
         {
             var accountName1 = dto.AccountName1?.Trim() ?? string.Empty;
             var accountName2 = dto.AccountName2?.Trim() ?? string.Empty;
@@ -137,7 +138,8 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
             return new FloatingCheckOrder
             {
                 Id = Guid.NewGuid(),
-                OrderFileId = orderFileId,
+                OrderFileId = orderFile.Id,
+                OrderFile = orderFile,
                 AccountNo = dto.AccountNumber.Trim(),
                 BRSTN = dto.BRSTN.Trim(),
                 BranchCode = dto.BranchCode?.Trim(),

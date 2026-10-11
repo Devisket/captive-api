@@ -5,6 +5,7 @@ using Captive.Data.UnitOfWork.Read;
 using Captive.Data.UnitOfWork.Write;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
 {
@@ -26,10 +27,13 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
             var orderFile = await _readUow.OrderFiles.GetAll().Include(x => x.Product).FirstOrDefaultAsync(x => x.Id == request.OrderFileId);
 
             if (orderFile == null) {
-                throw new Exception("Orderfile ID doesn't exist");
+                throw new Exception("Orderfile ID doesn't exist.");
             }
 
             List<Captive.Data.Models.CheckOrders> newCheckOrders = new List<CheckOrders>();
+
+            if(request.CheckOrders.IsNullOrEmpty())
+                throw new InvalidDataException("Check order is empty.");
 
 
             foreach (var checkOrder in request.CheckOrders) {
@@ -83,7 +87,7 @@ namespace Captive.Applications.CheckOrder.Command.CreateCheckOrder
             }
 
             if (newCheckOrders == null || !newCheckOrders.Any())
-                throw new Exception("Cannot create check order");
+                throw new Exception("Cannot create check order.");
 
             await _writeUow.CheckOrders.AddRange(newCheckOrders.ToArray(), cancellationToken);
 

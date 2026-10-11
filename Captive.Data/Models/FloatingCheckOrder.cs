@@ -24,6 +24,6 @@ namespace Captive.Data.Models
         public bool IsOnHold { get; set; } = false;
         public string? OrderNo { get; set; }
         public Guid OrderFileId { get; set; }
-        public OrderFile OrderFile { get; set; }
+        public required OrderFile OrderFile { get; set; }
     }
 }

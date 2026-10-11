@@ -5,7 +5,7 @@ namespace Captive.Data.Models
     {
         public Guid Id { get; set; }
         public string? BranchCode { get; set; }
-        public string AccountNo { get; set; }
+        public required string AccountNo { get; set; }
         public required string BRSTN { get; set; }
         public required string AccountName { get; set; }
         public string? Concode { get; set; }

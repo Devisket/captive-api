@@ -35,7 +35,8 @@ namespace Captive.Applications.Batch.Commands.CreateBatchFile
                 Id = Guid.NewGuid(),
                 BatchName = batchName,
                 OrderNumber = GetNewOrderNumber(bankInfo),
-                BankInfoId = request.BankInfoId,
+                BankInfoId = bankInfo.Id,
+                BankInfo = bankInfo,
                 CreatedDate = DateTime.UtcNow,
                 BatchFileStatus = BatchFileStatus.Pending,
                 DeliveryDate = request.DeliveryDate

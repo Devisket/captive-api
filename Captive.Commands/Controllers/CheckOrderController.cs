@@ -78,7 +78,7 @@ namespace Captive.Commands.Controllers
             await _mediator.Send(new UpdateCheckOrderBarcodeCommand
             {
                 BatchId = request.BatchId,
-                CheckordersToUpdate = request.CheckOrdersToUpdate
+                CheckOrdersToUpdate = request.CheckOrdersToUpdate
             });
 
             return Ok();
