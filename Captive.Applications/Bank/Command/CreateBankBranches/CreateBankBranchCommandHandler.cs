@@ -44,12 +44,13 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
                    
                 branch.BranchName = request.BranchName;
                 branch.BRSTNCode = request.BrstnCode;
+                branch.BranchCode = request.BranchCode;
                 branch.BranchAddress1 = request.BranchAddress1;
                 branch.BranchAddress2 = request.BranchAddress2;
                 branch.BranchAddress3 = request.BranchAddress3;
                 branch.BranchAddress4 = request.BranchAddress4;
                 branch.BranchAddress5 = request.BranchAddress5;
-                branch.BranchStatus = (BranchStatus)Enum.Parse(typeof(BranchStatus), request.BranchStatus);
+                branch.BranchStatus = request.BranchStatus;
 
                 if(request.MergingBranchId.HasValue)
                     branch.MergingBranchId = request.MergingBranchId;
@@ -70,6 +71,7 @@ namespace Captive.Applications.Bank.Command.CreateBankBranches
                    BranchAddress4 = request.BranchAddress4,
                    BranchAddress5 = request.BranchAddress5,
                    BRSTNCode = request.BrstnCode,
+                   BranchCode = request.BranchCode,
                    BranchName = request.BranchName,
                    BranchStatus = BranchStatus.Active,
 

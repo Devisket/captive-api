@@ -86,8 +86,7 @@ namespace Captive.Commands.Controllers
                 BranchAddress4 = request.BranchAddress4,
                 BranchAddress5 = request.BranchAddress5,
             });
-
-            await _mediator.Send(request);
+            
             return NoContent();
         }
 

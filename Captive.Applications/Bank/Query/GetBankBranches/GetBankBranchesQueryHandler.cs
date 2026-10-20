@@ -35,7 +35,7 @@ namespace Captive.Applications.Bank.Query.GetBankBranches
                     BranchAddress3 = x.BranchAddress3,
                     BranchAddress4 = x.BranchAddress4,
                     BranchAddress5 = x.BranchAddress5,
-                    BranchStatus = x.BranchStatus.ToString(),
+                    BranchStatus = x.BranchStatus,
                     MergingBranchId = x.MergingBranchId,
                 }).ToListAsync(cancellationToken)
             };

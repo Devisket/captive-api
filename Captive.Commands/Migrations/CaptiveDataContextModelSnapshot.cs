@@ -51,7 +51,6 @@ namespace Captive.Commands.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BranchCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BranchName")
@@ -545,6 +544,9 @@ namespace Captive.Commands.Migrations
                     b.Property<bool>("IsCustom")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsSplitGeneration")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsValidated")
                         .HasColumnType("bit");
 
@@ -618,6 +620,9 @@ namespace Captive.Commands.Migrations
 
                     b.Property<bool>("IsCustomizable")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProductCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProductConfigurationId")
                         .HasColumnType("uniqueidentifier");
