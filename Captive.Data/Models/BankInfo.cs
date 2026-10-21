@@ -6,6 +6,7 @@
         public required string BankName { get; set; }
         public required string ShortName { get; set; }
         public string? AccountNumberFormat { get; set; }
+        public bool HasBarcodeService { get;set; }
         public string? BarcodeService {  get; set; }
         public required DateTime CreatedDate { get; set; }
         public ICollection<BankBranches>? BankBranches { get; set; }

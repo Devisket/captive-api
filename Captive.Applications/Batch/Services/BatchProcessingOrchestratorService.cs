@@ -76,6 +76,7 @@ namespace Captive.Applications.Batch.Services
                     return;
                 }
 
+                var bankInfo = orderFiles.First().Product.BankInfo;
                 int totalFiles = orderFiles.Count;
                 int perFileProgress = totalFiles > 0 ? 70 / totalFiles : 70;
 
@@ -121,12 +122,18 @@ namespace Captive.Applications.Batch.Services
                 }
 
                 await UpdateJob(job, BatchJobStatus.Running, 90, "Generating report", cancellationToken);
-                await _orderFileNotifier.NotifyBatchProgress(batchId, "Generating barcodes...", cancellationToken);
 
-                await _reportGenerator.GenerateBarcode(
-                    orderFiles.First().Product.BankInfo!,
-                    orderFiles.First().BatchFileId,
-                    cancellationToken);
+                if (bankInfo!.HasBarcodeService)
+                {
+                     await _orderFileNotifier.NotifyBatchProgress(batchId, "Generating barcodes...", cancellationToken);
+
+                    await _reportGenerator.GenerateBarcode(
+                        orderFiles.First().Product.BankInfo!,
+                        orderFiles.First().BatchFileId,
+                        cancellationToken);
+                }
+                else
+                    await _reportGenerator.OnGenerateReport(batchId, cancellationToken);
 
                 await UpdateJob(job, BatchJobStatus.Completed, 100, "Completed", cancellationToken);
             }

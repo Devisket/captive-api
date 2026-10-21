@@ -11,6 +11,7 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
     public class CreateCustomOrderFileCommandHandler : IRequestHandler<CreateCustomOrderFileCommand, CreateCustomOrderFileCommandResponse>
     {
         private const int MaxFileNameLength = 200;
+        private const int SplitGenerationThreshold = 50;
 
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
@@ -63,12 +64,13 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
                 Id = Guid.NewGuid(),
                 BatchFileId = batch.Id,
                 ProductId = product.Id,
-                Product = product,
                 FileName = fileName,
                 FilePath = string.Empty,
                 // Pending = ready for validation (uploaded files reach this state once parsed)
                 Status = OrderFilesStatus.Pending,
                 IsCustom = true,
+                // Split generation only matters when at least one check order exceeds the threshold.
+                IsSplitGeneration = request.IsSplitGeneration && checkOrders.Any(x => x.Quantity > SplitGenerationThreshold),
                 IsValidated = false,
                 ProcessDate = DateTime.UtcNow,
             };
@@ -139,7 +141,6 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
             {
                 Id = Guid.NewGuid(),
                 OrderFileId = orderFile.Id,
-                OrderFile = orderFile,
                 AccountNo = dto.AccountNumber.Trim(),
                 BRSTN = dto.BRSTN.Trim(),
                 BranchCode = dto.BranchCode?.Trim(),

@@ -1,4 +1,5 @@
 ﻿using Captive.Data.Models;
+using Captive.Model.Dto.Reports;
 
 namespace Captive.Reports.PrinterFileReport
 {
@@ -11,29 +12,24 @@ namespace Captive.Reports.PrinterFileReport
             _reportService = reportService;
         }
 
-        public async Task GenerateReport(
+        public Task GenerateReport(
             BatchFile batchFile,
-            ICollection<CheckOrders> checkOrders,
+            ICollection<CheckOrderReport> checkDto,
             string filePath,
             CancellationToken cancellationToken
         )
         {
-            var branches = await _reportService.GetAlLBranches(
-                batchFile.BankInfoId,
-                cancellationToken
-            );
+            if (!checkDto.Any())
+                return Task.CompletedTask;
 
-            var checkDto = await _reportService.ExtractCheckOrderDto(
-                checkOrders,
-                batchFile.BankInfoId,
-                cancellationToken
-            );
-
+            // FileSuffix is only set when the order file uses split generation,
+            // producing e.g. CWS98C1, CWS98C2 instead of a single CWS98C file.
             var productGroup = checkDto.GroupBy(x => new
             {
                 x.ProductTypeName,
                 x.FormCheckName,
                 x.CustomizeFileName,
+                x.FileSuffix,
             });
 
             foreach (var productCheckOrder in productGroup)
@@ -45,7 +41,7 @@ namespace Captive.Reports.PrinterFileReport
                 var productFilePath = Path.Combine(
                     filePath,
                     productCheckOrder.Key.ProductTypeName,
-                    $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName?.FirstOrDefault()}.txt"
+                    $"{fileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName?.FirstOrDefault()}{productCheckOrder.Key.FileSuffix}.txt"
                 );
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
@@ -72,6 +68,8 @@ namespace Captive.Reports.PrinterFileReport
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private void RenderText(

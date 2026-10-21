@@ -2,6 +2,7 @@
 using Captive.Data.Enums;
 using Captive.Data.Models;
 using Captive.Data.UnitOfWork.Read;
+using Captive.Model.Dto.Reports;
 
 namespace Captive.Reports.BlockReport
 {
@@ -16,25 +17,23 @@ namespace Captive.Reports.BlockReport
 
         public async Task GenerateReport(
             BatchFile batchFile,
-            ICollection<CheckOrders> checkOrders,
+            ICollection<CheckOrderReport> checkDto,
             string filePath,
             CancellationToken cancellationToken
         )
         {
+            if (!checkDto.Any())
+                return;
+
             var branches = await _reportService.GetAlLBranches(
                 batchFile.BankInfoId,
                 cancellationToken
             );
 
-            var checkDto = await _reportService.ExtractCheckOrderDto(
-                checkOrders,
-                batchFile.BankInfoId,
-                cancellationToken
-            );
+            // FileSuffix is only set when the order file uses split generation (BlockC1, BlockC2, ...)
+            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.FileSuffix });
 
-            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName });
-
-            var formCheckTypeCount = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckType });
+            var formCheckTypeCount = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckType, x.FileSuffix });
 
             int runningNo = 0,
                 blockNo = 0,
@@ -44,12 +43,13 @@ namespace Captive.Reports.BlockReport
             {
                 var productName = productCheckOrder.Key.ProductTypeName;
                 var formCheckName = productCheckOrder.Key.FormCheckName ?? string.Empty;
+                var fileSuffix = productCheckOrder.Key.FileSuffix;
                 var bankShortName = branches.First().BankInfo.ShortName;
                 var fileName = productCheckOrder.First().OrderFileName.Split('.').First();
 
                 List<Tuple<string, int>> formcheckList = new List<Tuple<string, int>>();
 
-                foreach (var checkType in formCheckTypeCount.Where(x => x.Key.ProductTypeName == productName))
+                foreach (var checkType in formCheckTypeCount.Where(x => x.Key.ProductTypeName == productName && x.Key.FileSuffix == fileSuffix))
                 {
                     var checkTypeInitial = checkType.Key.FormCheckType == FormCheckType.Personal ? "A" : "B";
 
@@ -64,13 +64,13 @@ namespace Captive.Reports.BlockReport
                 var productFilePath = Path.Combine(
                     filePath,
                     productCheckOrder.Key.ProductTypeName,
-                    $"Block{formCheckName?.First()}.txt"
+                    $"Block{formCheckName?.First()}{fileSuffix}.txt"
                 );
 
                 using (StreamWriter writer = new StreamWriter(productFilePath, true))
                 {
                     var printerFileName =
-                        $"{productCheckOrder.First().CustomizeFileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}";
+                        $"{productCheckOrder.First().CustomizeFileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}{fileSuffix}";
 
                     foreach (
                         var checkOrder in productCheckOrder

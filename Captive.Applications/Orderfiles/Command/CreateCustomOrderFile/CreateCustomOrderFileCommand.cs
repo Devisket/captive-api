@@ -14,6 +14,12 @@ namespace Captive.Applications.Orderfiles.Command.CreateCustomOrderFile
         public Guid BatchId { get; set; }
         public Guid ProductId { get; set; }
         public string? FileName { get; set; }
+
+        /// <summary>
+        /// When enabled, check orders with more than 50 booklets are generated in separate report
+        /// files (50 booklets per check order per file). Only available for manually encoded order files.
+        /// </summary>
+        public bool IsSplitGeneration { get; set; }
         public List<CheckOrderDto> CheckOrders { get; set; } = new();
     }
 

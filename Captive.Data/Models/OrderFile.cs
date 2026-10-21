@@ -24,6 +24,6 @@ namespace Captive.Data.Models
         public BatchFile? BatchFile { get; set; }
         
         public Guid ProductId { get; set; }
-        public required Product Product { get; set; }
+        public Product Product { get; set; }
     }
 }

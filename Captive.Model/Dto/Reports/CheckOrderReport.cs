@@ -30,5 +30,11 @@ namespace Captive.Model.Dto.Reports
         public BankBranches? DeliverTo { get; set; }
         public int ProductSequence { get; set; }
         public int FormCheckQuantity { get; set; }
+
+        /// <summary>
+        /// Suffix appended to the generated report file names (e.g. "1", "2") when the order file
+        /// uses split generation. Empty when the report is generated as a single file.
+        /// </summary>
+        public string FileSuffix { get; set; } = string.Empty;
     }
 }

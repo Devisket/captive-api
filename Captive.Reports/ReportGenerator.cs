@@ -13,11 +13,16 @@ using Captive.Messaging.Interfaces;
 using Captive.Messaging.Models;
 using Captive.Data.UnitOfWork.Write;
 using Captive.Data.Enums;
+using Captive.Model.Dto.Reports;
 
 namespace Captive.Reports
 {
     public class ReportGenerator : IReportGenerator
     {
+        // Maximum number of booklets of a single check order that goes into one generated file
+        // when the order file has split generation enabled.
+        private const int SplitGenerationLimit = 50;
+
         private readonly IReadUnitOfWork _readUow;
         private readonly IWriteUnitOfWork _writeUow;
         private readonly IConfiguration _configuration;
@@ -28,6 +33,7 @@ namespace Captive.Reports
         private readonly IProducer<DbfGenerateMessage> _producerGenerateDbf;
         private readonly IOrderFileNotifier _orderFileNotifier;
         private readonly IHashTotalReport _hashTotalReport;
+        private readonly IReportService _reportService;
 
         public ReportGenerator(
             IReadUnitOfWork readUow,
@@ -39,7 +45,8 @@ namespace Captive.Reports
             IProducer<GenerateBarcodeMessage> producerGenerateBarcode,
             IProducer<DbfGenerateMessage> producerGenerateDbf,
             IOrderFileNotifier orderFileNotifier,
-            IHashTotalReport hashTotalReport
+            IHashTotalReport hashTotalReport,
+            IReportService reportService
             )
         {
             _readUow = readUow;
@@ -52,6 +59,7 @@ namespace Captive.Reports
             _producerGenerateDbf = producerGenerateDbf;
             _orderFileNotifier = orderFileNotifier;
             _hashTotalReport = hashTotalReport;
+            _reportService = reportService;
         }
 
         public async Task OnGenerateReport(Guid batchFileId, CancellationToken cancellationToken)
@@ -86,17 +94,21 @@ namespace Captive.Reports
 
             var filePath = ConstructReportFolder(outputDir, batchFile.BankInfo, checkOrders,batchFile.BatchName);
 
+            var checkDto = await _reportService.ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
+
+            ApplySplitGeneration(checkDto);
+
             await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Printer File Report", cancellationToken);
-            await _exportPrinterFile.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _exportPrinterFile.GenerateReport(batchFile, checkDto, filePath, cancellationToken);
 
             await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Block Report", cancellationToken);
-            await _blockReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _blockReport.GenerateReport(batchFile, checkDto, filePath, cancellationToken);
 
             await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Packing Report", cancellationToken);
-            await _packingReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _packingReport.GenerateReport(batchFile, checkDto, filePath, cancellationToken);
 
             await _orderFileNotifier.NotifyBatchProgress(batchFileId, "Generating Hash Total Report", cancellationToken);
-            await _hashTotalReport.GenerateReport(batchFile, checkOrders, filePath, cancellationToken);
+            await _hashTotalReport.GenerateReport(batchFile, checkDto, filePath, cancellationToken);
 
             //CreateZipFile(batchFile, filePath, archiveDir);
 
@@ -107,6 +119,46 @@ namespace Captive.Reports
                 outputFolder = filePath
             });
 
+        }
+
+        /// <summary>
+        /// Assigns the file suffix of every booklet when split generation is enabled on its order file.
+        /// Each check order is chunked by <see cref="SplitGenerationLimit"/> booklets: the first chunk goes to
+        /// file 1 together with the other check orders, the next chunk to file 2, and so on.
+        /// e.g. orders 1 (10), 2 (120) and 3 (5) produce file 1 = 1, 2 (first 50), 3; file 2 = 2 (next 50);
+        /// file 3 = 2 (last 20). Suffixes are only applied to a product/form check group that actually
+        /// needs more than one file, so the file name stays unchanged (e.g. CWS98C) when nothing is split.
+        /// </summary>
+        private static void ApplySplitGeneration(ICollection<CheckOrderReport> checkDto)
+        {
+            var reportGroups = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.CustomizeFileName });
+
+            foreach (var reportGroup in reportGroups)
+            {
+                var partIndexes = new Dictionary<CheckOrderReport, int>();
+
+                foreach (var checkOrderBooklets in reportGroup.GroupBy(x => x.CheckOrder.Id))
+                {
+                    var isSplitGeneration = checkOrderBooklets.First().CheckOrder.OrderFile?.IsSplitGeneration ?? false;
+
+                    var booklets = checkOrderBooklets
+                        .OrderBy(x => x.StartSeries.Length)
+                        .ThenBy(x => x.StartSeries, StringComparer.Ordinal)
+                        .ToList();
+
+                    for (int i = 0; i < booklets.Count; i++)
+                    {
+                        partIndexes[booklets[i]] = isSplitGeneration ? i / SplitGenerationLimit : 0;
+                    }
+                }
+
+                var hasSplit = partIndexes.Values.Any(x => x > 0);
+
+                foreach (var (booklet, partIndex) in partIndexes)
+                {
+                    booklet.FileSuffix = hasSplit ? (partIndex + 1).ToString() : string.Empty;
+                }
+            }
         }
 
         private string ConstructReportFolder(string outputDir, BankInfo bankInfo, ICollection<CheckOrders> checkOrders, string batchName)

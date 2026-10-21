@@ -35,11 +35,13 @@ namespace Captive.Reports.PackingReport
             _reportService = reportService;
         }
 
-        public async Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken)
+        public async Task GenerateReport(BatchFile batchFile, ICollection<CheckOrderReport> checkDto, string filePath, CancellationToken cancellationToken)
         {
-            var checkDto = await _reportService.ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
+            if (!checkDto.Any())
+                return;
 
-            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.FormCheckType });
+            // FileSuffix is only set when the order file uses split generation (PackingA1, PackingA2, ...)
+            var productGroup = checkDto.GroupBy(x => new { x.ProductTypeName, x.FormCheckName, x.FormCheckType, x.FileSuffix });
 
             var accountNumberFormat = checkDto.First().AccountNumberFormat;
 
@@ -52,7 +54,7 @@ namespace Captive.Reports.PackingReport
 
                 var initialFileName = formCheckType == Data.Enums.FormCheckType.Personal ? "A" : "B";
 
-                var productFilePath = Path.Combine(filePath, productData.Key.ProductTypeName, $"Packing{initialFileName}.txt");
+                var productFilePath = Path.Combine(filePath, productData.Key.ProductTypeName, $"Packing{initialFileName}{productData.Key.FileSuffix}.txt");
 
                 var orderFileBranchGroupBy = productData.GroupBy(x => new { x.BankBranch.BRSTNCode, DeliveryBrstn = x.DeliverTo == null ? string.Empty : x.DeliverTo.BRSTNCode, x.OrderFileName });
 

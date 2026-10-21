@@ -94,6 +94,9 @@ namespace Captive.Commands.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("HasBarcodeService")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ShortName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

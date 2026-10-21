@@ -12,7 +12,7 @@ namespace Captive.Data.Models
         public string? ErrorMessage { get; set; }
         public ICollection<OrderFile>? OrderFiles { get; set; }
         public Guid BankInfoId { get; set; }
-        public required BankInfo BankInfo{ get; set; }
+        public BankInfo BankInfo{ get; set; }
         public required DateTime DeliveryDate { get; set; }
     }
 }

@@ -117,7 +117,6 @@ namespace Captive.Applications.ProcessOrderFiles.Commands.UploadOrderFile
                 FilePath = Path.Combine(relativePath, fileName),
                 Status = Data.Enums.OrderFilesStatus.Processing,
                 ProductId = product.Id,
-                Product = product,
                 IsValidated = false,
                 ProcessDate = DateTime.UtcNow,
             };

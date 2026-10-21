@@ -1,5 +1,6 @@
 using Captive.Data.Enums;
 using Captive.Data.Models;
+using Captive.Model.Dto.Reports;
 
 namespace Captive.Reports.HashTotalReport
 {
@@ -12,10 +13,9 @@ namespace Captive.Reports.HashTotalReport
             _reportService = reportService;
         }
 
-        public async Task GenerateReport(BatchFile batchFile, ICollection<CheckOrders> checkOrders, string filePath, CancellationToken cancellationToken)
+        public Task GenerateReport(BatchFile batchFile, ICollection<CheckOrderReport> checkDto, string filePath, CancellationToken cancellationToken)
         {
-            var checkDto = await _reportService.ExtractCheckOrderDto(checkOrders, batchFile.BankInfoId, cancellationToken);
-
+            // Hash total covers the whole batch, so it stays a single file even with split generation.
             var ordered = checkDto
                 .OrderBy(x => x.ProductSequence)
                 .ThenBy(x => x.FormTypeSequence)
@@ -51,6 +51,8 @@ namespace Captive.Reports.HashTotalReport
             }
 
             writer.WriteLine($"T{sumAcctNo.ToString().PadLeft(16, '0')}{totalCount.ToString().PadLeft(6, '0')}");
+
+            return Task.CompletedTask;
         }
     }
 }
