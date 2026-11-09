@@ -72,13 +72,19 @@ namespace Captive.Reports.BlockReport
                     var printerFileName =
                         $"{productCheckOrder.First().CustomizeFileName}{batchFile.DeliveryDate.Month}{batchFile.DeliveryDate.Day}{productCheckOrder.Key.FormCheckName!.First()}{fileSuffix}";
 
-                    foreach (
-                        var checkOrder in productCheckOrder
-                            .OrderBy(x => x.BankBranch.BRSTNCode)
-                            .ThenBy(x => x.CheckOrder.AccountNo)
-                            .ThenBy(x => x.StartSeries)
-                    )
+                    var sortedOrders = productCheckOrder
+                        .OrderBy(x => x.BankBranch.BRSTNCode)
+                        .ThenBy(x => x.CheckOrder.AccountNo)
+                        .ThenBy(x => x.StartSeries)
+                        .ToList();
+
+                    var footerRendered = false;
+
+                    for (int i = 0; i < sortedOrders.Count; i++)
                     {
+                        var checkOrder = sortedOrders[i];
+                        var isLastOrder = i == sortedOrders.Count - 1;
+
                         if ((blockNo % 8) == 0 && (runningNo % 4) == 0)
                         {
                             pageNo++;
@@ -103,20 +109,11 @@ namespace Captive.Reports.BlockReport
 
                         runningNo++;
 
-                        if (
-                            (
-                                (blockNo % 8) == 0 && (runningNo % 4) == 0
-                                || (
-                                    checkOrder
-                                    == productCheckOrder
-                                        .OrderBy(x => x.BankBranch.BRSTNCode)
-                                        .ThenBy(x => x.CheckOrder.AccountNo)
-                                        .ThenBy(x => x.StartSeries)
-                                        .Last()
-                                )
-                            )
-                            && pageNo == 1
-                        )
+                        var isPageFull = (blockNo % 8) == 0 && (runningNo % 4) == 0;
+
+                        // Footer is rendered only once per file, on the first page
+                        if (!footerRendered && pageNo == 1 && (isPageFull || isLastOrder))
+                        {
                             RenderFooter(
                                 writer,
                                 formcheckList,
@@ -124,17 +121,9 @@ namespace Captive.Reports.BlockReport
                                 printerFileName,
                                 batchFile.DeliveryDate
                             );
+                            footerRendered = true;
+                        }
                     }
-                    Console.WriteLine();
-
-                    if (blockNo <= 4 && pageNo == 1)
-                        RenderFooter(
-                            writer,
-                            formcheckList,
-                            fileName,
-                            printerFileName,
-                            batchFile.DeliveryDate
-                        );
 
                     runningNo = 0;
                     blockNo = 0;

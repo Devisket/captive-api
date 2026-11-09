@@ -147,7 +147,8 @@ namespace Captive.Reports.PackingReport
             writer.WriteLine();
             writer.WriteLine();
             writer.WriteLine(Center("CAPTIVE PRINTING CORPORATION"));
-            writer.WriteLine(Center($"{bankName} {productName} - {formCheckName} Checks Summary"));
+            writer.WriteLine(Center($"{bankName}"));
+            writer.WriteLine(Center($"{productName} - {formCheckName} Checks Summary"));
             writer.WriteLine();
             writer.WriteLine(ColumnHeader);
             writer.WriteLine();
